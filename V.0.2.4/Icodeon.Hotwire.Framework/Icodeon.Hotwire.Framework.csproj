@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D6193ED7-560D-48AE-B049-A930F461C1B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Icodeon.Hotwire.Framework</RootNamespace>
+    <AssemblyName>Icodeon.Hotwire.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.0\lib\NET40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Extended">
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.0\lib\NET40\NLog.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\AssemblyProviderBase.cs" />
+    <Compile Include="Configuration\Constants.cs" />
+    <Compile Include="Configuration\ConsumerProviderSection.cs" />
+    <Compile Include="Configuration\HttpClientProviderSection.cs" />
+    <Compile Include="Configuration\IOAuthProviderConfig.cs" />
+    <Compile Include="Configuration\OAuthProviderSection.cs" />
+    <Compile Include="Configuration\IAssemblyProvider.cs" />
+    <Compile Include="Configuration\EndpointCollection.cs" />
+    <Compile Include="Configuration\EndpointConfiguration.cs" />
+    <Compile Include="Configuration\MethodValidation.cs" />
+    <Compile Include="Configuration\ModuleConfigurationBase.cs" />
+    <Compile Include="Configuration\FileProcessorSection.cs" />
+    <Compile Include="Configuration\FoldersSection.cs" />
+    <Compile Include="Configuration\IFileProcessorSection.cs" />
+    <Compile Include="Configuration\IModuleConfiguration.cs" />
+    <Compile Include="Configuration\IModuleEndpoint.cs" />
+    <Compile Include="Configuration\ModuleConfigurationCache.cs" />
+    <Compile Include="Configuration\ProcessFileSection.cs" />
+    <Compile Include="Configuration\QueueConfiguration.cs" />
+    <Compile Include="Configuration\SmokeTestConfiguration.cs" />
+    <Compile Include="ConsoleService\ConsoleServiceSection.cs" />
+    <Compile Include="ConsoleService\IConsoleServiceConfig.cs" />
+    <Compile Include="ConsoleService\ServiceContextDTO.cs" />
+    <Compile Include="ConsoleService\ServiceDTO.cs" />
+    <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
+    <Compile Include="Contracts\IEnqueueRequest.cs" />
+    <Compile Include="Diagnostics\HotLogger.cs" />
+    <Compile Include="Diagnostics\LoggerDiagnosticExtensions.cs" />
+    <Compile Include="DTOs\EndpointDTO.cs" />
+    <Compile Include="DTOs\ModuleConfigurationDTO.cs" />
+    <Compile Include="DTOs\NameValueDTO.cs" />
+    <Compile Include="Events\FileInfoEventArgs.cs" />
+    <Compile Include="Events\EnqueueRequestEventArgs.cs" />
+    <Compile Include="FolderWatcher\FolderWatcher.cs" />
+    <Compile Include="FolderWatcher\FolderConfig.cs" />
+    <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
+    <Compile Include="FolderWatcher\FolderScript.cs" />
+    <Compile Include="Modules\ProcessFileResponseDTO.cs" />
+    <Compile Include="Modules\QueueModule.cs" />
+    <Compile Include="Modules\ModuleBase.cs" />
+    <Compile Include="Providers\ClassFactory.cs" />
+    <Compile Include="Providers\ConsumerProvider.cs" />
+    <Compile Include="Providers\HotwireFilesProvider.cs" />
+    <Compile Include="Contracts\IAppCounter.cs" />
+    <Compile Include="Contracts\IMediaInfo.cs" />
+    <Compile Include="Contracts\EchoResponseDTO.cs" />
+    <Compile Include="Contracts\EnqueueRequestDTO.cs" />
+    <Compile Include="Contracts\Enums\QueueStatus.cs" />
+    <Compile Include="Contracts\Enums\SecurityType.cs" />
+    <Compile Include="Contracts\EventArguments\EnqueuingEventArgs.cs" />
+    <Compile Include="Contracts\EventArguments\ServiceRequestEventArgs.cs" />
+    <Compile Include="Contracts\IAppCache.cs" />
+    <Compile Include="Contracts\IFolder.cs" />
+    <Compile Include="Contracts\IHotwireFileProcessorFoldersPaths.cs" />
+    <Compile Include="Contracts\IHotwireFileProcessorRelativeFolders.cs" />
+    <Compile Include="Contracts\IHotwireService.cs" />
+    <Compile Include="Contracts\IHotwireServiceEvents.cs" />
+    <Compile Include="Contracts\IHttpResponsableWriter.cs" />
+    <Compile Include="Contracts\ImportCartridgeDTO.cs" />
+    <Compile Include="Contracts\IProcessFiles.cs" />
+    <Compile Include="Contracts\CartridgeDTO.cs" />
+    <Compile Include="Contracts\Parameters.cs" />
+    <Compile Include="Contracts\ProcessFileRequestResult.cs" />
+    <Compile Include="Contracts\QueuedResource.cs" />
+    <Compile Include="Contracts\QueueStep.cs" />
+    <Compile Include="Contracts\Uris.cs" />
+    <Compile Include="FileProcessorPinger.cs" />
+    <Compile Include="MediaTypes\eMediaType.cs" />
+    <Compile Include="MediaTypes\MediaTypeFactory.cs" />
+    <Compile Include="MediaTypes\MediaInfo.cs" />
+    <Compile Include="Modules\FileProcessorFactory.cs" />
+    <Compile Include="Modules\HotwireVersionerModule.cs" />
+    <Compile Include="HotwireService.cs" />
+    <Compile Include="Modules\SmokeTestModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ProviderFactory.cs" />
+    <Compile Include="Repository\IHotwireRepository.cs" />
+    <Compile Include="Repository\QueueDAL.cs" />
+    <Compile Include="Scripts\GetResultDTO.cs" />
+    <Compile Include="Scripts\FileProcessorScript.cs" />
+    <Compile Include="Scripts\FileDownloaderScript.cs" />
+    <Compile Include="Scripts\FileDownloadResultDTO.cs" />
+    <Compile Include="Scripts\IScript.cs" />
+    <Compile Include="Scripts\ConsoleScriptRunner.cs" />
+    <Compile Include="Security\QuickAuth.cs" />
+    <Compile Include="Serialization\XmlHelper.cs" />
+    <Compile Include="Serialization\JSONHelper.cs" />
+    <Compile Include="SmokeTests\TestDummyFileProcessor.cs" />
+    <Compile Include="Utils\AppCacheWrapper.cs" />
+    <Compile Include="Utils\AbstractAppCounter.cs" />
+    <Compile Include="Utils\AssemblyHelper.cs" />
+    <Compile Include="Utils\ColorDTO.cs" />
+    <Compile Include="Utils\ConsoleHelper.cs" />
+    <Compile Include="Utils\ConsoleWriter.cs" />
+    <Compile Include="Utils\ContextHelper.cs" />
+    <Compile Include="Utils\DeploymentEnvironment.cs" />
+    <Compile Include="Utils\DictionaryExtensions.cs" />
+    <Compile Include="Utils\HttpApplicationWrapper.cs" />
+    <Compile Include="Utils\DirectoryHelper.cs" />
+    <Compile Include="Utils\FileProcessorAppCounter.cs" />
+    <Compile Include="Utils\HotClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\HotwireFolderWatcher.cs" />
+    <Compile Include="Utils\HttpModuleException.cs" />
+    <Compile Include="Utils\IMapPath.cs" />
+    <Compile Include="Utils\LoggingFileProcessorProvider.cs" />
+    <Compile Include="Utils\NameValueCollectionExtensions.cs" />
+    <Compile Include="Utils\NLogHelper.cs" />
+    <Compile Include="Utils\OAuthHelper.cs" />
+    <Compile Include="Utils\HotwireExceptionDTO.cs" />
+    <Compile Include="Utils\ResponsableHttpContextWriter.cs" />
+    <Compile Include="Utils\StreamHelper.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
+      <Project>{2CDFC869-CED8-4809-A89D-F6F12E210978}</Project>
+      <Name>Icodeon.Hotwire.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\RefreshOUList\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(SolutionDir)packages\NLog.2.0.0.0\LICENCE.txt $(TargetDir)NLog-LICENCE.txt
+
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
