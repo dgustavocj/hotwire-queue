@@ -6,6 +6,7 @@ using System.Net;
 using System.Web;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.MediaTypes;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
@@ -20,7 +21,14 @@ namespace Icodeon.Hotwire.Framework.Modules
         abstract protected string ConfigurationSectionName { get; }
         public abstract IEnumerable<string> ActionNames { get; }
 
-        protected abstract object ProcessRequest(HttpApplicationState applicationState,Stream inputStream,Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, Logger logger);
+        protected abstract object ProcessRequest(HttpApplicationState applicationState,Stream inputStream,Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger);
+        
+        //ADH: override this and return null in testing if you don't need logging.
+        protected virtual LoggerBase GetLogger()
+        {
+            var logger = LogManager.GetLogger(ConfigurationSectionName);
+            return new HotLogger(logger);
+        }
 
         public void Init(HttpApplication context)
         {
@@ -28,22 +36,22 @@ namespace Icodeon.Hotwire.Framework.Modules
                                         {
                                             Uri url = context.Request.Url;
                                             HttpRequest request = context.Request;
-                                            IModuleConfiguration _configuration = new ModuleConfigurationCache(ConfigurationSectionName, context.Application).Configuration;
-                                            if (_configuration == null) throw new Exception("could not load configuration for httpModule:" + ConfigurationSectionName);
-                                            if (!_configuration.Active) return;
-                                            if (_configuration.MethodValidation==MethodValidation.beforeUriValidation)
+                                            IModuleConfiguration configuration = new ModuleConfigurationCache(ConfigurationSectionName, context.Application).Configuration;
+                                            if (configuration == null) throw new Exception("could not load configuration for httpModule:" + ConfigurationSectionName);
+                                            if (!configuration.Active) return;
+                                            if (configuration.MethodValidation==MethodValidation.beforeUriValidation)
                                             {
-                                                if (!_configuration.Endpoints.Any(ep1 => ep1.HttpMethods.Any(ep2 => ep2.Contains(request.HttpMethod)))) return;    
+                                                if (!configuration.Endpoints.Any(ep1 => ep1.HttpMethods.Any(ep2 => ep2.Contains(request.HttpMethod)))) return;    
                                             }
                                             
-                                            string rootUriString = string.Format("http://{0}:{1}/{2}", url.Host, url.Port,_configuration.RootServiceName);
-                                            Uri rootUri = new Uri(rootUriString);
+                                            string rootUriString = string.Format("http://{0}:{1}/{2}", url.Host, url.Port,configuration.RootServiceName);
+                                            var rootUri = new Uri(rootUriString);
 
-                                            var endpoint = _configuration.Endpoints.FirstOrDefault(ep => ep.Active && ep.UriTemplate.Match(rootUri, url) != null);
+                                            var endpoint = configuration.Endpoints.FirstOrDefault(ep => ep.Active && ep.UriTemplate.Match(rootUri, url) != null);
                                             if (endpoint==null) return;
 
                                             // needs unit test to prove this works correctly!
-                                            if (_configuration.MethodValidation == MethodValidation.afterUriValidation)
+                                            if (configuration.MethodValidation == MethodValidation.afterUriValidation)
                                             {
                                                 if (!endpoint.HttpMethods.Any(ep2 => ep2.Contains(request.HttpMethod)))
                                                 {
@@ -58,7 +66,8 @@ namespace Icodeon.Hotwire.Framework.Modules
                                             // WE HAVE ONE WINNER, A GENUINE REQUEST THAT PASSES ALL OUR FILTER TESTS, GO FORTH AND PROCESS IT FOLKS!
                                             // ====================================================================================================
                                             UriTemplateMatch match = endpoint.UriTemplate.Match(rootUri, url);
-                                            Logger logger = LogManager.GetLogger("fileprocessor");
+
+                                            LoggerBase logger = GetLogger();
                                             logger.Trace("");
                                             logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
                                             logger.Trace("*****************************************************************");

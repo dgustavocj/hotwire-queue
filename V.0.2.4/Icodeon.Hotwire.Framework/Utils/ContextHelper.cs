@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Web;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.MediaTypes;
 using Icodeon.Hotwire.Framework.Serialization;
 
@@ -31,26 +25,41 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             httpWriter.StatusCode = (int)statusCode;
             httpWriter.ContentType = "application/json";
-            string json = JSONHelper.Serialize<T>(retval);
+            string json = JSONHelper.Serialize(retval);
             httpWriter.Write(json);
         }
 
-        public static void WriteHtml<T>(IHttpResponsableWriter httpWriter, string src, string title, NLog.Logger logger)
+        public static void WriteHtml(IHttpResponsableWriter httpWriter, string src, string title, NLog.Logger logger)
         {
             var html = new MediaTypeFactory().Html;
             httpWriter.StatusCode = (int)HttpStatusCode.Accepted;
             httpWriter.ContentType = html.ContentType;
             logger.Trace("Setting response ContentType to {0} and writing response", html.ContentType);
-            httpWriter.Write(string.Format(htmlTemplate,title,src));
+            httpWriter.Write(string.Format(HtmlTemplateWithTitle, title, src ?? ""));
         }
 
-        public static void WriteHtml<T>(IHttpResponsableWriter httpWriter, T src, HttpStatusCode code, NLog.Logger logger)
+        public static void WriteHtml<T>(IHttpResponsableWriter httpWriter, T src, HttpStatusCode code, LoggerBase logger)
         {
            // WriteResponseAsSupportedMediaElse415(httpWriter,src,HttpStatusCode.Accepted, ".html",title,logger);
             WriteMediaResponse(httpWriter, new MediaTypeFactory().Html, src, code, logger);
         }
 
-            private const string htmlTemplate =
+        private const string HtmlTemplateWithTitle =
+@"<html>
+    <head>
+    </head>
+    <body>
+    <div class='hotwire-object'>
+        <h2>{0}</h2>
+        <textarea rows='20' cols='120'>
+        {1}
+        </textarea>
+    </div>
+    </body>
+</html>";
+
+
+            private const string HtmlTemplate =
 @"<html>
     <head>
     </head>
@@ -64,23 +73,23 @@ namespace Icodeon.Hotwire.Framework.Utils
 </html>";
 
 
-        public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, IMediaInfo media, T retval, HttpStatusCode statusCode, NLog.Logger logger)
+        public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, IMediaInfo media, T retval, HttpStatusCode statusCode, LoggerBase logger)
         {
-            WriteMediaResponse<T>(httpWriter, media, retval, (int) statusCode, logger);
+            WriteMediaResponse(httpWriter, media, retval, (int) statusCode, logger);
         }
 
-        public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, IMediaInfo media, T retval, int statusCode, NLog.Logger logger)
+        public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, IMediaInfo media, T retval, int statusCode, LoggerBase logger)
         {
             logger.Trace("WriteMediaResponse<T>(httpWriter,IMediaInfo[{0}],HttpStatusCode[{0}],logger", statusCode);
-            httpWriter.StatusCode = (int)statusCode;
+            httpWriter.StatusCode = statusCode;
             httpWriter.ContentType = media.ContentType;
             logger.Trace("Setting response ContentType to {0} and writing response", media.ContentType);
 
             switch (media.Type)
             {
                 case (eMediaType.html):
-                    string jsonHtml = JSONHelper.Serialize<T>(retval);
-                    string html = string.Format(htmlTemplate, jsonHtml);
+                    string jsonHtml = JSONHelper.Serialize(retval);
+                    string html = string.Format(HtmlTemplate, jsonHtml);
 
                     httpWriter.Write(html);
                     break;
@@ -94,17 +103,17 @@ namespace Icodeon.Hotwire.Framework.Utils
                         httpWriter.Write(retval.ToString());
                         break;
                     }
-                    string jsonText  = JSONHelper.Serialize<T>(retval);
+                    string jsonText  = JSONHelper.Serialize(retval);
                     httpWriter.Write(jsonText);
                     break;
 
                 case (eMediaType.json):
-                    string json = JSONHelper.Serialize<T>(retval);
+                    string json = JSONHelper.Serialize(retval);
                     httpWriter.Write(json);
                     break;
 
                 case (eMediaType.xml):
-                    string xml = XmlHelper.Serialize<T>(retval);
+                    string xml = XmlHelper.Serialize(retval);
                     httpWriter.Write(xml);
                     break;
                 

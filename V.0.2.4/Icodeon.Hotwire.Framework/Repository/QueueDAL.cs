@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
@@ -15,9 +16,9 @@ namespace Icodeon.Hotwire.Framework.Repository
     public class QueueDal
     {
         private readonly HotwireFilesProvider _fileModel;
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
 
-        public QueueDal(HotwireFilesProvider fileModel, Logger logger)
+        public QueueDal(HotwireFilesProvider fileModel, LoggerBase logger)
         {
             _fileModel = fileModel;
             _logger = logger;

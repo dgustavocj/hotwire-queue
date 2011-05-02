@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
@@ -9,9 +10,11 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
 {
     public class FolderWatcher
     {
-        private Logger _logger;
+        private LoggerBase _logger;
         private readonly IConsoleWriter _writer;
         private bool _isMonitoring;
+
+        // ADH: looks like _folderConfigs is never used, must check it out.
         private readonly List<FolderScript> _folderConfigs;
         private readonly Dictionary<string, FolderScript> _scripts;
         public Dictionary<string, FolderScript> Scripts
@@ -19,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             get { return _scripts;  }
         }
 
-        public FolderWatcher(Logger logger,IConsoleWriter writer, List<FolderConfig> folderConfigs)
+        public FolderWatcher(LoggerBase logger,IConsoleWriter writer, List<FolderConfig> folderConfigs)
         {
             _scripts = new Dictionary<string, FolderScript>();
             folderConfigs.ForEach( c=>

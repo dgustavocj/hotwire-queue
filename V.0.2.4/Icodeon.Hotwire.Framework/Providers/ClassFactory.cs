@@ -1,15 +1,15 @@
 ﻿using System;
 using Icodeon.Hotwire.Framework.Configuration;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
     public class ClassFactory
     {
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
 
-        public ClassFactory(Logger logger)
+        public ClassFactory(LoggerBase logger)
         {
             _logger = logger;
         }

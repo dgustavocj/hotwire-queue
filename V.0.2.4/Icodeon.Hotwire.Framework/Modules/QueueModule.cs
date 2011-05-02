@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Web;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Security;
@@ -34,7 +34,7 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         //TODO: Move all the request context to a rest module context DTO?
         // it's not a too massive list and I like seeing there here (at least for now) as it's a reminder of what I have to work with,do or dont need.
-        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream,Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, Utils.IMapPath mapper, NLog.Logger logger)
+        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream,Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
         {
             logger.Trace("QueueModule-> Action=" + config.Action);
             logger.Trace("--------------------------------------");
@@ -92,7 +92,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         }
 
 
-        private bool ValidateOauthSignature(Logger logger, string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
+        private bool ValidateOauthSignature(LoggerBase logger, string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
         {
             IConsumerProvider consumer = new ProviderFactory(logger).CreateConsumerProvider();
             var secret = consumer.GetConsumerSecret(consumerKey);
@@ -107,7 +107,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             return isvalid;
         }
 
-        private void CheckConsumerKeyIsDevKey(string key,Logger logger)
+        private void CheckConsumerKeyIsDevKey(string key,LoggerBase logger)
         {
             
             if (!key.ToLowerInvariant().Equals("key"))
@@ -116,7 +116,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                 logger.Trace("The oauth consumer key is the correct key for DEBUG build.");
         }
 
-        private void CheckConsumerKeyIsHardCodedPartners(string key, Logger logger)
+        private void CheckConsumerKeyIsHardCodedPartners(string key, LoggerBase logger)
         {
             //TODO: Move message texts to resource files
             if (!key.ToLowerInvariant().Equals(Constants.TemporaryKeyAndSecretLookups.PartnerConsumerKey)) 
@@ -125,7 +125,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                 logger.Trace("The oauth consumer key is the correct key for RELEASE build.");
         }
 
-        protected virtual void BeforeProcessFile(Logger logger, NameValueCollection queueParameters)
+        protected virtual void BeforeProcessFile(LoggerBase logger, NameValueCollection queueParameters)
         {
             // do nothing.
         }

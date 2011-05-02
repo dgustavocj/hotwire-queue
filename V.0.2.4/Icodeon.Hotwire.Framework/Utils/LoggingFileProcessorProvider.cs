@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 
 namespace Icodeon.Hotwire.Framework.Utils
@@ -16,16 +17,16 @@ namespace Icodeon.Hotwire.Framework.Utils
     /// </summary>
     public class LoggingFileProcessorProvider : IFileProcessorProvider
     {
-        private NLog.Logger _logger;
+        private LoggerBase _logger;
 
-        public LoggingFileProcessorProvider(NLog.Logger logger)
+        public LoggingFileProcessorProvider(LoggerBase logger)
         {
             _logger = logger;
         }
 
         public LoggingFileProcessorProvider()
         {
-            _logger = NLog.LogManager.GetLogger("fileProcessor");
+            _logger = new HotLogger(NLog.LogManager.GetLogger("fileProcessor"));
             _logger.Trace("new LoggingFileProcessorProvider()");
         }
 

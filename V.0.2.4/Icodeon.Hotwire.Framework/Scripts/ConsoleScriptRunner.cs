@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
@@ -13,7 +14,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
     public class ConsoleScriptRunner
     {
         private readonly IConsoleWriter _console;
-        private Logger _logger;
+        private LoggerBase _logger;
 
         public bool Abort { get; set; }
 
@@ -31,7 +32,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _console.ReadLine();
         }
 
-        public ConsoleScriptRunner(IConsoleWriter _console, string[] args, bool resolveEmbeddedAssemblies = false, Logger logger = null)
+        public ConsoleScriptRunner(IConsoleWriter _console, string[] args, bool resolveEmbeddedAssemblies = false, LoggerBase logger = null)
             : this(_console, resolveEmbeddedAssemblies, logger)
         {
             if (args.Length != 1 || !int.TryParse(args[0], out _scriptNumber)) 
@@ -43,12 +44,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
             }
         }
 
-        public ConsoleScriptRunner(IConsoleWriter console, bool resolveEmbeddedAssemblies, Logger logger = null)
+        public ConsoleScriptRunner(IConsoleWriter console, bool resolveEmbeddedAssemblies, LoggerBase logger = null)
         {
             _console = console;
             if (resolveEmbeddedAssemblies) throw new ApplicationException("resolving embedded assemblies not currently supported.");
             Abort = false;
-            _logger = logger ?? LogManager.GetCurrentClassLogger();
+            _logger = logger;
         }
 
         public bool RunConfiguration(Action config)
@@ -85,7 +86,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        public bool RunCode(Action<Logger> code,string scriptName, bool pauseBeforeReturning)
+        public bool RunCode(Action<LoggerBase> code,string scriptName, bool pauseBeforeReturning)
         {
             _console.WriteLine("Starting {0}", scriptName);
             _console.WriteLine("version:{0}, hotwire framework version:{1}", AssemblyHelper.ExecutingAssemblyVersion, AssemblyHelper.FrameworkVersion);

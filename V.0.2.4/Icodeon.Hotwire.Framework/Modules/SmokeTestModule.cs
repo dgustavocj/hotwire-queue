@@ -12,6 +12,7 @@ using System.Web;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.DTOs;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
@@ -32,7 +33,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             get { return Constants.Configuration.SmokeTestSectionName; }
         }
 
-        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream, Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, Logger logger)
+        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream, Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
         {
             Contract.Requires(applicationState!=null);
             Contract.Requires(match != null);
@@ -56,6 +57,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                             throw new HttpModuleException(logger, HttpStatusCode.Forbidden, "Remote connections not allowed.");
                     }
                     var fileProvider = HotwireFilesProvider.GetFilesProviderInstance(logger);
+                    // ADH: queue dal should be injected
                     var dal = new QueueDal(fileProvider, logger);
                     EnqueueRequestDTO dto = dal.GetByTrackingNumber(trackingNumber);
                     var processor = new ProviderFactory(logger).CreateFileProcessor();

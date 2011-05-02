@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
@@ -29,14 +30,14 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _logger = logger;
         }
 
-        public void Run(NLog.Logger logger, Utils.IConsoleWriter console, string folderPath)
+        public void Run(LoggerBase logger, Utils.IConsoleWriter console, string folderPath)
         {
             // ignore the folder for now, because the exact folder used for downloading is currently configured in hotwireFilesProvider.
             // will change this later.
             Run(logger,console,null);
         }
 
-        public void Run(NLog.Logger logger, Utils.IConsoleWriter console)
+        public void Run(LoggerBase logger, Utils.IConsoleWriter console)
         {
             try
             {
@@ -57,7 +58,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        private void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, Logger logger)
+        private void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger)
         {
             console.WriteLine("Processing {0}",dto.ResourceFile);
             try

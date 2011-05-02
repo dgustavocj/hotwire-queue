@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Events;
 using Icodeon.Hotwire.Framework.FolderWatcher;
 using Icodeon.Hotwire.Framework.Providers;
@@ -14,7 +15,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
     public class FileDownloaderScript : IScript, IFolderWatcherScript
     {
         private readonly HotwireFilesProvider _fileprovider;
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
         private bool _isRunning = false; 
         public bool isRunning { get { return _isRunning; } }
 
@@ -26,19 +27,19 @@ namespace Icodeon.Hotwire.Framework.Scripts
         public event EventHandler<EnqueueRequestEventArgs> Downloading;
         public event EventHandler<FileInfoEventArgs> Downloaded;
 
-        public FileDownloaderScript(HotwireFilesProvider fileprovider, Logger logger)
+        public FileDownloaderScript(HotwireFilesProvider fileprovider, LoggerBase logger)
         {
             _fileprovider = fileprovider;
             _logger = logger;
         }
 
 
-        public void Run(NLog.Logger logger, Utils.IConsoleWriter console, string folderPath)
+        public void Run(LoggerBase logger, Utils.IConsoleWriter console, string folderPath)
         {
             Run(logger,console,null);
         }
 
-        public void Run(NLog.Logger logger, Utils.IConsoleWriter console)
+        public void Run(LoggerBase logger, Utils.IConsoleWriter console)
         {
             try
             {
@@ -58,7 +59,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, Logger logger)
+        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger)
         {
             string trackingFilePath = Path.Combine(_fileprovider.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");

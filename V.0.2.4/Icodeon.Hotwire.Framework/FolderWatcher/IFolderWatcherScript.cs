@@ -1,5 +1,5 @@
-﻿using Icodeon.Hotwire.Framework.Utils;
-using NLog;
+﻿using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.FolderWatcher
 {
@@ -7,6 +7,6 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
     {
         string ScriptName { get; }
         bool isRunning { get; }
-        void Run(Logger logger, IConsoleWriter console, string folderPath);
+        void Run(LoggerBase logger, IConsoleWriter console, string folderPath);
     }
 }

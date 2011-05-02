@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Web;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
@@ -21,10 +15,10 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         private readonly IFileProcessorSection _config;
         private readonly IHotwireFileProcessorRelativeFolders _relativeFolders;
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
         private readonly IAppCounter _threadCounter;
 
-        public FileProcessorFactory(IFileProcessorSection config, IHotwireFileProcessorRelativeFolders relativeFolders, Logger logger, IAppCounter threadCounter)
+        public FileProcessorFactory(IFileProcessorSection config, IHotwireFileProcessorRelativeFolders relativeFolders, LoggerBase logger, IAppCounter threadCounter)
         {
             _config = config;
             _relativeFolders = relativeFolders;

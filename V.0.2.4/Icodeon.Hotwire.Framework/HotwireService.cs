@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
-using System.Web;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework
 {
@@ -27,7 +23,8 @@ namespace Icodeon.Hotwire.Framework
     public class HotwireService : IHotwireService, IHotwireServiceEvents
     {
 
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static LoggerBase logger = new HotLogger(NLog.LogManager.GetCurrentClassLogger());
+        //ADH: looks like lastFile is never used, need to check.
         private static int lastFile = 1;
 
 
@@ -70,7 +67,7 @@ namespace Icodeon.Hotwire.Framework
         }
 
 
-        public string EnqueueStream(System.IO.Stream body, string module)
+        public string EnqueueStream(Stream body, string module)
         {
             _serviceRequesting("EnqueueStream");
             var parameters = body.ParseNameValues();

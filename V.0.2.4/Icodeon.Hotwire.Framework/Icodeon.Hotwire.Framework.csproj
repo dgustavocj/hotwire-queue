@@ -83,7 +83,7 @@
     <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
     <Compile Include="Contracts\IEnqueueRequest.cs" />
     <Compile Include="Diagnostics\HotLogger.cs" />
-    <Compile Include="Diagnostics\LoggerDiagnosticExtensions.cs" />
+    <Compile Include="Diagnostics\LoggerBase.cs" />
     <Compile Include="DTOs\EndpointDTO.cs" />
     <Compile Include="DTOs\ModuleConfigurationDTO.cs" />
     <Compile Include="DTOs\NameValueDTO.cs" />

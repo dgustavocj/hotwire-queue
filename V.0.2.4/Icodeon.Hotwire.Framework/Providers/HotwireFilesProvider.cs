@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
-using Icodeon.Hotwire.Framework.Repository;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
@@ -32,10 +31,12 @@ namespace Icodeon.Hotwire.Framework.Providers
             public static IEnumerable<string> Files = new[] { SolutionFolder, ProcessingFolder, DownloadErrorFolder, DownloadingFolder, DownloadQueueFolder, ProcessedFolder, ProcessErrorFolder, ProcessQueueFolder };
         }
 
-        
 
 
-        private readonly Logger _logger;
+
+        private readonly LoggerBase _logger;
+
+        //ADH: looks like _folderPaths is never used, need to check.
         private IHotwireFileProcessorFoldersPaths _foldersPaths;
 
         // TODO: DRY, am repeating myself here... fix!
@@ -60,7 +61,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         public string ProcessingFolderPath { get; set; }
         public string ProcessErrorFolderPath { get; set; }
 
-        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders, Logger logger)
+        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders, LoggerBase logger)
         {
             _logger = logger;
             SolutionFolderMarkerFile = relativeFolders.SolutionFolderMarkerFile;
@@ -290,12 +291,12 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public IEnumerable<string> GetAllFilesExcludingMarkerFiles(string folderPath)
         {
-            var files = Directory.GetFiles(folderPath, "*.*").Where( f => !HotwireFilesProvider.MarkerFiles.Files.Any( f.Contains ) );
+            var files = Directory.GetFiles(folderPath, "*.*").Where( f => !MarkerFiles.Files.Any( f.Contains ) );
             return files;
         }
 
         private static HotwireFilesProvider _hotwireFilesProvider;
-        public static HotwireFilesProvider GetFilesProviderInstance(NLog.Logger logger)
+        public static HotwireFilesProvider GetFilesProviderInstance(LoggerBase logger)
         {
             logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
             logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");

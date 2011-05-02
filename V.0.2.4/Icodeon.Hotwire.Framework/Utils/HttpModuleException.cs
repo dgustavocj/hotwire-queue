@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using NLog;
 
 namespace Icodeon.Hotwire.Framework.Utils
@@ -15,8 +16,9 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             StatusCode = statusCode;
         }
-        
-        public HttpModuleException(Logger logger, HttpStatusCode statusCode, string message) : this(statusCode,message)
+
+        public HttpModuleException(LoggerBase logger, HttpStatusCode statusCode, string message)
+            : this(statusCode, message)
         {
             logger.Error("HttpStatusCode=" + statusCode + ". " + message);
         }

@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Icodeon.Hotwire.Contracts;
+﻿using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
-using NLog;
+using Icodeon.Hotwire.Framework.Diagnostics;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
     public class ProviderFactory
     {
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
 
-        public ProviderFactory()
-        {
-            _logger = LogManager.GetCurrentClassLogger();
-        }
-
-
-        public ProviderFactory(Logger logger)
+        public ProviderFactory(LoggerBase logger)
         {
             _logger = logger;
         }

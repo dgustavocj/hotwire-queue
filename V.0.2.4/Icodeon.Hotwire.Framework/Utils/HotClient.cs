@@ -2,8 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Scripts;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
@@ -37,11 +37,11 @@ namespace Icodeon.Hotwire.Framework.Utils
             request.AutomaticDecompression = DecompressionMethods.GZip;
 
 
-            request.Timeout = (int)this.Timeout.TotalMilliseconds;
+            request.Timeout = (int)Timeout.TotalMilliseconds;
             return request;
         }
 
-        public static FileDownloadResultDTO DownloadFileWithTiming(Logger logger, Uri uri, string downloadingFilePath)
+        public static FileDownloadResultDTO DownloadFileWithTiming(LoggerBase logger, Uri uri, string downloadingFilePath)
         {
             // ignoring timeout for now
             var startTime = DateTime.Now;
@@ -75,7 +75,7 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             var start = DateTime.Now;
             var request = new HotClient(timeSpan).GetWebRequest(uri);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
             string result = new StreamReader(response.GetResponseStream(),Encoding.UTF8).ReadToEnd();
             int milliseconds = (int)DateTime.Now.Subtract(start).TotalMilliseconds;
             return new GetResultDTO()
