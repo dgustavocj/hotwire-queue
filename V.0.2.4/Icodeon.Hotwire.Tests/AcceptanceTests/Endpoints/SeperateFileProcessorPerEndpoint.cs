@@ -20,10 +20,11 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Endpoints
             
             throw new NotImplementedException();
 
-            /*
+           
             
-             * var processorA = new FileProcessorA();
+            var processorA = new FileProcessorA();
             var processorB = new FileProcessorB();
+             /*
             var endpointConfig = new EndPointConfiguration(Active = true, RootServiceName = "test",MethodValidation = MethodValidation.AfterUri)
                 .AddEndpoint(Name = "A", Active = true, UriTemplate = "processorA", FileProcessor = processorA,HttpMethod = HttpMethod.Post, MediaType = MediaType.Json, Security = Security.None)
                 .AddEndpoint(Name = "B", Active = true, UriTemplate = "processorB", FileProcessor = processorB,HttpMethod = HttpMethod.Post, MediaType = MediaType.Json, Security = "None");
@@ -43,8 +44,9 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Endpoints
             // Then fileProcessor B is called
         }
 
-
-        public class FileProcessorA : IFileProcessorProvider
+        // classes below are perhaps useful enough to move to Hotwire Framework
+        // so that users can write their own test or "based
+        public class TestFileProcessor : IFileProcessorProvider
         {
             private bool _called = false;
             public bool Called
@@ -60,20 +62,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Endpoints
             }
         }
 
-        public class FileProcessorB : IFileProcessorProvider
-        {
-            private bool _called = false;
-            public bool Called
-            {
-                get
-                {
-                    return _called;
-                }
-            }
-            public void ProcessFile(string resource_file, string transaction_id, System.Collections.Specialized.NameValueCollection requestParams)
-            {
-                _called = true;
-            }
-        }
+        public class FileProcessorA : TestFileProcessor {}
+        public class FileProcessorB : TestFileProcessor {}
     }
 }

@@ -93,7 +93,11 @@ namespace Icodeon.Hotwire.Framework
             }
         }
 
-
+        private static HotLogger _nullLogger;
+        public static HotLogger NullLogger
+        {
+            get { return _nullLogger ?? (_nullLogger = new HotLogger(null)); }
+        }
 
 
     }

@@ -14,7 +14,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
     public class FileProcessorScript : IScript
     {
         private readonly HotwireFilesProvider _fileprovider;
-        private readonly Logger _logger;
+        private readonly LoggerBase _logger;
         private bool _isRunning = false;
 
         public bool isRunning { get { return _isRunning;  } }
@@ -24,7 +24,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             get { return "File Processor script."; }
         }
 
-        public FileProcessorScript(HotwireFilesProvider fileprovider, Logger logger)
+        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger)
         {
             _fileprovider = fileprovider;
             _logger = logger;
