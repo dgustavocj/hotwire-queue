@@ -53,6 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
+    <Compile Include="AcceptanceTests\HttpModules\HttpModuleMustBeUnitTestable.cs" />
+    <Compile Include="Framework\AcceptanceTest.cs" />
+    <Compile Include="Framework\LogFiles.cs" />
+    <Compile Include="Framework\UnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +66,10 @@
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
       <Project>{2CDFC869-CED8-4809-A89D-F6F12E210978}</Project>
       <Name>Icodeon.Hotwire.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Icodeon.Hotwire.Framework\Icodeon.Hotwire.Framework.csproj">
+      <Project>{D6193ED7-560D-48AE-B049-A930F461C1B4}</Project>
+      <Name>Icodeon.Hotwire.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
