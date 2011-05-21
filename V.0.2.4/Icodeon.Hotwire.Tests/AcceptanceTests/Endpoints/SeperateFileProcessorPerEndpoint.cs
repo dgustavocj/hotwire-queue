@@ -11,6 +11,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Endpoints
         // the test that is named the same as the class is the most basic "smoke" test possible
         // all other tests are elaborations of the requirements...
         [Test]
+        [Ignore("Not yet implemented, not currently planned for this iteration.")]
         public void Be_able_to_configure_seperate_file_processor_per_endpoint()
         {
             // Given a FileProcessorModule configured with :

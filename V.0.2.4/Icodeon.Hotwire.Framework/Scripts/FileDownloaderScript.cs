@@ -10,6 +10,8 @@ using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 
+// ADH: To check, should this class be disposable / are there any unmanaged resources?
+
 namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class FileDownloaderScript : IScript, IFolderWatcherScript

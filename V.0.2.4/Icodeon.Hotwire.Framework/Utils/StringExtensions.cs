@@ -1,10 +1,27 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
     public static class StringExtensions
     {
+        public static string UnderlineText(this string src, char underline)
+        {
+            return (underline.Repeat(src.Length).Substring(0, src.Length));
+        }
+
+        public static string Repeat(this char src, int cnt)
+        {
+            if (cnt == 0) return "";
+            var sb = new StringBuilder(cnt);
+            for (int i = 0; i < cnt; i++)
+            {
+                sb.Append(src);
+            }
+            return sb.ToString();
+        }
+
         public static string StartString(this string src, int numChars)
         {
             if (src.Length >= numChars) return src.Substring(0, numChars);
