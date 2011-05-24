@@ -300,7 +300,10 @@ namespace Icodeon.Hotwire.Framework.Providers
         {
             logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
             logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
-            return _hotwireFilesProvider ?? (_hotwireFilesProvider = new HotwireFilesProvider(FoldersSection.ReadConfig(), logger));
+            if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
+            var foldersSection = FoldersSection.ReadConfig();
+            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, logger);
+            return _hotwireFilesProvider;
         }
 
 
