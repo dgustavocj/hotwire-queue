@@ -70,8 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AcceptanceTests\HttpModules\" />
-    <Folder Include="UnitTests\Configuration\" />
-    <Folder Include="UnitTests\Modules\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
