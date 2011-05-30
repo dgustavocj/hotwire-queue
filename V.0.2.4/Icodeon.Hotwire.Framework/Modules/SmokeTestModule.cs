@@ -112,7 +112,7 @@ namespace Icodeon.Hotwire.Framework.Modules
 
                 case ActionUriTemplateSet:
                     // TODO: encapsulate into new class that handles all this that can change uritemplate for any endpoint
-                    var moduleConfigurationCache = new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName, applicationState);
+                    var moduleConfigurationCache = new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName, new AppCacheWrapper(applicationState));
                     const string uritemplatePathVariable = "URITEMPLATE";
                     // change the uri template for enqueue request
                     if (!match.BoundVariables.AllKeys.Contains(uritemplatePathVariable)) throw new HttpModuleException(HttpStatusCode.BadRequest,"Could not find uri template path variable:" + uritemplatePathVariable);
@@ -120,7 +120,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                     string newUriTemplate = UnescapeSlashes(match.BoundVariables[uritemplatePathVariable]);
                     logger.Trace("new newUriTemplate=" + newUriTemplate);
                     logger.Trace("reading queueuConfig");
-                    var queueConfig = moduleConfigurationCache.RefreshConfiguration();
+                    var queueConfig = moduleConfigurationCache.RefreshConfigurationFromWebOrAppConfig();
                     logger.Trace("finding custom endpoint");
                     var endpoint = queueConfig.Endpoints.FirstOrDefault(e => e.Name.Equals("custom", StringComparison.OrdinalIgnoreCase));
                     if (endpoint == null) throw new ArgumentNullException("could not find custom endpoint in the queue config, with name='q1'");
@@ -133,9 +133,9 @@ namespace Icodeon.Hotwire.Framework.Modules
                     return "UriTemplate set to:" + newUriTemplate.ToString();
 
                 case ActionUriTemplateReset:
-                    var moduleConfigurationCache2 = new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName, applicationState);
+                    var moduleConfigurationCache2 = new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName, new AppCacheWrapper(applicationState));
                     logger.Trace("resetting uriTemplate");
-                    moduleConfigurationCache2.RefreshConfiguration();
+                    moduleConfigurationCache2.RefreshConfigurationFromWebOrAppConfig();
                     return "UriTemplate reset.";
 
                 default: throw new HttpModuleException(HttpStatusCode.BadRequest, config.Action + " is not a supported action.");

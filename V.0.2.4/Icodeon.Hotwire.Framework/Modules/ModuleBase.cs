@@ -17,7 +17,6 @@ namespace Icodeon.Hotwire.Framework.Modules
     {
         public void Dispose() { }
 
-        // todo : Add in abstract DescriptionDTO GetDescription();
         abstract protected string ConfigurationSectionName { get; }
         public abstract IEnumerable<string> ActionNames { get; }
 
@@ -30,54 +29,11 @@ namespace Icodeon.Hotwire.Framework.Modules
             return new HotLogger(logger);
         }
 
-        // Internal so that IsConfigurationActiveAndRequestAMatchForAnyConfiguredEndpoints can be unit tested.
-        internal class EndpointMatchResult
-        {
-            public IModuleEndpoint Endpoint { get; set; }
-            public UriTemplateMatch Match { get; set; }
-        }
-         
-        /// <remarks>Internal so that this can be unit tested</remarks>
-        /// <returns>First endpoint that matches the request rules, else null.</returns>
-        internal EndpointMatchResult IsConfigurationActiveAndRequestAMatchForAnyConfiguredEndpoints(IModuleConfiguration configuration, string httpMethod, Uri requestUrl)
-        {
-            // NB! Remember to optimise for speed as this get's called for every single request on clients server. It's potentially a website killer!
-            if ((configuration == null) || (!configuration.Active)) return null;
-            if (configuration.MethodValidation == MethodValidation.beforeUriValidation)
-            {
-                if (!configuration.Endpoints.Any(ep1 => ep1.HttpMethods.Any(ep2 => ep2.Contains(httpMethod)))) return null;
-            }
-
-            string rootUriString = string.Format("http://{0}:{1}/{2}", requestUrl.Host, requestUrl.Port, configuration.RootServiceName);
-            var rootUri = new Uri(rootUriString);
-            var endpoint = configuration.Endpoints.FirstOrDefault(ep => ep.Active && ep.UriTemplate.Match(rootUri, requestUrl) != null);
-            if (endpoint == null) return null;
-            
-            if (configuration.MethodValidation == MethodValidation.afterUriValidation)
-            {
-                if (!endpoint.HttpMethods.Any(ep2 => ep2.Contains(httpMethod)))
-                {
-                    throw new HttpModuleException(HttpStatusCode.MethodNotAllowed, "method '" + httpMethod + "', not allowed.");
-                }
-            }
-
-            return new EndpointMatchResult
-                       {
-                           Endpoint = endpoint,
-                           Match = endpoint.UriTemplate.Match(rootUri, requestUrl)
-                       };
-        }
-
-        // TODO: Rename when this is proven to work and is testable!
-        private void TestableProcessRequest(Uri requestUrl, IModuleConfiguration configuration, string httpMethod, string userHostAddress, IHttpResponsableWriter responseWriter, IMapPath pathMapper, HttpApplicationState applicationState, Stream inputStream, EndpointMatchResult endpointMatch)
+        internal void PrepareAndProcessRequest(Uri requestUrl, IModuleConfiguration configuration, string httpMethod, string userHostAddress, IHttpResponsableWriter responseWriter, IMapPath pathMapper, HttpApplicationState applicationState, Stream inputStream, EndpointMatch endpointMatch)
         {
             // step 1, test ModuleBase, forget about derived classes
             // step 2, once you KNOW that all the functionality of the base class has been tested, then with derived classes
             //          you can simply test THEIR behavior, ignoring the behavior of the base class which is already tested?
-
-            string rootUriString = string.Format("http://{0}:{1}/{2}", requestUrl.Host, requestUrl.Port, configuration.RootServiceName);
-            var rootUri = new Uri(rootUriString);
-            
 
             LoggerBase logger = GetLogger();
             logger.Trace("");
@@ -106,6 +62,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             object result = ProcessRequest(applicationState, inputStream, requestUrl, endpointMatch.Match, endpoint, mediaInfo, pathMapper, logger);
 
             logger.Trace("Writing response.");
+            
             //TODO: when I change process to take a Hotwire process context object, should provide a way to set the response code!
             ContextHelper.WriteMediaResponse(responseWriter, mediaInfo, result, HttpStatusCode.OK, logger);
         }
@@ -117,9 +74,10 @@ namespace Icodeon.Hotwire.Framework.Modules
                 var request = context.Request;
                 HttpApplicationState applicationState = context.Application;
                 string httpMethod = request.HttpMethod;
-                //TODO: replace applicationState with IAppCache below ?
-                IModuleConfiguration configuration = new ModuleConfigurationCache(ConfigurationSectionName, applicationState).Configuration;
-                var endpointMatch = IsConfigurationActiveAndRequestAMatchForAnyConfiguredEndpoints(configuration, httpMethod, request.Url);
+                IAppCache appCache = new AppCacheWrapper(context.Application);
+                IModuleConfiguration configuration = new ModuleConfigurationCache(ConfigurationSectionName, appCache).Configuration;
+                var matcher = new EndpointRequestMatcher(configuration);
+                var endpointMatch = matcher.MatchRequestOrNull(httpMethod, request.Url);
                 if (endpointMatch == null) return;
                                             
                 HotLogger logger = GetLogger();
@@ -131,8 +89,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                     string userHostAddress = request.UserHostAddress;
                     IMapPath pathMapper = new HttpApplicationWrapper(context);
                     Stream inputStream = request.InputStream;
-                    //TODO: replace applicationState with IAppCache below ?
-                    TestableProcessRequest(request.Url, configuration, httpMethod,userHostAddress, writer, pathMapper, applicationState,inputStream, endpointMatch);
+                    PrepareAndProcessRequest(request.Url, configuration, httpMethod,userHostAddress, writer, pathMapper, applicationState,inputStream, endpointMatch);
                 }
                 catch (HttpModuleException mex)
                 {
@@ -142,9 +99,8 @@ namespace Icodeon.Hotwire.Framework.Modules
                     context.Response.StatusCode = (int)mex.StatusCode;
                     // cant set any custom text with this?
                     // this is by design for most of the core status codes ?? to stop users from trying to use them for something else
-                    // which would literally "break the internet"? ;-p Makes sense, I  guess.
+                    // which would literally "break the internet"? i.e. we need people to trust the codes, not the description. ;-p Makes sense, I  guess.
                 }
-
                 catch (Exception ex)
                 {
                     logger.FatalException(ex.Message, ex);

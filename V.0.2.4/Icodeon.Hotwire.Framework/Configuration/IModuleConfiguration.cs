@@ -11,7 +11,8 @@ namespace Icodeon.Hotwire.Framework.Configuration
         bool Active { get; set; }
         string RootServiceName { get; set; }
         MethodValidation MethodValidation { get; set; }
-        List<IModuleEndpoint> Endpoints { get; }
+        IEnumerable<IModuleEndpoint> Endpoints { get; }
+        void AddEndpoint(EndpointConfiguration endpoint);
     }
 
 }

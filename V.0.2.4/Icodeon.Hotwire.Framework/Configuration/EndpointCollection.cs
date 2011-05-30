@@ -13,9 +13,18 @@ namespace Icodeon.Hotwire.Framework.Configuration
             return new EndpointConfiguration();
         }
 
+        public EndpointCollection Add(EndpointConfiguration endpoint)
+        {
+            BaseAdd(endpoint);
+            return this;
+        }
+
+
+        
         protected override object GetElementKey(ConfigurationElement element)
         {
-            return ((EndpointConfiguration)element).UriTemplate;
+            return ((EndpointConfiguration) element).Name;
         }
+
     }
 }

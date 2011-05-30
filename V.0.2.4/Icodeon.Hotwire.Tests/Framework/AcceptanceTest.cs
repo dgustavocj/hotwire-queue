@@ -9,15 +9,13 @@ namespace Icodeon.Hotwire.Tests.Framework
     /// <summary>
     /// AcceptanceTest class uses filesProvider and therefore requires that you completely define all the hotwire folders in your app.config, otherwise you will get null reference.
     /// </summary>
-    public class AcceptanceTest 
+    public class AcceptanceTest : UnitTest
     {
         public HotwireFilesProvider FilesProvider { get; private set; }
         public IConsoleWriter ConsoleWriter { get; private set; }
-        public HotLogger Logger { get; private set; }
 
-        public AcceptanceTest()
+        public AcceptanceTest() : base(LogFiles.AcceptanceTests)
         {
-            Logger = HotLogger.GetLogger(LogFiles.AcceptanceTests);
             Logger.Trace("AcceptanceTest constructor. (base class for most acceptance tests)");
             // CI?
             // TODO: need to include test to see what server this code has been deployed on! We will assume for now that 

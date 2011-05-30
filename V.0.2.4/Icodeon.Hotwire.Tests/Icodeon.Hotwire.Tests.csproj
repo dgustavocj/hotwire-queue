@@ -44,6 +44,7 @@
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -55,16 +56,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
-    <Compile Include="AcceptanceTests\CodingStandards\HttpModuleBaseMustBeUnitTestable.cs" />
     <Compile Include="Framework\AcceptanceTest.cs" />
     <Compile Include="Framework\FilesProviderUnitTest.cs" />
     <Compile Include="Framework\LogFiles.cs" />
+    <Compile Include="Framework\QuickAssert.cs" />
+    <Compile Include="Framework\TestModuleConfiguration.cs" />
     <Compile Include="Framework\UnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTests\ModuleConfigurationBaseTests.cs" />
+    <Compile Include="UnitTests\ModuleConfigurationCacheTests.cs" />
+    <Compile Include="UnitTests\DebugContractTests.cs" />
+    <Compile Include="UnitTests\EndpointRequestMatcherTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AcceptanceTests\HttpModules\" />
-    <Folder Include="UnitTests\" />
+    <Folder Include="UnitTests\Configuration\" />
+    <Folder Include="UnitTests\Modules\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">

@@ -4,7 +4,9 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.DTOs;
+using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
@@ -13,12 +15,12 @@ namespace Icodeon.Hotwire.Framework.Configuration
         private string _sectionName;
         private string _key;
         private readonly string _configurationSectionName;
-        private readonly HttpApplicationState _app;
+        private readonly IAppCache _appCache;
 
-        public ModuleConfigurationCache(string configurationSectionName, HttpApplicationState app)
+        public ModuleConfigurationCache(string configurationSectionName, IAppCache appCache)
         {
             _configurationSectionName = configurationSectionName;
-            _app = app;
+            _appCache = appCache;
             _key = string.Format("hotwire.config.{0}", _configurationSectionName);
             _sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, _configurationSectionName);
         }
@@ -28,13 +30,13 @@ namespace Icodeon.Hotwire.Framework.Configuration
         {
             get
             {
-                var config = (IModuleConfiguration)_app[_key];
-                if (config==null) return RefreshConfiguration();
+                var config = (IModuleConfiguration)_appCache.Get(_key);
+                if (config==null) return RefreshConfigurationFromWebOrAppConfig();
                 return config;
             }
             set
             {
-                _app[_key] = value;
+                _appCache.Set(_key,value);
             }
         }
 
@@ -44,7 +46,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
         /// the cache access the Configuration property. Refresh will "refresh" the app cache from a fresh read of the configuration files.
         /// </summary>
         /// <returns></returns>
-        public IModuleConfiguration RefreshConfiguration()
+        public IModuleConfiguration RefreshConfigurationFromWebOrAppConfig()
         {
 
             IModuleConfiguration config = (IModuleConfiguration)ConfigurationManager.GetSection(_sectionName);
@@ -54,27 +56,18 @@ namespace Icodeon.Hotwire.Framework.Configuration
                               Active = config.Active,
                               MethodValidation = config.MethodValidation,
                               RootServiceName = config.RootServiceName,
-                              Endpoints = config.Endpoints.Select( e=> new EndpointDTO()
-                                {
-                                    Security = e.Security,
-                                    Action = e.Action,
-                                    Active = e.Active,
-                                    HttpMethods = e.HttpMethods,
-                                    MediaType =  e.MediaType,
-                                    Name = e.Name,
-                                    UriTemplate = e.UriTemplate
-                                }).ToList<IModuleEndpoint>()
+                              Endpoints = config.Endpoints.Select( e=> e.ToDTO()) 
                           };
-            _app[_key] = dto;
+            _appCache.Set(_key,dto);
             return dto;
         }
 
-        public static IModuleConfiguration ReadQueueModuleConfiguration(HttpApplicationState applicationState)
+        public static IModuleConfiguration ReadQueueModuleConfiguration(IAppCache applicationState)
         {
             return new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName,applicationState).Configuration; 
         }
 
-        public static IModuleConfiguration ReadSmokeTestConfiguration(HttpApplicationState applicationState)
+        public static IModuleConfiguration ReadSmokeTestConfiguration(IAppCache applicationState)
         {
             return new ModuleConfigurationCache(Constants.Configuration.SmokeTestSectionName, applicationState).Configuration;
         }

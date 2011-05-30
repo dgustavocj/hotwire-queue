@@ -45,14 +45,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
         }
 
 
-        public List<IModuleEndpoint> Endpoints
-        {
-            get
-            {
-                var accounts = EndpointCollection.Cast<IModuleEndpoint>().ToList();
-                return accounts;
-            }
-        }
+
 
         // this attributes defines the xml collection element name
         [ConfigurationProperty("endpoints")]
@@ -61,12 +54,23 @@ namespace Icodeon.Hotwire.Framework.Configuration
             get { return (EndpointCollection)this["endpoints"]; }
         }
 
+        public IEnumerable<IModuleEndpoint> Endpoints
+        {
+            get { return EndpointCollection.Cast<EndpointConfiguration>(); }
+        }
 
+        public void AddRange(IEnumerable<EndpointConfiguration> endpoints)
+        {
+            foreach (var moduleEndpoint in endpoints)
+            {
+                AddEndpoint(moduleEndpoint);
+            }
+        }
 
-
-
-
-
+        public void AddEndpoint(EndpointConfiguration endpoint)
+        {
+            EndpointCollection.Add(endpoint);
+        }
 
     } // class
 } // namespace 
