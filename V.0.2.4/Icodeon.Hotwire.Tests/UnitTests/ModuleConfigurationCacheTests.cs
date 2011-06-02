@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
-using Icodeon.Hotwire.Tests.Framework;
+using Icodeon.Hotwire.TestFramework;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.UnitTests

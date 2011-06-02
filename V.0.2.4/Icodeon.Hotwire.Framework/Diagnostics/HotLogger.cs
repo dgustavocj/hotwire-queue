@@ -137,6 +137,20 @@ namespace Icodeon.Hotwire.Framework
         }
 
         private static HotLogger _instance;
+
+        /// <summary>
+        /// Use GetCurrentClassLogger in unit tests, and use GetLogger in production code to get a specific "named" logger/ GetCurrentClassLogger uses reflection and is slow, GetLogger is quicker.
+        /// </summary>
+        /// <returns></returns>
+        public static HotLogger GetCurrentClassLogger()
+        {
+            return _instance ?? (_instance = LoggingEnabled ? new HotLogger(LogManager.GetCurrentClassLogger() ) : new HotLogger(null));
+        }
+
+        /// <summary>
+        /// Use GetCurrentClassLogger in unit tests, and use GetLogger in production code to get a specific "named" logger/ GetCurrentClassLogger uses reflection and is slow, GetLogger is quicker.
+        /// </summary>
+        /// <returns></returns>
         public static HotLogger GetLogger(string logger)
         {
             return _instance ?? (_instance = LoggingEnabled ? new HotLogger(LogManager.GetLogger(logger)) : new HotLogger(null));

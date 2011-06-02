@@ -1,7 +1,7 @@
 ﻿using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Providers;
 
-namespace Icodeon.Hotwire.Tests.Framework
+namespace Icodeon.Hotwire.TestFramework
 {
     public class FilesProviderUnitTest : UnitTest
     {

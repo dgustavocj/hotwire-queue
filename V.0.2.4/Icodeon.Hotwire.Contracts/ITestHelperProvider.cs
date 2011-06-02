@@ -1,6 +1,8 @@
 ﻿namespace Icodeon.Hotwire.Contracts
 {
-    public interface ITestHelperProvider
+
+    //ADH: check to see if this class can be removed / deleted.
+    public interface ITestHelperProvider 
     {
         /// <summary>
         /// Deletes the resource and phyiscally removes any records from the db, with cascade delete or similar.

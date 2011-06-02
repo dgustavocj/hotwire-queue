@@ -4,7 +4,8 @@ using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Utils;
-using Icodeon.Hotwire.Tests.Framework;
+using Icodeon.Hotwire.TestFramework;
+using Icodeon.Hotwire.Tests.Internal;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.UnitTests

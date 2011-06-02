@@ -1,6 +1,6 @@
 ﻿using Icodeon.Hotwire.Framework.Configuration;
 
-namespace Icodeon.Hotwire.Tests.Framework
+namespace Icodeon.Hotwire.Tests.Internal
 {
     public class TestModuleConfiguration : ModuleConfigurationBase
     {

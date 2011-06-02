@@ -1,6 +1,6 @@
 ﻿namespace Icodeon.Hotwire.Contracts
 {
-    public interface IConsumerProvider
+    public interface IConsumerProvider 
     {
         string GetConsumerSecret(string consumerKey);
     }

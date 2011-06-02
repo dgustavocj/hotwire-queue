@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
-using NUnit.Framework;
 
-namespace Icodeon.Hotwire.Tests.Framework
+namespace Icodeon.Hotwire.TestFramework
 {
     public static class QuickAssert
     {
@@ -19,7 +18,7 @@ namespace Icodeon.Hotwire.Tests.Framework
             var propertyCaller = action.Compile();
             bool result = propertyCaller(source);
             if (result) return;
-            Assert.Fail("Property check failed -> " + action.ToString());
+            throw new ArgumentException("Property check failed -> " + action.ToString());
         }
     }
 }

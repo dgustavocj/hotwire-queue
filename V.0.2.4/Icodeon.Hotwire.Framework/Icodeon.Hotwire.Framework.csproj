@@ -68,6 +68,9 @@
     <Reference Include="NLog.Extended">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.0\lib\NET40\NLog.Extended.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\Icodeon.OUIntegration.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -83,9 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AssemblyProviderBase.cs" />
+    <Compile Include="Configuration\Configurator.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Configuration\ConsumerProviderSection.cs" />
-    <Compile Include="Configuration\HttpClientProviderSection.cs" />
     <Compile Include="Configuration\IOAuthProviderConfig.cs" />
     <Compile Include="Configuration\OAuthProviderSection.cs" />
     <Compile Include="Configuration\IAssemblyProvider.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="FolderWatcher\FolderConfig.cs" />
     <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
     <Compile Include="FolderWatcher\FolderScript.cs" />
+    <Compile Include="Modules\FileProcessorModule.cs" />
     <Compile Include="Modules\ProcessFileResponseDTO.cs" />
     <Compile Include="Modules\QueueModule.cs" />
     <Compile Include="Modules\ModuleBase.cs" />

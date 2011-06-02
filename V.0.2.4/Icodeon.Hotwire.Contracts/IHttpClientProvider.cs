@@ -2,7 +2,7 @@
 
 namespace Icodeon.Hotwire.Contracts
 {
-    public interface IHttpClientProvider
+    public interface IHttpClientProvider 
     {
         void GetAndEnsureStatusIsSuccessful(Uri uri);
         string GetResponseAsStringEnsureStatusIsSuccessful(Uri uri);

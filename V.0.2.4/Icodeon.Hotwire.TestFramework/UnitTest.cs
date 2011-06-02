@@ -1,23 +1,14 @@
 ﻿using Icodeon.Hotwire.Framework;
-using Icodeon.Hotwire.Framework.Providers;
 
-namespace Icodeon.Hotwire.Tests.Framework
+namespace Icodeon.Hotwire.TestFramework
 {
     public class UnitTest
     {
         public HotLogger Logger { get; private set; }
 
-        public UnitTest(string logger)
-        {
-            Logger = HotLogger.GetLogger(logger);
-            Logger.Trace("UnitTest constructor. (base class for most unit tests.)");
-        }
-
-
         public UnitTest()
         {
-            Logger = HotLogger.GetLogger(LogFiles.UnitTests);
-            Logger.Trace("UnitTest constructor. (base class for most unit tests.)");
+            Logger = HotLogger.GetCurrentClassLogger();
         }
 
         public void Trace(string message, params object[] parameters)

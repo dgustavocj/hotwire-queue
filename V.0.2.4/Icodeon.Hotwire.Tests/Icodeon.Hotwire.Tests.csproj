@@ -43,6 +43,9 @@
     <Reference Include="pnunit.framework">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\Icodeon.OUIntegration.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -55,13 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
+    <Compile Include="UnitTests\ConfiguratorTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
-    <Compile Include="Framework\AcceptanceTest.cs" />
-    <Compile Include="Framework\FilesProviderUnitTest.cs" />
-    <Compile Include="Framework\LogFiles.cs" />
-    <Compile Include="Framework\QuickAssert.cs" />
-    <Compile Include="Framework\TestModuleConfiguration.cs" />
-    <Compile Include="Framework\UnitTest.cs" />
+    <Compile Include="Internal\TestModuleConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\ModuleConfigurationBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationCacheTests.cs" />
@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AcceptanceTests\HttpModules\" />
+    <Folder Include="Framework\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
@@ -79,6 +80,10 @@
     <ProjectReference Include="..\Icodeon.Hotwire.Framework\Icodeon.Hotwire.Framework.csproj">
       <Project>{D6193ED7-560D-48AE-B049-A930F461C1B4}</Project>
       <Name>Icodeon.Hotwire.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Icodeon.Hotwire.TestFramework\Icodeon.Hotwire.TestFramework.csproj">
+      <Project>{04DA454D-CF7B-4D30-AC7E-0EA103FC39FE}</Project>
+      <Name>Icodeon.Hotwire.TestFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

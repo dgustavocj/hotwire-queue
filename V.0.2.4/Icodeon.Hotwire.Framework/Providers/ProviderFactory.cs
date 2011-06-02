@@ -1,6 +1,7 @@
 ﻿using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using StructureMap;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
@@ -38,9 +39,8 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public IHttpClientProvider CreateHttpClient()
         {
-            var assemblyInfo = new HttpClientProviderSection().ReadConfig();
-            var httpClientWrapper = new ClassFactory(_logger).CreateInstance<IHttpClientProvider>(assemblyInfo);
-            return httpClientWrapper;
+            var httpClient = ObjectFactory.GetInstance<IHttpClientProvider>();
+            return httpClient;
         }
     }
 }

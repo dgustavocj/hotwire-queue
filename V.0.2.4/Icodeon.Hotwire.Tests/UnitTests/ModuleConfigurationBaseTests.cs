@@ -3,7 +3,8 @@ using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.MediaTypes;
-using Icodeon.Hotwire.Tests.Framework;
+using Icodeon.Hotwire.TestFramework;
+using Icodeon.Hotwire.Tests.Internal;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.UnitTests
@@ -16,13 +17,16 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         {
             TraceTitle("Can read Module and Endpoint configuration:");
             Trace(
-                @"Given appropriate custom config section and custom config entry has been added to App.Config, similar to the following:
+                @"Given appropriate custom config section and custom config entry has been added to test projects's App.Config, similar to the following:
+                 ----------------------------------------------------------------------------------------------------------------------------------------
                 <configSections>
                     <sectionGroup name='hotwire'>
                       <section name='test-module-config' type='Icodeon.Hotwire.Tests.Framework.TestModuleConfiguration, Icodeon.Hotwire.Tests' />
                     </sectionGroup>
                 </configSections>
+                ...
                 and
+                ...
               <hotwire>
                 <test-module-config active='true' rootServiceName='test-animals' methodValidation='afterUriValidation'>
                   <endpoints>
@@ -42,8 +46,6 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(config);
 
         }
-
-
 
         public static void EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(IModuleConfiguration config)
         {
@@ -75,5 +77,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             dogEndpoint.HttpMethods.Should().Equal(new[] { "GET" });
             
         }
+
+
     }
 }
