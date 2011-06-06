@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Web;
-using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
-using Icodeon.Hotwire.Framework.DTOs;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
-using Icodeon.Hotwire.Framework.Serialization;
-using Icodeon.Hotwire.Framework.SmokeTests;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
@@ -60,7 +52,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                     // ADH: queue dal should be injected
                     var dal = new QueueDal(fileProvider, logger);
                     EnqueueRequestDTO dto = dal.GetByTrackingNumber(trackingNumber);
-                    var processor = new ProviderFactory(logger).CreateFileProcessor();
+                    var processor = new ProviderFactory().CreateFileProcessor();
                     var parameters = dto.ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient();
                     logger.TraceParameters(parameters);
                     logger.Trace("process the file ...");

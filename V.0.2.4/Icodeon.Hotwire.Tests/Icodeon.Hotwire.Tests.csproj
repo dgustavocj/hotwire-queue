@@ -59,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
-    <Compile Include="UnitTests\ConfiguratorTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +66,8 @@
     <Compile Include="UnitTests\ModuleConfigurationCacheTests.cs" />
     <Compile Include="UnitTests\DebugContractTests.cs" />
     <Compile Include="UnitTests\EndpointRequestMatcherTests.cs" />
+    <Compile Include="UnitTests\HowWeAreUsingStructureMapTests.cs" />
+    <Compile Include="UnitTests\ProviderFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AcceptanceTests\HttpModules\" />

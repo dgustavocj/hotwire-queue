@@ -30,9 +30,6 @@ namespace Icodeon.Hotwire.Framework.Scripts
         {
             _fileprovider = fileprovider;
             _logger = logger;
-            var configurator = new Configurator();
-            //configurator.WireUpAnyProvidersImplementedInAssembliesInBaseDirectory();
-            //_httpClient = new ProviderFactory(logger).CreateHttpClient();
             _httpClient = httpClient;
         }
 

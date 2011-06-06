@@ -12,20 +12,6 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["maxFileProcessorWorkers"] = value; }
         }
 
-        [ConfigurationProperty("assemblyName", DefaultValue = "", IsRequired = true)]
-        public string AssemblyName
-        {
-            get { return (string)this["assemblyName"]; }
-            set { this["assemblyName"] = value; }
-        }
-
-        [ConfigurationProperty("typeName", DefaultValue = "", IsRequired = true)]
-        public string TypeName
-        {
-            get { return (string)this["typeName"]; }
-            set { this["typeName"] = value; }
-        }
-
         public static IFileProcessorSection ReadConfig()
         {
             return (FileProcessorSection) ConfigurationManager.GetSection(Constants.Configuration.SectionGroup + @"/fileProcessor");

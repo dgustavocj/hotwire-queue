@@ -52,7 +52,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                     // ADH: queue dal should be injected
                     var dal = new QueueDal(fileProvider, logger);
                     EnqueueRequestDTO dto = dal.GetByTrackingNumber(trackingNumber);
-                    var processor = new ProviderFactory(logger).CreateFileProcessor();
+                    var processor = new ProviderFactory().CreateFileProcessor();
                     var parameters = dto.ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient();
                     logger.TraceParameters(parameters);
                     logger.Trace("process the file ...");

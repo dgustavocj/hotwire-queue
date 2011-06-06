@@ -94,14 +94,14 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         private bool ValidateOauthSignature(LoggerBase logger, string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
         {
-            IConsumerProvider consumer = new ProviderFactory(logger).CreateConsumerProvider();
+            IConsumerProvider consumer = new ProviderFactory().CreateConsumerProvider();
             var secret = consumer.GetConsumerSecret(consumerKey);
             // instead of hard coding it to quickAuth, we can ask the objectfactory/structureMap to 
             // automatically scan the assemblies and look this up for us?
 
 
             // TODO: code below also candidate for ninject ( passing in two parameters, and ninject fills in the missing one)
-            var oauthProvider = new ProviderFactory(logger).CreateOauthProvider();
+            var oauthProvider = new ProviderFactory().CreateOauthProvider();
             var oauth = new QuickAuth(consumerKey, secret, oauthProvider);
             bool isvalid = oauth.ValidateSignature(requestUrl, queueParameters);
             return isvalid;

@@ -1,4 +1,5 @@
 ﻿using System;
+using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
@@ -9,21 +10,20 @@ namespace Icodeon.Hotwire.Framework
     public class FileProcessorPinger
     {
         private readonly LoggerBase _logger;
-        private readonly Uri _endpoint;
+        private readonly IHttpClientProvider _httpClient;
 
-        public FileProcessorPinger(LoggerBase logger, Uri endpoint)
+        public FileProcessorPinger(LoggerBase logger, IHttpClientProvider httpClient)
         {
             _logger = logger;
-            _endpoint = endpoint;
+            _httpClient = httpClient;
         }
 
-        public ProcessFileRequestResult PingProcessFile(string file)
+        public ProcessFileRequestResult PingProcessFile(Uri endpoint,string file)
         {
             _logger.Info("PingProcessFile {0}", file);
-            var client = new ProviderFactory(_logger).CreateHttpClient();
-            var requestUri = new Uri(string.Format("{0}/{1}",_endpoint, file));
+            var requestUri = new Uri(string.Format("{0}/{1}", endpoint, file));
             _logger.Info("Making a GET request to {0}", requestUri.ToString());
-            string responsetext = client.GetResponseAsStringEnsureStatusIsSuccessful(requestUri);
+            string responsetext = _httpClient.GetResponseAsStringEnsureStatusIsSuccessful(requestUri);
             _logger.Info("response:{0}", responsetext);
             return JSONHelper.Deserialize<ProcessFileRequestResult>(responsetext);
         }

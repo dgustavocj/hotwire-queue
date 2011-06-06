@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using FluentAssertions;
 using Icodeon.Hotwire.Contracts;
@@ -17,44 +18,66 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
     [TestFixture]
     public class AutomaticallyWireUpImplementedProviders : UnitTest
     {
-        //ADH: 31.05.2011 NB! Will need to remember to manually exclude the test assembly by name from any auto wiring up!
-        //                    otherwise any test classes could be wired up by mistake instead of the developers implementation.
-        //                    don't want any abiguities.
-
-        // Need to see if this test passes when run twice in a row? i.e. running structuremap /IOC "stuff" from within unit tests
-        // may require that we call some sort of structureMap reset? requires some reading. This could cause side effects in other unit tests
-        // if not careful.
-
         [Test]
-        public void HttpClientProviderShouldBeDetected()
+        public void AllTheFactoryProvidersShouldBeDetectedAndWiredUpWithoutRequiringXmlConfiguration()
         {
-            TraceTitle("Http client provider should be detected and wired up without requiring any xml configuration");
+            TraceTitle("All the factory providers should be detected and wired up without requiring any xml configuration");
 
-            Trace("Given that the developer has implemented one and only one class that implements a specific provider");
-            Trace("When I ask provider factory for that provider");
+            Trace("Given that the developer (in this case, us the test project) has one and only one class for each of IFileProcessorProvider,IConsumerProvider,IOAuthProvider,IhttpClientProvider");
+            Trace("When I ask provider factory for that provider without loading configurations");
+
             IHttpClientProvider client;
-            try
-            {
-                client = new ProviderFactory(HotLogger.NullLogger).CreateHttpClient();
-                Assert.Fail("Structuremap should not have returned an instance as mapping has not be configured!");
-            }
-            catch (StructureMapException sme)
-            {
-                Trace("then an instance should not be returned");
-            }
+            IFileProcessorProvider fileProcessor;
+            IConsumerProvider consumer; 
+            IOAuthProvider oauth;
+            var factory = new ProviderFactory();
+
+            // fluent assertions here should make this more readable
+
+            Action action;
+            action = () => client = factory.CreateHttpClient();
+            action.ShouldThrow<AmbiguousMatchException>();
+
+            action = () => fileProcessor = factory.CreateFileProcessor();
+            action.ShouldThrow<AmbiguousMatchException>();
+
+            action = () => consumer = factory.CreateConsumerProvider();
+            action.ShouldThrow<AmbiguousMatchException>();
+
+
+            action = () => oauth = factory.CreateOauthProvider();
+            action.ShouldThrow<AmbiguousMatchException>();
+
+            Trace("then no instances should be returned");
 
 
             Trace("When I Load all the configurations");
-            new Configurator().AutoWireUpProviders();
+            factory.AutoWireUpProviders();
 
-            Trace("and again ask for a provider");
-            client = new ProviderFactory(HotLogger.NullLogger).CreateHttpClient();
-
-            Trace("then a valid test provider should be returned.");
+            Trace("and again ask for the providers");
+            Trace("HttpClient");
+            client = factory.CreateHttpClient();
+            Trace("FileProcessor");
+            fileProcessor = factory.CreateFileProcessor();
+            Trace("Consumer");
+            consumer = factory.CreateConsumerProvider();
+            Trace("Oauth");
+            oauth = factory.CreateOauthProvider();
+            
+            
+            Trace("then valid test providers should be returned.");
             client.Should().NotBeNull();
-            client.Should().BeAssignableTo<IHttpClientProvider>();
-            string result = client.GetResponseAsStringEnsureStatusIsSuccessful(null);
-            result.Should().Be("I am a TestClientProvider");
+            client.Should().BeOfType<TestClientProvider>();
+
+            fileProcessor.Should().NotBeNull();
+            fileProcessor.Should().BeOfType<TestFileProcessorProvider>();
+
+            consumer.Should().NotBeNull();
+            consumer.Should().BeOfType<TestConsumerProvider>();
+
+            oauth.Should().NotBeNull();
+            oauth.Should().BeOfType<TestOauthProvider>();
+        
         }
 
         public class TestClientProvider : IHttpClientProvider
@@ -66,7 +89,37 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
             }
             public string GetResponseAsStringEnsureStatusIsSuccessful(Uri uri)
             {
-                return "I am a TestClientProvider";
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TestFileProcessorProvider : IFileProcessorProvider
+        {
+            public void ProcessFile(string resource_file, string transaction_id, System.Collections.Specialized.NameValueCollection requestParams)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TestConsumerProvider : IConsumerProvider
+        {
+            public string GetConsumerSecret(string consumerKey)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TestOauthProvider : IOAuthProvider
+        {
+
+            public System.Collections.Specialized.NameValueCollection GenerateSignedParametersForPost(string consumerKey, string consumerSecret, Uri rawUri, System.Collections.Specialized.NameValueCollection nonOAuthParams)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool IsValidSignatureForPost(string consumerKey, string consumerSecret, Uri uri, System.Collections.Specialized.NameValueCollection form)
+            {
+                throw new NotImplementedException();
             }
         }
     }

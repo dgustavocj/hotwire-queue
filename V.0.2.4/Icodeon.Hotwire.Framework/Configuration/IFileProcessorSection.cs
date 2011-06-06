@@ -1,6 +1,6 @@
 ﻿namespace Icodeon.Hotwire.Framework.Configuration
 {
-    public interface IFileProcessorSection : IAssemblyProvider
+    public interface IFileProcessorSection 
     {
         int MaxFileProcessorWorkers { get; }
     }

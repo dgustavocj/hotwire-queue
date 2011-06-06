@@ -18,7 +18,7 @@
             public class HotwireTests
             {
                 //public const string Tests_TestDummyFileProcessor = "/Tests/TestDummyFileProcessor"; 
-                public const string HotwireTests_Echo = "/HotwireTests/Echo";
+                public const string HotwireTests_Echo = "/HotwireTests/echo/helloWorld.text";
                 public const string HotwireTests_FileMove = "/HotwireTests/FileMove";
                 public const string HotwireTests_BackgroundFileMove = "/HotwireTests/BackgroundFileMove";
             }

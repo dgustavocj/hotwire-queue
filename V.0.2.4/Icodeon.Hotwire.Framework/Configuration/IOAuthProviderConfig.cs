@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
-    public interface IOAuthProviderConfig : IAssemblyProvider
+    public interface IOAuthProviderConfig 
     {
         string PartnerConsumerKey { get;  }
     }
