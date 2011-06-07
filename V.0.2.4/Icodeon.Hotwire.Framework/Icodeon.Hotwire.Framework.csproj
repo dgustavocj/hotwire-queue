@@ -212,6 +212,7 @@
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
       <Project>{2CDFC869-CED8-4809-A89D-F6F12E210978}</Project>
       <Name>Icodeon.Hotwire.Contracts</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
