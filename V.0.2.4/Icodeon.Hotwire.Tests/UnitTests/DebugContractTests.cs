@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using NUnit.Framework;
 
-namespace Icodeon.Hotwire.Tests.UnitTests
+// these tests should only run for debug configuration.
+#if DEBUG
+namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
 {
+
     [TestFixture]
     public class DebugContractTests
     {
@@ -76,3 +76,4 @@ namespace Icodeon.Hotwire.Tests.UnitTests
  
     }
 }
+#endif

@@ -97,14 +97,17 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         }
 
 
-
+// the check to ensure you cannot create a matcher with a null configuration is only applied during debug builds.
+// the reason for this, is that endpoint request matcher is called for every single http request that the website
+// will recieve and it uses reflection.
+#if DEBUG
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void MustNotBePossibleToCreateMatcherWithANullConfiguration()
         {
             var matcher = new EndpointRequestMatcher(null);
         }
-
+#endif
 
         [Test]
         public void InactiveConfigurationsAreIgnored()
