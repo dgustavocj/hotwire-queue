@@ -15,7 +15,7 @@
   </target>
 
   <!-- unit tests are run by team city seperately after this project  -->
-  <target name="build-all" description="Build Hotwire opensource project" depends="init">
+  <target name="build-hotwire" description="Build Hotwire opensource project" depends="init">
     <msbuild project="Icodeon.Hotwire.Solution\Icodeon.Hotwire.sln">
       <property name="Configuration" value="Debug" />
     </msbuild>
