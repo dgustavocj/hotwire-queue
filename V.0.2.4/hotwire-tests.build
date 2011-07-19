@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="build hotwire" default="build-hotwire">
+<project name="hotwire tests" default="tests">
 
 	<target name="init">
 		<loadtasks assembly="Icodeon.OUIntegration.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
@@ -15,7 +15,7 @@
 	<!-- TODO -->
   </target>
 
-  <target name="unit-test" depends="compile">
+  <target name="tests" depends="init">
     <mkdir dir="${test-logdir}"/>
     <nunit2 verbose="true">
       <formatter type="Xml" usefile="true" outputdir="${log-directory}" extension=".xml"/>
