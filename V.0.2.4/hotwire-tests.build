@@ -2,7 +2,7 @@
 <project name="hotwire tests" default="tests">
 
 	<target name="init">
-		<loadtasks assembly="Icodeon.OUIntegration.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
+		<loadtasks assembly="Icodeon.Hotwire.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
 		<property name="log-directory" value="testlogs" />
 		<property name="configuration" value="Debug" />
 	</target>
