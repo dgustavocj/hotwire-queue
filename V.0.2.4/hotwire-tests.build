@@ -16,7 +16,7 @@
   </target>
 
   <target name="tests" depends="init">
-    <mkdir dir="${test-logdir}"/>
+    <mkdir dir="${log-directory}"/>
     <nunit2 verbose="true">
       <formatter type="Xml" usefile="true" outputdir="${log-directory}" extension=".xml"/>
       <formatter type="Plain" usefile="true" outputdir="${log-directory}" extension=".txt"/>
