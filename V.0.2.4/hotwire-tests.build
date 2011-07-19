@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="build hotwire" default="build-hotwire">
+
+	<target name="init">
+		<loadtasks assembly="Icodeon.OUIntegration.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
+		<property name="log-directory" value="testlogs" />
+		<property name="configuration" value="Debug" />
+	</target>
+		
+  <target name="clean">
+	<!-- TODO -->
+  </target>
+  
+  <target name="get-latest">
+	<!-- TODO -->
+  </target>
+
+  <target name="unit-test" depends="compile">
+    <mkdir dir="${test-logdir}"/>
+    <nunit2 verbose="true">
+      <formatter type="Xml" usefile="true" outputdir="${log-directory}" extension=".xml"/>
+      <formatter type="Plain" usefile="true" outputdir="${log-directory}" extension=".txt"/>
+      <test assemblyname="Icodeon.Hotwire.Tests\bin\${configuration}\Icodeon.Hotwire.Tests.dll"/>
+    </nunit2>
+  </target>
+
+</project>
