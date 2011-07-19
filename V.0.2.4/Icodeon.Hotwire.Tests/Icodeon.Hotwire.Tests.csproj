@@ -44,7 +44,7 @@
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
-      <HintPath>..\..\Icodeon.OUIntegration.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
