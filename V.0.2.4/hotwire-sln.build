@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="build hotwire" default="build-hotwire">
+
+	<target name="init">
+		<loadtasks assembly="Icodeon.OUIntegration.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
+    <property name="test-logdirectory" value="testlogs" />
+	</target>
+		
+  <target name="clean">
+	<!-- TODO -->
+  </target>
+  
+  <target name="get-latest">
+	<!-- TODO -->
+  </target>
+
+  <!-- unit tests are run by team city seperately after this project  -->
+  <target name="build-all" description="Build Hotwire opensource project" depends="init">
+    <msbuild project="Icodeon.Hotwire.Solution\Icodeon.Hotwire.sln">
+      <property name="Configuration" value="Debug" />
+    </msbuild>
+  </target>
+
+</project>
