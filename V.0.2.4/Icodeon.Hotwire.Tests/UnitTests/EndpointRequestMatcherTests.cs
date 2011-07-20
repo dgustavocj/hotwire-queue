@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Icodeon.Hotwire.Tests.UnitTests
 {
     [TestFixture]
-    public class RequestMatchingTests : UnitTest
+    public class EndpointRequestMatcherTests : UnitTest
     {
         //TODO : need a test to show what difference before or after validation makes 
                 
@@ -102,10 +102,11 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 // will recieve and it uses reflection.
 #if DEBUG
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MustNotBePossibleToCreateMatcherWithANullConfiguration()
         {
-            var matcher = new EndpointRequestMatcher(null);
+            EndpointRequestMatcher matcher;
+            Action action = ()=> matcher = new EndpointRequestMatcher(null);
+            action.ShouldThrow<ArgumentNullException>();
         }
 #endif
 
