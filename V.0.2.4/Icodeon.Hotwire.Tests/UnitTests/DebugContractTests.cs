@@ -20,11 +20,13 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
 
         
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NotNullableThrowsExceptionIfNullablePropertyIsNull()
         {
-            var Fred = new Person { Name = "Fred", Age = null };
-            DebugContract.NotNullable(()=> Fred.Age);
+            Action action = () => {
+                                    var Fred = new Person {Name = "Fred", Age = null};
+                                    DebugContract.NotNullable(() => Fred.Age);
+                                };
+            action.ShouldThrow<ArgumentNullException>();
         }
 
         [Test]
@@ -50,11 +52,14 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ThrowsExceptionIfScalarTypeIsNull()
         {
-            int? age = null;
-            DebugContract.NotNullable(() => age);
+            Action action = () =>
+                                {
+                                    int? age = null;
+                                    DebugContract.NotNullable(() => age);
+                                };
+            action.ShouldThrow<ArgumentNullException>();
         }
 
         [Test]
