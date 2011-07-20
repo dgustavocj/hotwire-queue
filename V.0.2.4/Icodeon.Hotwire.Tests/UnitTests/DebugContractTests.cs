@@ -4,7 +4,7 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using NUnit.Framework;
 
 // these tests should only run for debug configuration.
-#if DEBUG
+#if (DEBUG)
 namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
 {
 

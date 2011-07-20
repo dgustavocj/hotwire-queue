@@ -3,7 +3,6 @@
 
 	<target name="init">
 		<loadtasks assembly="Icodeon.Hotwire.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
-    <property name="test-logdirectory" value="testlogs" />
 	</target>
 		
   <target name="clean">
