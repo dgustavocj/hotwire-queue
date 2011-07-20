@@ -11,7 +11,11 @@ namespace Icodeon.Hotwire.Tests.Internal
         [Test]
         public void YabbaDabbaDooo()
         {
-            throw new Exception("Can you this?");
+#if DEBUG
+            throw new Exception("Can you this? Apparently this is a debug configuration!");
+#else
+            throw new Exception("Nope... we are NOT in debug mode...most likely RELEASE, will check further later.");
+#endif
         }
     }
 }
