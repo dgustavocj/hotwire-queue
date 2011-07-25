@@ -124,10 +124,12 @@
     <Compile Include="FolderWatcher\FolderScript.cs" />
     <Compile Include="Modules\FileProcessorLockedFileException.cs" />
     <Compile Include="Modules\FileProcessorModule.cs" />
+    <Compile Include="Modules\ProcessFileCallerBase.cs" />
     <Compile Include="Modules\ProcessFileResponseDTO.cs" />
     <Compile Include="Modules\QueueModule.cs" />
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Modules\EndpointRequestMatcher.cs" />
+    <Compile Include="Modules\RestfulProcessFileCaller.cs" />
     <Compile Include="Providers\ClassFactory.cs" />
     <Compile Include="Providers\ConsumerProvider.cs" />
     <Compile Include="Providers\HotwireFilesProvider.cs" />

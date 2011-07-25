@@ -5,6 +5,7 @@ using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
@@ -15,6 +16,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
     public class FileProcessorScript : IScript
     {
         private IHttpClientProvider _httpClient;
+        private readonly ProcessFileCallerBase _processFileCaller;
         private readonly HotwireFilesProvider _fileprovider;
         private readonly LoggerBase _logger;
         private bool _isRunning = false;
@@ -26,11 +28,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
             get { return "File Processor script."; }
         }
 
-        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger, IHttpClientProvider httpClient)
+        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger, IHttpClientProvider httpClient, ProcessFileCallerBase processFileCaller)
         {
             _fileprovider = fileprovider;
             _logger = logger;
             _httpClient = httpClient;
+            _processFileCaller = processFileCaller;
         }
 
         public void Run(LoggerBase logger, Utils.IConsoleWriter console, string folderPath)
@@ -50,7 +53,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
                 while ((dto = GetNextImportFileToProcessMoveToProcessingOrDefault(console)) != null)
                 {
-                    ProcessFile(console, dto, logger, _httpClient);
+                    ProcessFile(console, dto, logger, _httpClient,_processFileCaller);
                 }
                 console.WriteLine("Nothing left to process, exiting.");
             }
@@ -62,16 +65,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        private void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, IHttpClientProvider client)
+        private void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, IHttpClientProvider client, ProcessFileCallerBase processFileCaller)
         {
             console.WriteLine("Processing {0}",dto.ResourceFile);
             try
             {
-                // process the file, wait for response, get endpoint by name = fileprocess
-                string endpoint = ProcessFileSection.ReadConfig().GetEndpoint(dto.GetTrackingNumber());
-                var uri = new Uri(endpoint);
-                // move the import file from processing to processed folder 
-                client.GetAndEnsureStatusIsSuccessful(uri);
+                processFileCaller.CallProcessFileWaitForComplete(dto.GetTrackingNumber());
                 _fileprovider.MoveFileAndSettingsFileToFolder(dto.GetTrackingNumber(), _fileprovider.ProcessingFolderPath, _fileprovider.ProcessedFolderPath);
             }
             catch (Exception ex)
