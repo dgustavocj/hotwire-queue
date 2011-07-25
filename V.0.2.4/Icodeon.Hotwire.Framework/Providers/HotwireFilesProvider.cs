@@ -5,6 +5,7 @@ using System.Linq;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
 
@@ -206,20 +207,33 @@ namespace Icodeon.Hotwire.Framework.Providers
             _logger.Info("\t\t\tprocessed {0}.", resourceFile);
         }   
 
+
+
+
         public void MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(string trackingNumber, Exception ex)
         {
             _logger.Trace("MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(...)");
-            MoveFileAndSettingsFileToFolder(trackingNumber, ProcessingFolderPath, ProcessErrorFolderPath);
+
+            string errorFilePath = Path.Combine(ProcessErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(trackingNumber));
+            string jsonException;
+            try
+            {
+                MoveFileAndSettingsFileToFolder(trackingNumber, ProcessingFolderPath, ProcessErrorFolderPath);
+                jsonException = JSONHelper.Serialize(new HotwireExceptionDTO(ex));
+            }
+            catch (IOException ioex)
+            {
+                // could not move the file because it was locked, and since this is the processing folder most likely the processor is locking the file
+                jsonException = JSONHelper.Serialize(new FileProcessorLockedFileException(ex));
+            }
+
+          // log exception to json error file
             _logger.Trace("\t\t\tWriting .errorFile", trackingNumber);
             // article on serializing exception to file
             // http://seattlesoftware.wordpress.com/2008/08/22/serializing-exceptions-to-xml/
             
-            // log exception to json error file
-            string jsonException = JSONHelper.Serialize(new HotwireExceptionDTO(ex));
-            string errorFilePath = Path.Combine(ProcessErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(trackingNumber));
             File.WriteAllText(errorFilePath,jsonException);
         }
-
 
         //TODO: DRY below is repeat of above!
         public void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex)

@@ -56,17 +56,9 @@ namespace Icodeon.Hotwire.Framework.Modules
                     var parameters = dto.ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient();
                     logger.TraceParameters(parameters);
                     logger.Trace("process the file ...");
-                    try
-                    {
-                        processor.ProcessFile(dto.GetTrackingNumber(), dto.TransactionId, parameters);
-                        // all we need to do is move the file as the last step, i.e. change the status and save. Needs to be transactional
-                        // for now we'll leave that up to the caller to do.
-                    }
-                    catch (Exception ex)
-                    {
-                        fileProvider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.ResourceFile,ex);
-                        throw;
-                    }
+                    // if processFile below throws exception, then file processor script will detect return value was not OK and will 
+                    // move the file to error folder etc, as appropriate. Our job is ONLY to process the file return OK, or throw exception.
+                    processor.ProcessFile(dto.GetTrackingNumber(), dto.TransactionId, parameters);
                     return dto;
 
                 case ActionDebug:

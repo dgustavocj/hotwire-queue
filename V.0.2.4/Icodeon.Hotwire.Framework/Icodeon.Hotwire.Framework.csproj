@@ -122,6 +122,7 @@
     <Compile Include="FolderWatcher\FolderConfig.cs" />
     <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
     <Compile Include="FolderWatcher\FolderScript.cs" />
+    <Compile Include="Modules\FileProcessorLockedFileException.cs" />
     <Compile Include="Modules\FileProcessorModule.cs" />
     <Compile Include="Modules\ProcessFileResponseDTO.cs" />
     <Compile Include="Modules\QueueModule.cs" />
