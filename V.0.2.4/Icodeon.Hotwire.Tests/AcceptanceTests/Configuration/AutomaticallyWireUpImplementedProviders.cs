@@ -9,7 +9,9 @@ using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
+using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
+using Icodeon.Hotwire.Tests.UnitTests;
 using NUnit.Framework;
 using StructureMap;
 
@@ -30,9 +32,12 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
             IFileProcessorProvider fileProcessor;
             IConsumerProvider consumer; 
             IOAuthProvider oauth;
+            
             var factory = new ProviderFactory();
+            factory.ClearConfiguration();
 
-            // fluent assertions here should make this more readable
+            // need to wire up at least something otherwise will get notwiredUpException
+            factory.WireUp<IDummy1, Dummy1>();
 
             Action action;
             action = () => client = factory.CreateHttpClient();
@@ -70,7 +75,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
             client.Should().BeOfType<TestClientProvider>();
 
             fileProcessor.Should().NotBeNull();
-            fileProcessor.Should().BeOfType<TestFileProcessorProvider>();
+            fileProcessor.Should().BeOfType<LoggingFileProcessorProvider>();
 
             consumer.Should().NotBeNull();
             consumer.Should().BeOfType<TestConsumerProvider>();

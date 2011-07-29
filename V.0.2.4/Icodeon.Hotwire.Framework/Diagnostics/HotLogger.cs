@@ -133,7 +133,7 @@ namespace Icodeon.Hotwire.Framework
 
         public static bool LoggingEnabled
         {
-            get { return bool.Parse(ConfigurationManager.AppSettings["logging"]); }
+            get { return bool.Parse(ConfigurationManager.AppSettings["logging"] ?? "true" ); }
         }
 
         private static HotLogger _instance;

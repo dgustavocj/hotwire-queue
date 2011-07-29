@@ -15,11 +15,11 @@ namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class FileProcessorScript : IScript
     {
-        private IHttpClientProvider _httpClient;
-        private readonly ProcessFileCallerBase _processFileCaller;
-        private readonly HotwireFilesProvider _fileprovider;
-        private readonly LoggerBase _logger;
-        private bool _isRunning = false;
+        protected IHttpClientProvider _httpClient;
+        protected readonly ProcessFileCallerBase _processFileCaller;
+        protected readonly HotwireFilesProvider _fileprovider;
+        protected readonly LoggerBase _logger;
+        protected bool _isRunning = false;
 
         public bool isRunning { get { return _isRunning;  } }
 
@@ -43,7 +43,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             Run(logger,console,null);
         }
 
-        public void Run(LoggerBase logger, Utils.IConsoleWriter console)
+        public virtual void Run(LoggerBase logger, Utils.IConsoleWriter console)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        private void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, IHttpClientProvider client, ProcessFileCallerBase processFileCaller)
+        protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, IHttpClientProvider client, ProcessFileCallerBase processFileCaller)
         {
             console.WriteLine("Processing {0}",dto.ResourceFile);
             try
@@ -79,6 +79,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
             }
         }
+
+
 
         public EnqueueRequestDTO GetNextImportFileToProcessMoveToProcessingOrDefault(IConsoleWriter console)
         {
@@ -110,9 +112,15 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 }
             } while (importFileNamePath == null);
 
+            EnqueueRequestDTO importFile = ReadImportFileAndMoveFromProcessQueueToProcessingFolder(importFileNamePath);
+            return importFile;
+        }
+
+        protected EnqueueRequestDTO ReadImportFileAndMoveFromProcessQueueToProcessingFolder(string importFileNamePath)
+        {
             string json = File.ReadAllText(importFileNamePath);
             EnqueueRequestDTO importFile = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
-            _fileprovider.MoveFileAndSettingsFileToFolder(importFile.GetTrackingNumber(),_fileprovider.ProcessQueueFolderPath,_fileprovider.ProcessingFolderPath);
+            _fileprovider.MoveFileAndSettingsFileToFolder(importFile.GetTrackingNumber(),srcFolderPath: _fileprovider.ProcessQueueFolderPath,destFolderPath: _fileprovider.ProcessingFolderPath);
             return importFile;
         }
 

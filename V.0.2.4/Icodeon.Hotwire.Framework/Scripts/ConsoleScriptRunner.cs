@@ -44,7 +44,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             }
         }
 
-        public ConsoleScriptRunner(IConsoleWriter console, bool resolveEmbeddedAssemblies, LoggerBase logger = null)
+        public ConsoleScriptRunner(IConsoleWriter console, bool resolveEmbeddedAssemblies, LoggerBase logger)
         {
             _console = console;
             if (resolveEmbeddedAssemblies) throw new ApplicationException("resolving embedded assemblies not currently supported.");

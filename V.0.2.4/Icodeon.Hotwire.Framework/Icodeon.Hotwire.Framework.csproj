@@ -88,6 +88,7 @@
     <Compile Include="Configuration\AssemblyProviderBase.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Configuration\IOAuthProviderConfig.cs" />
+    <Compile Include="Configuration\NotWiredUpException.cs" />
     <Compile Include="Configuration\OAuthProviderSection.cs" />
     <Compile Include="Configuration\IAssemblyProvider.cs" />
     <Compile Include="Configuration\EndpointCollection.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Scripts\FileDownloadResultDTO.cs" />
     <Compile Include="Scripts\IScript.cs" />
     <Compile Include="Scripts\ConsoleScriptRunner.cs" />
+    <Compile Include="Scripts\SingleFileProcessorScript.cs" />
     <Compile Include="Security\QuickAuth.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />

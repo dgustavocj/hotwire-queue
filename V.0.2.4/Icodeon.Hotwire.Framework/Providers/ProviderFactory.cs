@@ -2,14 +2,17 @@
 using System.Linq;
 using System.Reflection;
 using Icodeon.Hotwire.Contracts;
+using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
-    public class ProviderFactory 
+    public class ProviderFactory
     {
+        private static bool _isWiredUp = false;
+
         public ProviderFactory()
         {
         }
@@ -27,6 +30,14 @@ namespace Icodeon.Hotwire.Framework.Providers
                 throw new AmbiguousMatchException(sex.Message);
             }
         }
+
+        public ProviderFactory WireUp<TSrc,TDest>()  where TDest : TSrc
+        {
+            _isWiredUp = true;
+            ObjectFactory.Configure(x => x.For<TSrc>().Use<TDest>());
+            return this;
+        }
+
 
         public IConsumerProvider CreateConsumerProvider()
         {
@@ -78,15 +89,22 @@ namespace Icodeon.Hotwire.Framework.Providers
                             x.ExcludeType<DefaultForClassFactoryNotImplemented>();
                         });
             });
-            ProvideDefaultIfProviderNotRegisteredFor<IFileProcessorProvider, LoggingFileProcessorProvider>();
-            ProvideDefaultIfProviderNotRegisteredFor<IConsumerProvider, ConsumerProvider>();
-            ProvideDefaultIfProviderNotRegisteredFor<IClassFactoryNotImplemented, DefaultForClassFactoryNotImplemented>();
-            ProvideDefaultIfProviderNotRegisteredFor<IClassFactoryTestImplemented, DefaultForClassFactoryImplemented>();
+            ProvideDefaultIfProviderNotImplementedFor<IFileProcessorProvider, LoggingFileProcessorProvider>();
+            ProvideDefaultIfProviderNotImplementedFor<IConsumerProvider, ConsumerProvider>();
+            ProvideDefaultIfProviderNotImplementedFor<IClassFactoryNotImplemented, DefaultForClassFactoryNotImplemented>();
+            ProvideDefaultIfProviderNotImplementedFor<IClassFactoryTestImplemented, DefaultForClassFactoryImplemented>();
             ObjectFactory.AssertConfigurationIsValid();
+            _isWiredUp = true;
             return this;
         }
 
-        internal void ProvideDefaultIfProviderNotRegisteredFor<TProvider,TConcrete>() where TConcrete : TProvider
+        public void ClearConfiguration()
+        {
+           ObjectFactory.Initialize( iex => { });
+            _isWiredUp = false;
+        }
+
+        internal void ProvideDefaultIfProviderNotImplementedFor<TProvider,TConcrete>() where TConcrete : TProvider
         {
             try
             {
@@ -101,6 +119,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         internal T GetProvider<T>()
         {
+            if (!_isWiredUp) throw new NotWiredUpException();
             try
             {
                 T provider = ObjectFactory.GetInstance<T>();
@@ -114,6 +133,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public string GetDebugListingOfObjectFactoryRegistrations()
         {
+            if (!_isWiredUp) throw new NotWiredUpException();
             return ObjectFactory.WhatDoIHave();
         }
 
