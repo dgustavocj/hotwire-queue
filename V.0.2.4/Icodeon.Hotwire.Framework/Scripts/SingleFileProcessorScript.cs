@@ -26,7 +26,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _filenameContains = filenameContains;
         }
 
-        public override void Run(LoggerBase logger, Utils.IConsoleWriter console)
+        public override void Run(HotLogger logger, IConsoleWriter console)
         {
             try
             {

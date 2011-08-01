@@ -53,12 +53,22 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TestServer|AnyCPU'">
+    <OutputPath>bin\TestServer\</OutputPath>
+    <DefineConstants>TRACE;TESTSERVER</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -178,6 +188,10 @@
     <Compile Include="Scripts\IScript.cs" />
     <Compile Include="Scripts\ConsoleScriptRunner.cs" />
     <Compile Include="Scripts\SingleFileProcessorScript.cs" />
+    <Compile Include="Security\LocalOnlyRequestAuthenticator.cs" />
+    <Compile Include="Security\IAuthenticateRequest.cs" />
+    <Compile Include="Security\NoSecurityRequestAuthenticator.cs" />
+    <Compile Include="Security\OAuthRequestAuthenticator.cs" />
     <Compile Include="Security\QuickAuth.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />

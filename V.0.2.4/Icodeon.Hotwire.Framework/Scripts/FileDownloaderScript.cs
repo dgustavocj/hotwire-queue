@@ -16,8 +16,9 @@ namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class FileDownloaderScript : IScript, IFolderWatcherScript
     {
-        private readonly HotwireFilesProvider _fileprovider;
-        private readonly LoggerBase _logger;
+        private readonly IDownloaderFilesProvider _downloaderFiles;
+
+        private readonly IClientDownloader _clientDownloader;
         private bool _isRunning = false; 
         public bool isRunning { get { return _isRunning; } }
 
@@ -29,27 +30,27 @@ namespace Icodeon.Hotwire.Framework.Scripts
         public event EventHandler<EnqueueRequestEventArgs> Downloading;
         public event EventHandler<FileInfoEventArgs> Downloaded;
 
-        public FileDownloaderScript(HotwireFilesProvider fileprovider, LoggerBase logger)
+        public FileDownloaderScript(IDownloaderFilesProvider downloaderFilesProvider,IClientDownloader clientDownloader)
         {
-            _fileprovider = fileprovider;
-            _logger = logger;
+            _downloaderFiles = downloaderFilesProvider;
+            _clientDownloader = clientDownloader;
         }
 
 
-        public void Run(LoggerBase logger, Utils.IConsoleWriter console, string folderPath)
+        public void Run(LoggerBase logger, IConsoleWriter console, string folderPath)
         {
             Run(logger,console,null);
         }
 
-        public void Run(LoggerBase logger, Utils.IConsoleWriter console)
+        public void Run(HotLogger logger, IConsoleWriter console)
         {
             try
             {
                 _isRunning = true;
                 EnqueueRequestDTO dto;
-                while((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(console)) != null)
+                while((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(logger, console)) != null)
                 {
-                    DownloadFile(console, dto, logger);
+                    DownloadFile(logger, console, dto);
                 }
                 console.WriteLine("Nothing left to download, exiting.");
             }
@@ -61,9 +62,9 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger)
+        private void DownloadFile(HotLogger logger, IConsoleWriter console, EnqueueRequestDTO dto )
         {
-            string trackingFilePath = Path.Combine(_fileprovider.DownloadingFolderPath, dto.GetTrackingNumber());
+            string trackingFilePath = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");
 
             // raise downloading event
@@ -76,12 +77,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
             // =============================================================================
             try
             {
-                string destination = Path.Combine(_fileprovider.ProcessQueueFolderPath, dto.GetTrackingNumber());
-                var downloadResult = HotClient.DownloadFileWithTiming(logger, new Uri(dto.ExtResourceLinkContent),destination);
+                string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
+                var downloadResult = _clientDownloader.DownloadFileWithTiming(logger, new Uri(dto.ExtResourceLinkContent),destination);
                 console.WriteLine("\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
                 // move the import file from downloading to process queue folder 
-                string importSource = Path.Combine(_fileprovider.DownloadingFolderPath, dto.GetImportFileName());
-                string importDest = Path.Combine(_fileprovider.ProcessQueueFolderPath, dto.GetImportFileName());
+                string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
+                string importDest = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetImportFileName());
                 // delete the zero byte file!
                 File.Move(importSource,importDest);
                 File.Delete(trackingFilePath);
@@ -90,49 +91,52 @@ namespace Icodeon.Hotwire.Framework.Scripts
             }
             catch (Exception ex)
             {
-                _fileprovider.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
-                throw;
+                var msg = "Error during download of " + trackingFilePath;
+                //todo: update IConsole to support writing errors etc.
+                ConsoleHelper.WriteError(msg);
+                logger.ErrorException(msg, ex);
+                _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
             }
         }
 
 
-        public EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(IConsoleWriter console)
+        internal EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(HotLogger logger, IConsoleWriter console)
         {
-            _fileprovider.RefreshFiles();
+            _downloaderFiles.RefreshFiles();
             string importFileNamePath;
             string importFileName;
             do
             {
-                importFileNamePath = _fileprovider.DownloadQueueFilePaths.SortByDateAscending().FirstOrDefault();
+                importFileNamePath = _downloaderFiles.DownloadQueueFilePaths.SortByDateAscending().FirstOrDefault();
                 if (importFileNamePath == null)
                 {
-                    _logger.Trace("nextFile==null, returning.");
+                    logger.Trace("nextFile==null, returning.");
                     return null;
                 }
                 importFileName = Path.GetFileName(importFileNamePath);
-                var status = _fileprovider.GetStatusByImportFileName(Path.GetFileName(importFileNamePath));
+                var status = _downloaderFiles.GetStatusByImportFileName(Path.GetFileName(importFileNamePath));
                 // must only have 1 status of queued for downloading or error, otherwise pick the next file
                 if(status != QueueStatus.QueuedForDownloading)
                 {
                     var msg = string.Format("Skipping {0}, \tstatus is {1}.", importFileName, status);
                     console.WriteLine(msg);
-                    _logger.Trace(msg);
+                    logger.Trace(msg);
                     // rename as skipped for now.
-                    string destination = Path.Combine(_fileprovider.DownloadErrorFolderPath,importFileName + "." + status + EnqueueRequestDTO.SkippedExtension);
-                    _logger.Trace("Renaming and moving to " + destination);
+                    string destination = Path.Combine(_downloaderFiles.DownloadErrorFolderPath,importFileName + "." + status + EnqueueRequestDTO.SkippedExtension);
+                    logger.Trace("Renaming and moving to " + destination);
                     if (File.Exists(destination))
                     {
                         destination = destination.IncrementNumberAtEndOfString();
                     }
                     File.Move(importFileNamePath, destination);
                     importFileNamePath = null;
-                    _fileprovider.RefreshFiles();
+                    _downloaderFiles.RefreshFiles();
                 }
             } while (importFileNamePath==null);
 
             string json = File.ReadAllText(importFileNamePath);
             EnqueueRequestDTO importFile = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
-            _fileprovider.MoveImportFileFromDownloadQueueuToDownloading(importFileName);
+            _downloaderFiles.MoveImportFileFromDownloadQueueuToDownloading(importFileName);
             return importFile;
         }
 

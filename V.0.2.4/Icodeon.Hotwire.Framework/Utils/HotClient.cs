@@ -7,7 +7,12 @@ using Icodeon.Hotwire.Framework.Scripts;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
-    public class HotClient : WebClient
+    public interface IClientDownloader
+    {
+        FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath);
+    }
+
+    public class HotClient : WebClient, IClientDownloader
     {
         public TimeSpan Timeout { get; set; }
 
@@ -41,7 +46,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             return request;
         }
 
-        public static FileDownloadResultDTO DownloadFileWithTiming(LoggerBase logger, Uri uri, string downloadingFilePath)
+        public FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath)
         {
             // ignoring timeout for now
             var startTime = DateTime.Now;

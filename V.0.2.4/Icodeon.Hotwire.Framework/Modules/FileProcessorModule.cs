@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,8 +15,6 @@ using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
-    //TODO: Convert to use ModuleBase!
-
     public class FileProcessorModule : ModuleBase
     {
 
@@ -24,26 +23,25 @@ namespace Icodeon.Hotwire.Framework.Modules
             get { return Constants.Configuration.SmokeTestSectionName; }
         }
 
-        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream, Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
+        protected override object ProcessRequest(HttpApplicationState applicationState, NameValueCollection queueParameters, Uri url, UriTemplateMatch match, IModuleEndpoint moduleConfig, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
         {
-            // Todo: replace with Contract.Ensures(); later when free tools for validation are available.
             DebugContract.Ensure(()=> applicationState != null, 
                                  ()=> match != null,
-                                 ()=> config != null,
+                                 ()=> moduleConfig != null,
                                  ()=> mediaInfo != null,
                                  ()=> mapper != null,
                                  ()=> logger != null);
-            
-            logger.LogMethodCall("ProcessRequest", applicationState, inputStream, url, match, config, mediaInfo, mapper,logger);
 
-            switch (config.Action)
+            logger.LogMethodCall("ProcessRequest", applicationState, queueParameters, url, match, moduleConfig, mediaInfo, mapper, logger);
+
+            switch (moduleConfig.Action)
             {
                 case ActionProcessFile:
                     logger.Trace("SmokeTestModule -> PROCESS-FILE");
                     string trackingNumber = match.BoundVariables["TRACKING-NUMBER"];
                     logger.Trace("Tracking Number = " + trackingNumber);
-                    logger.Trace("Security for endpoint is " + config.Security);
-                    if (config.Security==SecurityType.localonly)
+                    logger.Trace("Security for endpoint is " + moduleConfig.Security);
+                    if (moduleConfig.Security==SecurityType.localonly)
                     {
                         if (!url.IsLoopback)
                             throw new HttpModuleException(logger, HttpStatusCode.Forbidden, "Remote connections not allowed.");
@@ -108,13 +106,13 @@ namespace Icodeon.Hotwire.Framework.Modules
                     logger.Trace("finding custom endpoint");
                     var endpoint = queueConfig.Endpoints.FirstOrDefault(e => e.Name.Equals("custom", StringComparison.OrdinalIgnoreCase));
                     if (endpoint == null) throw new ArgumentNullException("could not find custom endpoint in the queue config, with name='q1'");
-                    logger.Trace("Found endpoint:" + endpoint.ToString());
+                    logger.Trace("Found endpoint:" + endpoint);
                     logger.Trace("setting new uriTemplate and setting active");
                     endpoint.Active = true;
                     endpoint.UriTemplate = new UriTemplate(newUriTemplate);
                     logger.Trace("caching the configuration");
                     moduleConfigurationCache.Configuration = queueConfig;
-                    return "UriTemplate set to:" + newUriTemplate.ToString();
+                    return "UriTemplate set to:" + newUriTemplate;
 
                 case ActionUriTemplateReset:
                     var moduleConfigurationCache2 = new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName, new AppCacheWrapper(applicationState));
@@ -122,7 +120,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                     moduleConfigurationCache2.RefreshConfigurationFromWebOrAppConfig();
                     return "UriTemplate reset.";
 
-                default: throw new HttpModuleException(HttpStatusCode.BadRequest, config.Action + " is not a supported action.");
+                default: throw new HttpModuleException(HttpStatusCode.BadRequest, moduleConfig.Action + " is not a supported action.");
             }
         }
 
@@ -137,7 +135,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         public const string ActionProcessFile= "PROCESS-FILE";
 
 
-        public const string slashEncodingToken = "~";
+        public const string SlashEncodingToken = "~";
 
         public static string EscapeSlashes(string src)
         {
@@ -146,12 +144,12 @@ namespace Icodeon.Hotwire.Framework.Modules
             // which means you cant (easily) pass slash as an uri parameter, 
             // which is the reason for the tokenising of the slash here. 
             // see: http://stackoverflow.com/questions/591694/url-encoded-slash-in-url for more info.
-            return src.Replace("/", slashEncodingToken);
+            return src.Replace("/", SlashEncodingToken);
         }
 
         public static string UnescapeSlashes(string src)
         {
-            return src.Replace(slashEncodingToken, "/");
+            return src.Replace(SlashEncodingToken, "/");
         }
 
 

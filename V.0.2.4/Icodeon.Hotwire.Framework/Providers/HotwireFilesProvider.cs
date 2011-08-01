@@ -11,12 +11,30 @@ using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
+    //TODO move these interfaces to own file later as soon as this settles
+
+    public interface IFileProviderRefreshAndStatus
+    {
+        void RefreshFiles();
+        QueueStatus GetStatusByImportFileName(string importFileName);
+    }
+    public interface IDownloaderFilesProvider : IFileProviderRefreshAndStatus
+    {
+        IEnumerable<string> DownloadQueueFilePaths { get; }
+
+        string DownloadingFolderPath { get; }
+        string ProcessQueueFolderPath { get; }
+        string DownloadErrorFolderPath { get; }
+
+        void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex);
+        void MoveImportFileFromDownloadQueueuToDownloading(string importFileName);
+    }
 
     //TODO: Create repository pattern and update filesProvider to simply be a repository implementing IHotwireRepository
 
     // moving to provider namespace, preparing for being able to swap out the file provider
     // will need to extract the full interface and make it pluggable
-    public class HotwireFilesProvider : IHotwireFileProcessorFoldersPaths, IProcessFiles 
+    public class HotwireFilesProvider : IHotwireFileProcessorFoldersPaths, IProcessFiles, IDownloaderFilesProvider
     {
 
         public static class MarkerFiles
@@ -37,7 +55,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         private readonly LoggerBase _logger;
 
-        //ADH: looks like _folderPaths is never used, need to check.
+        //ADH: looks like _folderPaths is never used, need to check, remove and rerun all tests!
         private IHotwireFileProcessorFoldersPaths _foldersPaths;
 
         // TODO: DRY, am repeating myself here... fix!

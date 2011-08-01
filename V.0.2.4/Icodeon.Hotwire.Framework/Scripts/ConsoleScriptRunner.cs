@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
-using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class ConsoleScriptRunner
     {
         private readonly IConsoleWriter _console;
-        private LoggerBase _logger;
+        private HotLogger _logger;
 
         public bool Abort { get; set; }
 
@@ -32,8 +25,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _console.ReadLine();
         }
 
-        public ConsoleScriptRunner(IConsoleWriter _console, string[] args, bool resolveEmbeddedAssemblies = false, LoggerBase logger = null)
-            : this(_console, resolveEmbeddedAssemblies, logger)
+        public ConsoleScriptRunner(IConsoleWriter _console, string[] args, HotLogger logger)
+            : this(_console, logger)
         {
             if (args.Length != 1 || !int.TryParse(args[0], out _scriptNumber)) 
             {
@@ -44,10 +37,9 @@ namespace Icodeon.Hotwire.Framework.Scripts
             }
         }
 
-        public ConsoleScriptRunner(IConsoleWriter console, bool resolveEmbeddedAssemblies, LoggerBase logger)
+        public ConsoleScriptRunner(IConsoleWriter console, HotLogger logger)
         {
             _console = console;
-            if (resolveEmbeddedAssemblies) throw new ApplicationException("resolving embedded assemblies not currently supported.");
             Abort = false;
             _logger = logger;
         }

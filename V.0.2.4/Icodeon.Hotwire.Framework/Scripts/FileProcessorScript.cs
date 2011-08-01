@@ -36,14 +36,14 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _processFileCaller = processFileCaller;
         }
 
-        public void Run(LoggerBase logger, Utils.IConsoleWriter console, string folderPath)
+        public virtual void Run(HotLogger logger, Utils.IConsoleWriter console, string folderPath)
         {
             // ignore the folder for now, because the exact folder used for downloading is currently configured in hotwireFilesProvider.
             // will change this later.
             Run(logger,console,null);
         }
 
-        public virtual void Run(LoggerBase logger, Utils.IConsoleWriter console)
+        public virtual void Run(HotLogger logger, Utils.IConsoleWriter console)
         {
             try
             {
@@ -75,6 +75,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             }
             catch (Exception ex)
             {
+                //TODO: update IConsoleWriter to support writing erorrs! line below ignores fact that we have console writer injected above!
                 ConsoleHelper.WriteError("Error processing "+ dto.ResourceFile);
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
             }

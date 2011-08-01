@@ -34,42 +34,22 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         //TODO: Move all the request context to a rest module context DTO?
         // it's not a too massive list and I like seeing there here (at least for now) as it's a reminder of what I have to work with,do or dont need.
-        protected override object ProcessRequest(HttpApplicationState applicationState, Stream inputStream,Uri url, UriTemplateMatch match, IModuleEndpoint config, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
+        protected override object ProcessRequest(HttpApplicationState applicationState, NameValueCollection queueParameters, Uri url, UriTemplateMatch match, IModuleEndpoint moduleConfig, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
         {
-            logger.Trace("QueueModule-> Action=" + config.Action);
+            logger.Trace("QueueModule-> Action=" + moduleConfig.Action);
             logger.Trace("--------------------------------------");
-            switch (config.Action)
+            switch (moduleConfig.Action)
             {
                 case ActionEnqueueRequest:
                     logger.Trace("\tParsing Name Value's from the input stream.");
-                    var queueParameters = inputStream.ParseNameValues();
+                    
 
                     BeforeProcessFile(logger,queueParameters);
 
                     logger.Trace("\tValidating hotwire enqueue request required parameters.");
                     EnqueueRequestDTO.validateRequiredParameters(queueParameters);
-                    logger.Trace("\t{0}",DeploymentEnvironment.IsDEBUG ? "DEBUG BUILD." : "RELEASE BUILD.");
-                    if (config.Security==SecurityType.oauth)
-                    {
-                        logger.Trace("\tSecurity type is set to OAuth authentication.");
-                        string key = queueParameters[Constants.OAuth.oauth_consumer_key];
-                        logger.Trace("\t{0}={1}.", Constants.OAuth.oauth_consumer_key, key);
-                        if (key==null)
-                        {
-                            throw new HttpModuleException(HttpStatusCode.Unauthorized, "The resource you requested requires that requests are oauth signed.");
-                        }
+                    logger.Trace("\t{0}",DeploymentEnvironment.CurrentBuildConfiguration);
 
-                        if (DeploymentEnvironment.IsDEBUG)
-                        {
-                            CheckConsumerKeyIsDevKey(key, logger);
-                        }
-                        else
-                        {
-                            CheckConsumerKeyIsHardCodedPartners(key, logger);
-                        }
-                            
-                        
-                    }
                     var enqueueRequest = new EnqueueRequestDTO(queueParameters)
                                              {
                                                  TransactionId = Guid.NewGuid().ToString()
@@ -86,44 +66,15 @@ namespace Icodeon.Hotwire.Framework.Modules
                     logger.Trace("\tTRACKING-NUMBER : {0}", queuedResource.TrackingNumber);
                     return queuedResource;
 
-                default: throw new ArgumentOutOfRangeException(config.Action + " is not a supported action.");
+                default: throw new ArgumentOutOfRangeException(moduleConfig.Action + " is not a supported action.");
             }
 
         }
 
 
-        private bool ValidateOauthSignature(LoggerBase logger, string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
-        {
-            IConsumerProvider consumer = new ProviderFactory().CreateConsumerProvider();
-            var secret = consumer.GetConsumerSecret(consumerKey);
-            // instead of hard coding it to quickAuth, we can ask the objectfactory/structureMap to 
-            // automatically scan the assemblies and look this up for us?
 
 
-            // TODO: code below also candidate for ninject ( passing in two parameters, and ninject fills in the missing one)
-            var oauthProvider = new ProviderFactory().CreateOauthProvider();
-            var oauth = new QuickAuth(consumerKey, secret, oauthProvider);
-            bool isvalid = oauth.ValidateSignature(requestUrl, queueParameters);
-            return isvalid;
-        }
 
-        private void CheckConsumerKeyIsDevKey(string key,LoggerBase logger)
-        {
-            
-            if (!key.ToLowerInvariant().Equals("key"))
-                throw new HttpModuleException(HttpStatusCode.Unauthorized,"Invalid oauth key, key was "+ key);
-            else
-                logger.Trace("The oauth consumer key is the correct key for DEBUG build.");
-        }
-
-        private void CheckConsumerKeyIsHardCodedPartners(string key, LoggerBase logger)
-        {
-            //TODO: Move message texts to resource files
-            if (!key.ToLowerInvariant().Equals(Constants.TemporaryKeyAndSecretLookups.PartnerConsumerKey)) 
-                throw new HttpModuleException(HttpStatusCode.Unauthorized, "Invalid oauth key, key was " + key);
-            else
-                logger.Trace("The oauth consumer key is the correct key for RELEASE build.");
-        }
 
         protected virtual void BeforeProcessFile(LoggerBase logger, NameValueCollection queueParameters)
         {

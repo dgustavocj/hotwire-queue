@@ -7,12 +7,35 @@ namespace Icodeon.Hotwire.Framework.Utils
 {
     public static class DeploymentEnvironment
     {
-        public static bool IsRELEASE
+
+        public enum BuildConfiguration
+        {
+            DEBUG, RELEASE, LIVETEST
+
+        }
+
+        public static BuildConfiguration CurrentBuildConfiguration
+        {
+            get
+            {
+#if DEBUG
+                return BuildConfiguration.DEBUG;
+#endif
+#if RELEASE
+                return BuildConfiguration.RELEASE;
+#endif
+#if TESTSERVER
+                return BuildConfiguration.LIVETEST;
+#endif
+            }
+        }
+
+        public static bool IsTestServer
         {
             get
             {
 
-#if DEBUG
+#if TESTSERVER
                 return false;
 #else
             return true;
@@ -21,11 +44,25 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         }
 
-        public static bool IsDEBUG
+
+        public static bool IsDebug
         {
             get
             {
-#if DEBUG
+#if (DEBUG)
+                return true;
+#else
+            return false;
+#endif
+
+            }
+        }
+
+        public static bool IsDebugOrRelease
+        {
+            get
+            {
+#if (DEBUG || RELEASE)
                 return true;
 #else
             return false;
