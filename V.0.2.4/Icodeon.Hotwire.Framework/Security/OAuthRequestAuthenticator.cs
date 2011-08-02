@@ -29,18 +29,12 @@ namespace Icodeon.Hotwire.Framework.Security
                 throw new HttpModuleException(HttpStatusCode.Unauthorized, "The resource you requested requires that requests are oauth signed.");
             }
 
-            if (DeploymentEnvironment.IsDebugOrRelease)
-            {
+#if DEBUG
                 CheckConsumerKeyIsDevKey(key);
-            }
-            else if (DeploymentEnvironment.IsTestServer)
-            {
+#endif
+#if RELEASE
                 CheckConsumerKeyIsHardCodedPartners(key);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Current build configuration is '" + DeploymentEnvironment.CurrentBuildConfiguration + "' and is not supported!");
-            }
+#endif
         }
 
 
