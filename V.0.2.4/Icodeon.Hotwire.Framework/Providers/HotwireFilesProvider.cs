@@ -27,13 +27,16 @@ namespace Icodeon.Hotwire.Framework.Providers
         string DownloadErrorFolderPath { get; }
 
         void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex);
-        void MoveImportFileFromDownloadQueueuToDownloading(string importFileName);
+        string MoveImportFileFromDownloadQueueuToDownloading(string importFileName);
+
+        void RefreshDownloadFiles();
     }
 
     //TODO: Create repository pattern and update filesProvider to simply be a repository implementing IHotwireRepository
 
     // moving to provider namespace, preparing for being able to swap out the file provider
     // will need to extract the full interface and make it pluggable
+    // NB! FilesProvider is not threadsafe... Make sure each thread get's its own FilesProvider instance!
     public class HotwireFilesProvider : IHotwireFileProcessorFoldersPaths, IProcessFiles, IDownloaderFilesProvider
     {
 
@@ -68,7 +71,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         public IEnumerable<string> ProcessErrorFilePaths { get; private set; }
         public IEnumerable<string> DownloadErrorFilePaths { get; private set; }
 
-        
+
         public string SolutionFolderMarkerFile { get; set; }
 
         public string TestDataFolderPath { get; set; }
@@ -181,9 +184,11 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         }
 
-        public void MoveImportFileFromDownloadQueueuToDownloading(string importFileName)
+
+        public string MoveImportFileFromDownloadQueueuToDownloading(string importFileName)
         {
-            MoveImportFileToFolder(importFileName, DownloadQueueFolderPath, DownloadingFolderPath);
+            string newLocation = MoveImportFileToFolder(importFileName, DownloadQueueFolderPath, DownloadingFolderPath);
+            return newLocation;
         }
 
 
@@ -192,13 +197,14 @@ namespace Icodeon.Hotwire.Framework.Providers
             MoveFileAndSettingsFileToFolder(filename, DownloadingFolderPath, ProcessQueueFolderPath);
         }
 
-        private void MoveImportFileToFolder(string importFile, string srcFolderPath, string destFolderPath)
+        private string MoveImportFileToFolder(string importFile, string srcFolderPath, string destFolderPath)
         {
             // move settings file
             var importSrcFile = Path.Combine(srcFolderPath, importFile);
             var importDestFile = Path.Combine(destFolderPath, importFile);
             _logger.Trace("\t\t\tFile.Move('{0}',{1}')", importSrcFile, importDestFile);
             File.Move(importSrcFile, importDestFile);
+            return importDestFile;
         }
 
 
@@ -270,13 +276,19 @@ namespace Icodeon.Hotwire.Framework.Providers
         public void RefreshFiles()
         {
             TestDataFilePaths = Directory.GetFiles(TestDataFolderPath).ToList();
-            DownloadQueueFilePaths = Directory.GetFiles(DownloadQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+            RefreshDownloadFiles();
             ProcessQueueFilePaths = Directory.GetFiles(ProcessQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             ProcessedFilePaths = Directory.GetFiles(ProcessedFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             ProcessingFilePaths = Directory.GetFiles(ProcessingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
-            DownloadingFilePaths = Directory.GetFiles(DownloadingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             ProcessErrorFilePaths = Directory.GetFiles(ProcessErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
-            DownloadErrorFilePaths = Directory.GetFiles(DownloadErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension) ).ToList();
+            
+        }
+
+        public void RefreshDownloadFiles()
+        {
+            DownloadQueueFilePaths = Directory.GetFiles(DownloadQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+            DownloadingFilePaths = Directory.GetFiles(DownloadingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+            DownloadErrorFilePaths = Directory.GetFiles(DownloadErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
         }
 
         public IProcessFiles GetFiles()

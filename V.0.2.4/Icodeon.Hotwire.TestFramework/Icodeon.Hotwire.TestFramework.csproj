@@ -55,9 +55,11 @@
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
+    <Compile Include="ThreadTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickAssert.cs" />
     <Compile Include="TestDataBase.cs" />
+    <Compile Include="ThreadTestRunnerException.cs" />
     <Compile Include="UnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
