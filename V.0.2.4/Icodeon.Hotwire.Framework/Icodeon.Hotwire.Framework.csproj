@@ -143,6 +143,9 @@
     <Compile Include="Modules\RestfulProcessFileCaller.cs" />
     <Compile Include="Providers\ClassFactory.cs" />
     <Compile Include="Providers\ConsumerProvider.cs" />
+    <Compile Include="Providers\HotClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Providers\HotwireFilesProvider.cs" />
     <Compile Include="Contracts\IAppCounter.cs" />
     <Compile Include="Contracts\IMediaInfo.cs" />
@@ -178,6 +181,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IClassFactoryNotImplemented.cs" />
     <Compile Include="Providers\IClassFactoryTestImplemented.cs" />
+    <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
     <Compile Include="Repository\IHotwireRepository.cs" />
     <Compile Include="Repository\QueueDAL.cs" />
@@ -207,9 +211,6 @@
     <Compile Include="Utils\HttpApplicationWrapper.cs" />
     <Compile Include="Utils\DirectoryHelper.cs" />
     <Compile Include="Utils\FileProcessorAppCounter.cs" />
-    <Compile Include="Utils\HotClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Utils\HotwireFolderWatcher.cs" />
     <Compile Include="Utils\HttpModuleException.cs" />
     <Compile Include="Utils\IMapPath.cs" />

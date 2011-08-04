@@ -2,16 +2,10 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Scripts;
 
-namespace Icodeon.Hotwire.Framework.Utils
+namespace Icodeon.Hotwire.Framework.Providers
 {
-    public interface IClientDownloader
-    {
-        FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath);
-    }
-
     public class HotClient : WebClient, IClientDownloader
     {
         public TimeSpan Timeout { get; set; }

@@ -54,6 +54,7 @@
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
+    <Compile Include="Mocks\MockDownloder.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
     <Compile Include="ThreadTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

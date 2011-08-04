@@ -70,7 +70,7 @@
   <ItemGroup>
     <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandler.cs" />
-    <Compile Include="AcceptanceTests\Diagnostics\FolderWatcherErrorHandlingAndNotification.cs" />
+    <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />

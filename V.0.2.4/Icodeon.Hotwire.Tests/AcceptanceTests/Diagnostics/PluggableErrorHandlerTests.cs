@@ -2,16 +2,20 @@
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
+//using FluentAssertions;
 //using Icodeon.Hotwire.Framework;
 //using Icodeon.Hotwire.Framework.Providers;
+//using Icodeon.Hotwire.Framework.Scripts;
+//using Icodeon.Hotwire.Framework.Utils;
 //using Icodeon.Hotwire.TestFramework;
+//using Icodeon.Hotwire.TestFramework.Mocks;
 //using Icodeon.Hotwire.Tests.Internal;
 //using NUnit.Framework;
 
 //namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 //{
-//    [TestFixture("acceptance-test","As a service provider, so that I can have timely and detailed information to fix errors and keep system running, I want to be notified whenever a folderwatcher error ocurs")]
-//    public class FolderWatcherErrorHandlingAndNotification : FilesProviderAcceptanceTest
+//    [TestFixture(Category = "acceptance-test", Description = "As a service provider, so that I can have timely and detailed information to fix errors and keep system running, I want to be able to plug in my own error handler to handle any errors")]
+//    public class PluggableErrorHandlerTests : FilesProviderAcceptanceTest
 //    {
 
 //        private TestData _testData;
@@ -19,17 +23,54 @@
 //        [SetUp]
 //        public void Setup()
 //        {
-//            _testData = new TestData(HotwireFilesProvider.GetFilesProviderInstance(HotLogger.NullLogger));
+//            _testData = new TestData(FilesProvider);
 //        }
+
+//        [Test]
+//        public void ShouldHandleFileDownLoadScriptErrors()
+//        {
+//            // this test can be moved to open source project as soon as the asp.net project is copied across.
+//            TraceTitle("pluggable error handler should handle File download script errors ");
+
+//            Trace("given one file in download queue");
+//            var testData = new TestData(FilesProvider);
+//            testData.CopyFilesToDownloadQueueFolder(TestData.OneTestFile, ConsoleWriter);
+
+//            Trace("and a mock downloader that will throw an exception on the first file");
+//            Trace("And a file download script");
+//            var script = new FileDownloaderScript(FilesProvider, new MockDownloder(1));
+
+//            Trace("when the script tries to download the files");
+//            Action action = () => script.Run(Logger, ConsoleWriter);
+
+//            Trace("then error handler should receive notification of the exception");
+//            // use NMock?
+//            throw new Exception("not implemented.");
+//        }
+
+//        [Test]
+//        public void ShouldHandleFileProcessScriptErrors()
+//        {
+//            throw new Exception("not implemented");
+//        }
+
+//        [Test]
+//        public void ShouldHandleModuleErrors()
+//        {
+//            throw new Exception("not implemented");
+//        }
+
 
 //        [Test]
 //        public void AllImplementationsOfIHandleErrorShouldBeCalledIfExceptionOccurs()
 //        {
-//            throw new NotImplementedException();
+//            Assert.Pass("test");
 //        }
 
+
+
 //        [Test]
-//        public void NotificationShouldIncludeFullDetailsOfTheException()
+//        public void HandlerShouldReceiveFullDetailsOfTheException()
 //        {
 
 //            TraceTitle("Notification should include full details of the exception");
@@ -42,6 +83,8 @@
 
 
 //            Trace("and a file processor caller that will throw an exception for file containing 'alphabet_textfile.'");
+
+//            throw new Exception("Not implemented.");
 //            // =======================================================================================================
 //            //var mockCaller = new DoesNotReleaseLockFileMockProcessFileCaller("_A180_2_", FilesProvider);
 
@@ -81,15 +124,15 @@
 //        [Test]
 //        public void NotificationToIncludeCopyOfOriginalEnqueueRequest()
 //        {
-//            throw new NotImplementedException();
+//            throw new Exception("Not implemented.");
 //        }
 
 //        [Test]
 //        public void NotificationToIncludeDownloadedFileIfExceptionOccursInFileProcessor()
 //        {
-//            throw new NotImplementedException();
+//            throw new Exception("Not implemented.");
 //        }
 
-    
+
 //    }
 //}
