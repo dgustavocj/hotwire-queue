@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AssemblyProviderBase.cs" />
     <Compile Include="Configuration\Constants.cs" />
+    <Compile Include="Configuration\ePipeLineSection.cs" />
     <Compile Include="Configuration\IOAuthProviderConfig.cs" />
     <Compile Include="Configuration\NotWiredUpException.cs" />
     <Compile Include="Configuration\OAuthProviderSection.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Contracts\IEnqueueRequest.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />
     <Compile Include="Diagnostics\HotLogger.cs" />
+    <Compile Include="Diagnostics\IExceptionHandler.cs" />
     <Compile Include="Diagnostics\LoggerBase.cs" />
     <Compile Include="Diagnostics\NullLogger.cs" />
     <Compile Include="DTOs\EndpointDTO.cs" />

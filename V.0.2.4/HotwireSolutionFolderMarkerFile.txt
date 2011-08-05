@@ -1,0 +1,8 @@
+This marker file must be placed at the root of your solution.
+All folder paths for hotwire will be root relative from the location of this marker file.
+You can change the marker file in the web.config setting:
+
+<folders
+	solutionFolderMarkerFile="HotwireSolutionFolderMarkerFile.txt"
+	...
+	

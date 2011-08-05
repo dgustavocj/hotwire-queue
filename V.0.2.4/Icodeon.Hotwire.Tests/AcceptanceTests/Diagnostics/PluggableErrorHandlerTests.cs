@@ -4,6 +4,7 @@
 //using System.Text;
 //using FluentAssertions;
 //using Icodeon.Hotwire.Framework;
+//using Icodeon.Hotwire.Framework.Diagnostics;
 //using Icodeon.Hotwire.Framework.Providers;
 //using Icodeon.Hotwire.Framework.Scripts;
 //using Icodeon.Hotwire.Framework.Utils;
@@ -23,7 +24,7 @@
 //        [SetUp]
 //        public void Setup()
 //        {
-//            _testData = new TestData(FilesProvider);
+//          //  _testData = new TestData(FilesProvider);
 //        }
 
 //        [Test]
@@ -36,16 +37,29 @@
 //            var testData = new TestData(FilesProvider);
 //            testData.CopyFilesToDownloadQueueFolder(TestData.OneTestFile, ConsoleWriter);
 
-//            Trace("and a mock downloader that will throw an exception on the first file");
-//            Trace("And a file download script");
-//            var script = new FileDownloaderScript(FilesProvider, new MockDownloder(1));
+//            Trace("And two error handlers to handle FileDownload errors");
+//            var errorHandlers = new [] {new MockErrorHandler(), new MockErrorHandler()};
 
+//            Trace("And a file download script that will throw an exception on the first file");
+//            var script = new FileDownloaderScript(FilesProvider, new MockDownloder(1));
+            
 //            Trace("when the script tries to download the files");
 //            Action action = () => script.Run(Logger, ConsoleWriter);
 
-//            Trace("then error handler should receive notification of the exception");
-//            // use NMock?
-//            throw new Exception("not implemented.");
+//            Trace("then both error handlers should handle the error.");
+//            errorHandlers[0].Handled.Should().BeTrue();
+//            errorHandlers[1].Handled.Should().BeTrue();
+
+//        }
+
+//        public class MockErrorHandler : IExceptionHandler
+//        {
+//            public bool Handled { get; set; }
+
+//            public void HandleException(Exception ex, Framework.Configuration.ePipeLineSection section)
+//            {
+//                Handled = true;
+//            }
 //        }
 
 //        [Test]
@@ -60,11 +74,17 @@
 //            throw new Exception("not implemented");
 //        }
 
+//        [Test]
+//        public void ShouldHandleAuthenticationErrors()
+//        {
+//            throw new Exception("not implemented");
+//        }
+
 
 //        [Test]
-//        public void AllImplementationsOfIHandleErrorShouldBeCalledIfExceptionOccurs()
+//        public void AllConfiguredErrorHandlersShouldBeCalledIfExceptionOccurs()
 //        {
-//            Assert.Pass("test");
+//            throw new Exception("not implemented");
 //        }
 
 

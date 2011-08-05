@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Events;
@@ -37,6 +39,11 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _clientDownloader = clientDownloader;
         }
 
+        private IEnumerable<IExceptionHandler> _exceptionHandlers;
+        public void RegisterExceptionHandler(IEnumerable<IExceptionHandler> exceptionHandlers)
+        {
+            _exceptionHandlers = exceptionHandlers;
+        }
 
         public void Run(LoggerBase logger, IConsoleWriter console, string folderPath)
         {
@@ -55,6 +62,13 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 }
                 console.WriteLine("Nothing left to download, exiting.");
             }
+            //catch(Exception ex)
+            //{
+            //    if (_exceptionHandlers!=null)
+            //    {
+            //        _exceptionHandlers.ToList().ForEach( eh=> eh.HandleException(ex,ePipeLineSection.FileDownload));
+            //    }
+            //}
             finally
             {
                 _isRunning = false;

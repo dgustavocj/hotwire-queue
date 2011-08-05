@@ -34,7 +34,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public static class ProjectFolders
         {
-            public const string Icodeon_Hotwire_TestAspNet = "Icodeon.Hotwire.TestAspNet";
+            public const string Icodeon_Hotwire_TestAspNet = "Icodeon.OUIntegration.TestAspNet";
         }
 
 
