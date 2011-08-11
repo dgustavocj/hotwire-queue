@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.DTOs;
@@ -135,7 +136,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             _errorHandler2.Handled.Should().BeTrue();
 
             Trace("and the module should return 301 (permanently moved)");
-            streamingContext.HttpWriter.StatusCode.Should().Be(500);
+            streamingContext.HttpWriter.StatusCode.Should().Be((int)HttpStatusCode.MovedPermanently);
 
         }
 
