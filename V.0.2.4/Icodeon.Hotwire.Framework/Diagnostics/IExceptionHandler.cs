@@ -8,6 +8,6 @@ namespace Icodeon.Hotwire.Framework.Diagnostics
 {
     public interface IExceptionHandler
     {
-        void HandleException(Exception ex, ePipeLineSection section);
+        void HandleException(object sender, ExceptionEventArgs args);
     }
 }

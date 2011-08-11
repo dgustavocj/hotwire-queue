@@ -66,7 +66,9 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\HotwireFolders\DownloadError\marker-downloadError.txt" />
+    <Content Include="App_Data\HotwireFolders\TestFiles\539EF088-5FE3-4D89-BFE3-DC5F0B8038E7_numbers.txt" />
     <Content Include="App_Data\HotwireFolders\TestFiles\999EF088-5FE3-4D89-BFE3-DC5F0B8038E7_hello.txt" />
+    <Content Include="App_Data\HotwireFolders\TestFiles\B21FCB05-1F88-4956-8FB6-3E5AA579B3F9_alphabet-textfile.txt" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -150,7 +152,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Data\HotwireFolders\TestFiles\539EF088-5FE3-4D89-BFE3-DC5F0B8038E7_numbers.txt.import" />
     <None Include="App_Data\HotwireFolders\TestFiles\999EF088-5FE3-4D89-BFE3-DC5F0B8038E7_hello.txt.import" />
+    <None Include="App_Data\HotwireFolders\TestFiles\B21FCB05-1F88-4956-8FB6-3E5AA579B3F9_alphabet-textfile.txt.import" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

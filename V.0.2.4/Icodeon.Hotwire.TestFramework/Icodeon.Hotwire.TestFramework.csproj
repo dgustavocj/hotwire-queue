@@ -43,6 +43,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,7 +56,14 @@
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
+    <Compile Include="Mocks\MockAppCache.cs" />
     <Compile Include="Mocks\MockDownloder.cs" />
+    <Compile Include="Mocks\MockErrorHandler.cs" />
+    <Compile Include="Mocks\MockHttpWriter.cs" />
+    <Compile Include="Mocks\MockMapPath.cs" />
+    <Compile Include="Mocks\MockModule.cs" />
+    <Compile Include="Mocks\MockParsedContext.cs" />
+    <Compile Include="Mocks\MockStreamingContext.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
     <Compile Include="ThreadTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

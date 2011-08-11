@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Icodeon.Hotwire.Framework.Modules;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
@@ -9,7 +10,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
     {
         protected override string GetConfigurationSectionName()
         {
-            return Constants.Configuration.SmokeTestSectionName;
+            return SmokeTestModule.SmokeTestSectionName;
         }
     }
 }

@@ -155,6 +155,17 @@ namespace Icodeon.Hotwire.Framework.Providers
             DirectoryHelper.DeleteAllFilesExceptMarker(ProcessErrorFolderPath, MarkerFiles.ProcessErrorFolder);
         }
 
+        public void EmptyAllFolders()
+        {
+            EmptyDownloadErrorFolder();
+            EmptyDownloadingFolder();
+            EmptyDownloadQueueuFolder();
+            EmptyProcessedFolder();
+            EmptyProcessQueueFolder();
+            EmptyProcessingFolder();
+            EmptyProcessErrorFolder();
+            RefreshFiles();
+        }
 
         public void EmptyDownloadErrorFolder()
         {

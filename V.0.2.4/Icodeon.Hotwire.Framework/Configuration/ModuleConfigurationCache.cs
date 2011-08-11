@@ -56,20 +56,12 @@ namespace Icodeon.Hotwire.Framework.Configuration
                               Active = config.Active,
                               MethodValidation = config.MethodValidation,
                               RootServiceName = config.RootServiceName,
-                              Endpoints = config.Endpoints.Select( e=> e.ToDTO()) 
+                              Endpoints = config.Endpoints.Select( e=> e.ToDTO()),
+                              Debug = config.Debug
                           };
             _appCache.Set(_key,dto);
             return dto;
         }
 
-        public static IModuleConfiguration ReadQueueModuleConfiguration(IAppCache applicationState)
-        {
-            return new ModuleConfigurationCache(Constants.Configuration.QueuesSectionName,applicationState).Configuration; 
-        }
-
-        public static IModuleConfiguration ReadSmokeTestConfiguration(IAppCache applicationState)
-        {
-            return new ModuleConfigurationCache(Constants.Configuration.SmokeTestSectionName, applicationState).Configuration;
-        }
     }
 }

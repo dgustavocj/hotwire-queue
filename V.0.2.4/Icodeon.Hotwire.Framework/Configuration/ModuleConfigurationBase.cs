@@ -23,6 +23,13 @@ namespace Icodeon.Hotwire.Framework.Configuration
             return (IModuleConfiguration)config;
         }
 
+        [ConfigurationProperty("debug", IsRequired = false)]
+        public bool Debug
+        {
+            get { return (bool)this["debug"]; }
+            set { this["debug"] = value; }
+        }
+
         [ConfigurationProperty("rootServiceName", IsRequired = true)]
         public string RootServiceName
         {

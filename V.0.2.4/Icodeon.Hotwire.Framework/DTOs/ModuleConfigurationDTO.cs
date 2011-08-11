@@ -15,6 +15,7 @@ namespace Icodeon.Hotwire.Framework.DTOs
             _endpoints = new List<IModuleEndpoint>();
         }
 
+        public bool Debug { get; set; }
         public bool Active { get; set; }
         public string RootServiceName { get; set; }
         public MethodValidation MethodValidation { get; set; }

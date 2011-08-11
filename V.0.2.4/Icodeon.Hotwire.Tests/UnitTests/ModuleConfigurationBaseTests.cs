@@ -50,6 +50,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         public static void EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(IModuleConfiguration config)
         {
             config.Ensure(c => c.Active,
+                          c => c.Debug,
                           c => c.RootServiceName == "test-animals",
                           c => c.MethodValidation == MethodValidation.afterUriValidation,
                           c => c.Endpoints != null && c.Endpoints.Count() == 2);

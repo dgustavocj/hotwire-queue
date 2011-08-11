@@ -69,18 +69,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
-    <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandler.cs" />
+    <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CanYouSeeMe.cs" />
+    <Compile Include="UnitTests\ModuleBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationCacheTests.cs" />
     <Compile Include="UnitTests\DebugContractTests.cs" />
     <Compile Include="UnitTests\EndpointRequestMatcherTests.cs" />
     <Compile Include="UnitTests\HowWeAreUsingStructureMapTests.cs" />
+    <Compile Include="UnitTests\ProcessFileScriptSectionTests.cs" />
     <Compile Include="UnitTests\ProviderFactoryTests.cs" />
     <Compile Include="UnitTests\ThreadTestRunnerTests.cs" />
   </ItemGroup>

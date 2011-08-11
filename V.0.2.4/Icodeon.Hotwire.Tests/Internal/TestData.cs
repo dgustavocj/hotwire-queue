@@ -25,10 +25,14 @@ namespace Icodeon.Hotwire.Tests.Internal
                                                  };
 
 
-        public static string[] ThreeTestFiles = new[] {    
+        public static string[] ThreeTestImportFilesWithDownloadedContent = new[] {    
+                                    "539EF088-5FE3-4D89-BFE3-DC5F0B8038E7_numbers.txt",
                                     "539EF088-5FE3-4D89-BFE3-DC5F0B8038E7_numbers.txt.import",
+                                    "999EF088-5FE3-4D89-BFE3-DC5F0B8038E7_hello.txt.import",
                                     "999EF088-5FE3-4D89-BFE3-DC5F0B8038E7_hello.txt",
-                                    "B21FCB05-1F88-4956-8FB6-3E5AA579B3F9-alphabet_textfile.txt" };
+                                    "B21FCB05-1F88-4956-8FB6-3E5AA579B3F9_alphabet-textfile.txt.import",
+                                    "B21FCB05-1F88-4956-8FB6-3E5AA579B3F9_alphabet-textfile.txt" };
+
 
         public override string ImportFile
         {

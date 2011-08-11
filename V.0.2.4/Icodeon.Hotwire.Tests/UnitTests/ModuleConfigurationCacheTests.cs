@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
-using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.TestFramework;
+using Icodeon.Hotwire.TestFramework.Mocks;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.UnitTests
@@ -17,7 +16,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 
             Trace("given test-module-config is loaded in unit test app.config");
             Trace("When the configuration is read");
-            IModuleConfiguration config = new ModuleConfigurationCache("test-module-config", new TestAppCache()).Configuration;
+            IModuleConfiguration config = new ModuleConfigurationCache("test-module-config", new MockAppCache()).Configuration;
 
             Trace("Then the configuration should be read correctly.");
             ModuleConfigurationBaseTests.EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(config);
@@ -30,7 +29,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             TraceTitle("Must cache the configuration between reads");
 
             Trace("Given the item is not in the cache");
-            var testCache = new TestAppCache();
+            var testCache = new MockAppCache();
             testCache.SetHistory.Should().BeEmpty();
 
             Trace("When the item is first requested from the cache");
@@ -45,43 +44,6 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             Trace("then the value should be retrieved from the cache without writing to the cache.");
             testCache.SetHistory.Should().HaveCount(1);
 
-        }
-    }
-
-    
-
-    public class TestAppCache : IAppCache
-    {
-        public List<string> SetHistory { get; private set; }
-
-        public TestAppCache()
-        {
-            _cache = new Dictionary<string, object>();
-            SetHistory = new List<string>();
-        }
-
-        private Dictionary<string, object> _cache;
-
-        public void Set(string key, object source)
-        {
-            SetHistory.Add(key);
-            _cache[key] = source;
-        }
-
-        public object Get(string key)
-        {
-            if (!_cache.ContainsKey(key)) return null;
-            return _cache[key];
-        }
-
-        public void Lock()
-        {
-            // do nothing
-        }
-
-        public void Unlock()
-        {
-            // do nothing
         }
     }
 }

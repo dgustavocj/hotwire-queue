@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
-    public class ProcessFileSection : ConfigurationSection
+    public class ProcessFileScriptSection : ConfigurationSection
     {
         [ConfigurationProperty("endpoint", IsKey = false, IsRequired = true)]
         public string Endpoint
@@ -15,17 +15,16 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["endpoint"] = value; }
         }
 
-
         public string GetEndpoint(string trackingNumber)
         {
             return Endpoint.Replace("{TRACKING-NUMBER}", trackingNumber);
         }
 
-        public static ProcessFileSection ReadConfig()
+        public static ProcessFileScriptSection ReadConfig()
         {
-            string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, "processFile");
+            string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, "processFileScript");
             var config = ConfigurationManager.GetSection(sectionName);
-            return (ProcessFileSection)config;
+            return (ProcessFileScriptSection)config;
         }
     }
 }

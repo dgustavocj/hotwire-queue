@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Net;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 
@@ -10,9 +11,9 @@ namespace Icodeon.Hotwire.Framework.Security
 {
     public class OAuthRequestAuthenticator : IAuthenticateRequest 
     {
-        private readonly HotLogger _logger;
+        private readonly LoggerBase _logger;
 
-        public OAuthRequestAuthenticator(HotLogger logger)
+        public OAuthRequestAuthenticator(LoggerBase logger)
         {
             _logger = logger;
         }

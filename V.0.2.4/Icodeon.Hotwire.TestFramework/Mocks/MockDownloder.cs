@@ -8,8 +8,10 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
 {
     public class MockDownloder : IClientDownloader
     {
+        public bool HasThrown { get; set; }
         private int _cntFiles;
         private int? _throwOnFileNo;
+        private readonly Exception _exceptionToThrow;
 
         private FileDownloadResultDTO createFakeDownload(string path)
         {
@@ -22,7 +24,15 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
                            Seconds = 2
                        };
         }
-        public MockDownloder(int? throwOnFileNo)
+
+        public MockDownloder(int? throwOnFileNo, Exception exceptionToThrow)
+        {
+            _throwOnFileNo = throwOnFileNo;
+            _exceptionToThrow = exceptionToThrow;
+        }
+
+
+        public MockDownloder(int? throwOnFileNo) : this(throwOnFileNo, new FileNotFoundException("file not found."))
         {
             _throwOnFileNo = throwOnFileNo;
         }
@@ -30,7 +40,11 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
         public FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath)
         {
             _cntFiles++;
-            if (_cntFiles == (_throwOnFileNo ?? -1)) throw new Exception(downloadingFilePath + " not found.");
+            if (_cntFiles == (_throwOnFileNo ?? -1))
+            {
+                HasThrown = true;
+                throw _exceptionToThrow;
+            }
             return createFakeDownload(downloadingFilePath);
         }
     }

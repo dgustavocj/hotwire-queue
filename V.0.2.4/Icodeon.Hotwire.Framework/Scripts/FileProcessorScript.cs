@@ -21,6 +21,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
         protected readonly LoggerBase _logger;
         protected bool _isRunning = false;
 
+        public event EventHandler<ExceptionEventArgs> ProcessException;
+
         public bool isRunning { get { return _isRunning;  } }
 
         public string ScriptName
@@ -28,13 +30,23 @@ namespace Icodeon.Hotwire.Framework.Scripts
             get { return "File Processor script."; }
         }
 
-        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger, IHttpClientProvider httpClient, ProcessFileCallerBase processFileCaller)
+        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger, ProcessFileCallerBase processFileCaller)
         {
             _fileprovider = fileprovider;
             _logger = logger;
-            _httpClient = httpClient;
             _processFileCaller = processFileCaller;
         }
+
+        private void RaiseProcessException(Exception ex, EnqueueRequestDTO dto)
+        {
+            var tempHandler = ProcessException;
+            if (tempHandler != null)
+            {
+                tempHandler(this, new ExceptionEventArgs(ex, ePipeLineSection.FileProcess, dto, null));
+            }
+        }
+
+
 
         public virtual void Run(HotLogger logger, Utils.IConsoleWriter console, string folderPath)
         {
@@ -45,17 +57,22 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         public virtual void Run(HotLogger logger, Utils.IConsoleWriter console)
         {
+            EnqueueRequestDTO dto = null;
             try
             {
                 _isRunning = true;
 
-                EnqueueRequestDTO dto;
+               
 
                 while ((dto = GetNextImportFileToProcessMoveToProcessingOrDefault(console)) != null)
                 {
-                    ProcessFile(console, dto, logger, _httpClient,_processFileCaller);
+                    ProcessFile(console, dto, logger, _processFileCaller);
                 }
                 console.WriteLine("Nothing left to process, exiting.");
+            }
+            catch(Exception ex)
+            {
+                RaiseProcessException(ex,dto);                    
             }
             finally
             {
@@ -65,7 +82,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, IHttpClientProvider client, ProcessFileCallerBase processFileCaller)
+        protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, ProcessFileCallerBase processFileCaller)
         {
             console.WriteLine("Processing {0}",dto.ResourceFile);
             try
@@ -78,6 +95,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 //TODO: update IConsoleWriter to support writing erorrs! line below ignores fact that we have console writer injected above!
                 ConsoleHelper.WriteError("Error processing "+ dto.ResourceFile);
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
+                RaiseProcessException(ex,dto);
             }
         }
 

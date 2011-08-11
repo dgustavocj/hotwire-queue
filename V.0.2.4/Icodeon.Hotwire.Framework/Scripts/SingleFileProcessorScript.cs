@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Modules;
@@ -20,8 +17,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             string filenameContains,
             HotwireFilesProvider fileprovider, 
             LoggerBase logger, 
-            IHttpClientProvider httpClient, 
-            ProcessFileCallerBase processFileCaller) : base(fileprovider, logger, httpClient, processFileCaller)
+            ProcessFileCallerBase processFileCaller) : base(fileprovider, logger, processFileCaller)
         {
             _filenameContains = filenameContains;
         }
@@ -32,7 +28,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 _isRunning = true;
                 var dto = EnsureFileStatusIsQueuedReadImportAndMoveToProcessingFolder(console, _filenameContains);
-                if (dto!=null) ProcessFile(console, dto, logger, _httpClient, _processFileCaller);
+                if (dto!=null) ProcessFile(console, dto, logger, _processFileCaller);
                 console.WriteLine("finished processing single file, exiting.");
             }
             finally

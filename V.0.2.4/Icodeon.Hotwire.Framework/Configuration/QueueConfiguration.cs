@@ -9,6 +9,9 @@ namespace Icodeon.Hotwire.Framework.Configuration
     public class QueueConfiguration : ModuleConfigurationBase
     {
 
+
+
+
         [ConfigurationProperty("requiredParameters", IsRequired = false)]
         public string RequiredParameters
         {

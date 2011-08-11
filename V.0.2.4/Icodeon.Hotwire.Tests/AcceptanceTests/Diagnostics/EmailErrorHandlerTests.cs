@@ -6,8 +6,8 @@
 
 //namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 //{
-//    [TestFixture("acceptance-test", "As a service provider, so that I dont have to keep watching the server, I want to be able to receive error notifications by email.")]
-//    public class EmailErrorHandler
+//    [TestFixture("acceptanceTest", "As a service provider, so that I dont have to keep watching the server, I want to be able to receive error notifications by email.")]
+//    public class EmailErrorHandlerTests
 //    {
 //        [Test]
 //        public void EmailToIncludeAllTheExceptionDetails()

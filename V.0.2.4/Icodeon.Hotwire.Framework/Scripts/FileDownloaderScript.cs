@@ -19,6 +19,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class FileDownloaderScript : IScript, IFolderWatcherScript
     {
+
+
         private readonly IDownloaderFilesProvider _downloaderFiles;
 
         private readonly IClientDownloader _clientDownloader;
@@ -32,17 +34,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         public event EventHandler<EnqueueRequestEventArgs> Downloading;
         public event EventHandler<FileInfoEventArgs> Downloaded;
+        public event EventHandler<ExceptionEventArgs> DownloadException;
 
         public FileDownloaderScript(IDownloaderFilesProvider downloaderFilesProvider, IClientDownloader clientDownloader)
         {
             _downloaderFiles = downloaderFilesProvider;
             _clientDownloader = clientDownloader;
-        }
-
-        private IEnumerable<IExceptionHandler> _exceptionHandlers;
-        public void RegisterExceptionHandler(IEnumerable<IExceptionHandler> exceptionHandlers)
-        {
-            _exceptionHandlers = exceptionHandlers;
         }
 
         public void Run(LoggerBase logger, IConsoleWriter console, string folderPath)
@@ -52,29 +49,35 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         public void Run(HotLogger logger, IConsoleWriter console)
         {
+            EnqueueRequestDTO dto = null;
             try
             {
                 _isRunning = true;
-                EnqueueRequestDTO dto;
                 while ((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(logger, console)) != null)
                 {
                     DownloadFile(logger, console, dto);
                 }
                 console.WriteLine("Nothing left to download, exiting.");
             }
-            //catch(Exception ex)
-            //{
-            //    if (_exceptionHandlers!=null)
-            //    {
-            //        _exceptionHandlers.ToList().ForEach( eh=> eh.HandleException(ex,ePipeLineSection.FileDownload));
-            //    }
-            //}
+            catch (Exception ex)
+            {
+                RaiseDownloadError(ex,dto);
+            }
             finally
             {
                 _isRunning = false;
             }
         }
 
+        private void RaiseDownloadError(Exception ex, EnqueueRequestDTO dto)
+        {
+            var tempHandler = DownloadException;
+            if (tempHandler != null)
+            {
+                tempHandler(this, new ExceptionEventArgs(ex, ePipeLineSection.FileDownload, dto,null));
+            }
+
+        }
 
 
         private void DownloadFile(HotLogger logger, IConsoleWriter console, EnqueueRequestDTO dto)
@@ -111,13 +114,13 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 ConsoleHelper.WriteError(msg);
                 logger.ErrorException(msg, ex);
                 _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
+                RaiseDownloadError(ex,dto);
             }
         }
 
         internal EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(HotLogger logger, IConsoleWriter console)
         {
             int maxcount=0;
-            _downloaderFiles.RefreshFiles();
             string importFileNamePath;
             string importFileName;            
             do
@@ -134,23 +137,26 @@ namespace Icodeon.Hotwire.Framework.Scripts
                     }
                     importFileName = Path.GetFileName(importFileNamePath);
                     if (string.IsNullOrWhiteSpace(Thread.CurrentThread.Name)) Thread.CurrentThread.Name = Path.GetFileName(importFileName);
-                    //var status = _downloaderFiles.GetStatusByImportFileName(Path.GetFileName(importFileNamePath));
-                    //if (status != QueueStatus.QueuedForDownloading)
-                    //{
-                    //    SkipFile(importFileNamePath, logger, status, importFileName, console);
-                    //    importFileNamePath = null;
-                    //}
+                    
                 } while (importFileNamePath == null);
-
+                EnqueueRequestDTO importFile = null;
                 try
                 {
                     var importFileDownloadingPath = _downloaderFiles.MoveImportFileFromDownloadQueueuToDownloading(importFileName);
                     string json = File.ReadAllText(importFileDownloadingPath);
-                    EnqueueRequestDTO importFile = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
+                    importFile = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
                     return importFile;
                 }
                 catch (FileNotFoundException fnf) { continue; }
-                catch (IOException ioex) { continue; }
+                catch (IOException ioex)
+                {
+                    if (ioex.FileAlreadyExists())
+                    {
+                        SkipFile(importFileNamePath, logger,QueueStatus.Downloading, importFileName, console);
+                        RaiseDownloadError(ioex,importFile);
+                    }
+                    continue;
+                }
 
             } while (maxcount++<30000);
             throw new ApplicationException("safetynet loop value maxcount exceeded! Possible causes would be if were getting 'false negative' IOExceptions, which are supposed to only happen if another thread has moved a file, and the file still exists and the code tries to move the same file again.");

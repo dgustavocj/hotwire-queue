@@ -10,18 +10,18 @@ namespace Icodeon.Hotwire.Framework.Modules
     public class RestfulProcessFileCaller : ProcessFileCallerBase
     {
         private readonly IHttpClientProvider _httpClient;
-        private readonly ProcessFileSection _processFileSection;
-        
+        private readonly ProcessFileScriptSection _processFileConfiguration;
 
-        public RestfulProcessFileCaller(IHttpClientProvider httpClient, ProcessFileSection processFileSection)
+
+        public RestfulProcessFileCaller(IHttpClientProvider httpClient, ProcessFileScriptSection processFileConfiguration)
         {
             _httpClient = httpClient;
-            _processFileSection = processFileSection;
+            _processFileConfiguration = processFileConfiguration;
         }
 
         public override void CallProcessFileWaitForComplete(string trackingNumber)
         {
-            string endpoint = ProcessFileSection.ReadConfig().GetEndpoint(trackingNumber);
+            string endpoint = _processFileConfiguration.GetEndpoint(trackingNumber);
             var endpointUri = new Uri(endpoint);
             _httpClient.GetAndEnsureStatusIsSuccessful(endpointUri);
         }

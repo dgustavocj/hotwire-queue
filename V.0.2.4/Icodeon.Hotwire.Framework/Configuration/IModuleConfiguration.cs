@@ -8,6 +8,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public interface IModuleConfiguration
     {
+        bool Debug { get; set; }
         bool Active { get; set; }
         string RootServiceName { get; set; }
         MethodValidation MethodValidation { get; set; }

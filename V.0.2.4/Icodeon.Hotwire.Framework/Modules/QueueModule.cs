@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Net;
-using System.Web;
-using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
-using Icodeon.Hotwire.Framework.Security;
 using Icodeon.Hotwire.Framework.Utils;
-using NLog;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
@@ -28,45 +22,41 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         public override IEnumerable<string> ActionNames
         {
-            get { return new[] {ActionEnqueueRequest}; }
+            get { return new[] {ActionEnqueueRequest, ModuleBase.ActionVersion }; }
         }
 
-
-        //TODO: Move all the request context to a rest module context DTO?
-        // it's not a too massive list and I like seeing there here (at least for now) as it's a reminder of what I have to work with,do or dont need.
-        protected override object ProcessRequest(HttpApplicationState applicationState, NameValueCollection queueParameters, Uri url, UriTemplateMatch match, IModuleEndpoint moduleConfig, IMediaInfo mediaInfo, IMapPath mapper, LoggerBase logger)
+        public override object ProcessRequest(ParsedContext context)
         {
-            logger.Trace("QueueModule-> Action=" + moduleConfig.Action);
-            logger.Trace("--------------------------------------");
-            switch (moduleConfig.Action)
+            context.Logger.Trace("QueueModule-> Action=" + context.ModuleConfig.Action);
+            context.Logger.Trace("--------------------------------------");
+            switch (context.ModuleConfig.Action)
             {
+                case ModuleBase.ActionVersion:
+                    return AssemblyHelper.FrameworkVersion;
+
                 case ActionEnqueueRequest:
-                    logger.Trace("\tParsing Name Value's from the input stream.");
-                    
+                    BeforeProcessFile(context.Logger, context.RequestParameters);
+                    context.Logger.Trace("\tValidating hotwire enqueue request required parameters.");
+                    EnqueueRequestDTO.validateRequiredParameters(context.RequestParameters);
+                    context.Logger.Trace("\t{0}", DeploymentEnvironment.CurrentBuildConfiguration);
 
-                    BeforeProcessFile(logger,queueParameters);
-
-                    logger.Trace("\tValidating hotwire enqueue request required parameters.");
-                    EnqueueRequestDTO.validateRequiredParameters(queueParameters);
-                    logger.Trace("\t{0}",DeploymentEnvironment.CurrentBuildConfiguration);
-
-                    var enqueueRequest = new EnqueueRequestDTO(queueParameters)
+                    var enqueueRequest = new EnqueueRequestDTO(context.RequestParameters)
                                              {
                                                  TransactionId = Guid.NewGuid().ToString()
                                              };
-                    
-                    logger.Trace("\transactionId = {0}",enqueueRequest.TransactionId);
-                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance(logger);
-                    var dal = new QueueDal(fileProvider, logger);
+
+                    context.Logger.Trace("\transactionId = {0}", enqueueRequest.TransactionId);
+                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance(context.Logger);
+                    var dal = new QueueDal(fileProvider, context.Logger);
                     dal.Save(enqueueRequest, QueueStatus.QueuedForDownloading);
-                    var queuedResource = new QueuedResource()
+                    var queuedResource = new QueuedResource
                                              {
                                                  TrackingNumber = enqueueRequest.GetTrackingNumber()
                                              };
-                    logger.Trace("\tTRACKING-NUMBER : {0}", queuedResource.TrackingNumber);
+                    context.Logger.Trace("\tTRACKING-NUMBER : {0}", queuedResource.TrackingNumber);
                     return queuedResource;
 
-                default: throw new ArgumentOutOfRangeException(moduleConfig.Action + " is not a supported action.");
+                default: throw new ArgumentOutOfRangeException(context.ModuleConfig.Action + " is not a supported QueueModule action.");
             }
 
         }

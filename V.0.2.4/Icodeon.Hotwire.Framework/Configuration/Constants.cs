@@ -26,8 +26,9 @@ namespace Icodeon.Hotwire.Framework.Configuration
         public static class Configuration
         {
             public const string SectionGroup = "hotwire";
-            public const string SmokeTestSectionName = "smokeTests";
+            
             public const string QueuesSectionName = "queues";
+            public const string ProcessFileSectionName = "processFile";
         }
 
 
