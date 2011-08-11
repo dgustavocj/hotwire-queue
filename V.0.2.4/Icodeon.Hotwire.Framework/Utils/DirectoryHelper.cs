@@ -46,6 +46,12 @@ namespace Icodeon.Hotwire.Framework.Utils
             return filePaths.Any(fp=> fp.EndsWith(fileNoPath));
         }
 
+        public static FileInfo GetCurrentDirectoryLogfile(string logfile)
+        {
+            string path = Path.Combine(Environment.CurrentDirectory, logfile);
+            return new FileInfo(path);
+        }
+
         public static string GetSolutionRootPath(string solutionFolderMarkerFile)
         {
             return GetSolutionRoot(solutionFolderMarkerFile).FullName;

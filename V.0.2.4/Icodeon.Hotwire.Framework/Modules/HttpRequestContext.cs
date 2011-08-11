@@ -11,6 +11,12 @@ namespace Icodeon.Hotwire.Framework.Modules
         public IModuleConfiguration Configuration { get; set; }
         public Uri Url { get; set; }
         public string UserHostAddress { get; set; }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append(string.Format("Url:{0}, UserHostAddress:{1}",Url, UserHostAddress));
+            return sb.ToString();
+        }
 
     }
 }

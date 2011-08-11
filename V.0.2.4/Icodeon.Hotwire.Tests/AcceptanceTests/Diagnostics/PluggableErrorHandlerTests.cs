@@ -91,6 +91,25 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             Assert.AreEqual(1, FilesProvider.ProcessErrorFilePaths.Count(), "only 1 error file should now be in process error.");
         }
 
+
+        public static ModuleConfigurationDTO GivenModuleConfigurationForMockModule()
+        {
+            var configuration = new ModuleConfigurationDTO
+            {
+                Active = true,
+                Debug = false,
+                MethodValidation = MethodValidation.beforeUriValidation,
+                Endpoints = new[] { new EndpointDTO() { 
+                    Action = MockModule.ActionHttpModuleException, 
+                    Active = true, 
+                    HttpMethods = new[] {"GET"},
+                    MediaType = eMediaType.text,
+                    Name = "endpoint1", 
+                    UriTemplateString = "/throw/httpexception" }}
+            };
+            return configuration;
+        }
+
         [Test]
         public void ShouldHandleModuleErrors()
         {
@@ -99,22 +118,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 
             Trace("Given a module that will respond with an IOException");
             var module = new MockModule();
-            // new fluent configuration
-            var configuration = new ModuleConfigurationDTO 
-            { 
-                Active = true,
-                Debug = false,
-                MethodValidation = MethodValidation.beforeUriValidation,
-                Endpoints = new[] { new EndpointDTO() { 
-                    Action = MockModule.ActionIOException, 
-                    Active = true, 
-                    HttpMethods = new[] {"GET"},
-                    MediaType = eMediaType.text,
-                    Name = "endpoint1", 
-                    UriTemplateString = "/throw/ioexception" }}
-            };
-            
-            var streamingContext = new MockStreamingContext(requestUri:"http://localhost/throw/ioexception",configuration:configuration);
+            var configuration = GivenModuleConfigurationForMockModule();
+            var streamingContext = new MockStreamingContext("http://localhost/throw/httpexception", configuration);
 
             Trace("And two handlers to handle the exceptions");
             module.ProcessRequestException += _errorHandler1.HandleException;
@@ -129,7 +134,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             _errorHandler1.Handled.Should().BeTrue();
             _errorHandler2.Handled.Should().BeTrue();
 
-            Trace("and the module should return 500");
+            Trace("and the module should return 301 (permanently moved)");
             streamingContext.HttpWriter.StatusCode.Should().Be(500);
 
         }

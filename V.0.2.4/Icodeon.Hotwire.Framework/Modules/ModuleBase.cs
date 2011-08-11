@@ -35,7 +35,10 @@ namespace Icodeon.Hotwire.Framework.Modules
         protected virtual HotLogger GetLogger()
         {
             var logger = LogManager.GetLogger(ConfigurationSectionName);
-            return new HotLogger(logger);
+            var hotLogger = new HotLogger(logger);
+            // don't want to echo every single detail to the console as that will end up in the resharper debugger output window.
+            hotLogger.EchoToConsole = false;
+            return hotLogger;
         }
 
         private IEnumerable<string> GetActionNamesIncludingDefaults()

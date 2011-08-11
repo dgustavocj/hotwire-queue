@@ -126,6 +126,7 @@
     <Compile Include="Diagnostics\IExceptionHandler.cs" />
     <Compile Include="Diagnostics\IOExceptionHelper.cs" />
     <Compile Include="Diagnostics\LoggerBase.cs" />
+    <Compile Include="Diagnostics\LoggingErrorHandler.cs" />
     <Compile Include="Diagnostics\NullLogger.cs" />
     <Compile Include="DTOs\EndpointDTO.cs" />
     <Compile Include="DTOs\ModuleConfigurationDTO.cs" />

@@ -57,7 +57,7 @@ namespace Icodeon.Hotwire.Framework
             _logger.Trace("");
             _logger.Trace(text);
             _logger.Trace(text.UnderlineText('-'));
-
+            // Take a look at using logging rules to echo stuff to console instead of having to re-invent the wheel.
             if (EchoToConsole)
             {
                 Console.WriteLine(message, parameters);
