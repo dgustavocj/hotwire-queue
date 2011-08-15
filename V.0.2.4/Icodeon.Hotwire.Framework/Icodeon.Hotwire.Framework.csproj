@@ -96,9 +96,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AssemblyProviderBase.cs" />
+    <Compile Include="Configuration\ConfigurationBase.cs" />
     <Compile Include="Configuration\Constants.cs" />
+    <Compile Include="Configuration\EmailErrorHandlerConfiguration.cs" />
     <Compile Include="Configuration\ePipeLineSection.cs" />
+    <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\IOAuthProviderConfig.cs" />
+    <Compile Include="Configuration\ISSLEMailErrorHandlerConfig.cs" />
     <Compile Include="Configuration\NotWiredUpException.cs" />
     <Compile Include="Configuration\OAuthProviderSection.cs" />
     <Compile Include="Configuration\IAssemblyProvider.cs" />
@@ -120,6 +124,7 @@
     <Compile Include="ConsoleService\ServiceDTO.cs" />
     <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
     <Compile Include="Contracts\IEnqueueRequest.cs" />
+    <Compile Include="Diagnostics\SSLEmailErrorHandler.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />
     <Compile Include="Diagnostics\ExceptionEventArgs.cs" />
     <Compile Include="Diagnostics\HotLogger.cs" />

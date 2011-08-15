@@ -16,7 +16,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
         //    return (ProcessFileConfiguration)config;
         //}
 
-        protected override string GetConfigurationSectionName()
+        public override string GetConfigurationSectionName()
         {
             return Constants.Configuration.ProcessFileSectionName;
         }

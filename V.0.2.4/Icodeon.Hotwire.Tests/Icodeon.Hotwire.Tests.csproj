@@ -86,6 +86,7 @@
     <Compile Include="UnitTests\HowWeAreUsingStructureMapTests.cs" />
     <Compile Include="UnitTests\ProcessFileScriptSectionTests.cs" />
     <Compile Include="UnitTests\ProviderFactoryTests.cs" />
+    <Compile Include="UnitTests\SSLEmailErrorHandlerConfigurationTests.cs" />
     <Compile Include="UnitTests\ThreadTestRunnerTests.cs" />
   </ItemGroup>
   <ItemGroup>

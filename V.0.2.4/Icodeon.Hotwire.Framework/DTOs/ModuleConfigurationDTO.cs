@@ -25,5 +25,12 @@ namespace Icodeon.Hotwire.Framework.DTOs
         {
             _endpoints.Add(endpoint);
         }
+
+        public string GetConfigurationSectionName()
+        {
+            return ConfigurationSectionName;
+        }
+
+        public string ConfigurationSectionName { get; set; }
     }
 }

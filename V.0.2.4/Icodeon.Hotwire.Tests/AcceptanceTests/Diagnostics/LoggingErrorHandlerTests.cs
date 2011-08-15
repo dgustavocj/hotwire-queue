@@ -36,7 +36,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 
             Trace("Given a module that will respond with an httpException");
             var module = new MockModule();
-            var configuration = PluggableErrorHandlerTests.GivenModuleConfigurationForMockModule();
+            var configuration = ModuleConfigurationDTOFactory.GivenModuleConfigurationForMockModule();
             var streamingContext = new MockStreamingContext("http://localhost/throw/httpexception", configuration);
 
             Trace("And a LoggingError handler to handle the exceptions");

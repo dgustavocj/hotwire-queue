@@ -5,24 +5,8 @@ using Icodeon.Hotwire.Framework.Contracts;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
-    public abstract class ModuleConfigurationBase : ConfigurationSection, IModuleConfiguration
+    public abstract class ModuleConfigurationBase : ConfigurationBase, IModuleConfiguration
     {
-        public string ConfigurationSectionName { get; set; }
-
-        protected abstract string GetConfigurationSectionName();
-
-        public ModuleConfigurationBase()
-        {
-            ConfigurationSectionName = GetConfigurationSectionName();
-        }
-
-        public IModuleConfiguration ReadConfig()
-        {
-            string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, ConfigurationSectionName);
-            var config = ConfigurationManager.GetSection(sectionName);
-            return (IModuleConfiguration)config;
-        }
-
         [ConfigurationProperty("debug", IsRequired = false)]
         public bool Debug
         {
@@ -50,9 +34,6 @@ namespace Icodeon.Hotwire.Framework.Configuration
             get { return (bool)this["active"]; }
             set { this["active"] = value; }
         }
-
-
-
 
         // this attributes defines the xml collection element name
         [ConfigurationProperty("endpoints")]

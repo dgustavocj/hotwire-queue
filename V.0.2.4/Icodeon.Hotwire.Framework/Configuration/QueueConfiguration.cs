@@ -19,7 +19,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["requiredParameters"] = value; }
         }
 
-        protected override string GetConfigurationSectionName()
+        public override string GetConfigurationSectionName()
         {
             return Constants.Configuration.QueuesSectionName;
         }

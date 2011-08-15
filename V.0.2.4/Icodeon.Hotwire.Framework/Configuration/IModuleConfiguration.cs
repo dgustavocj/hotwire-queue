@@ -6,7 +6,7 @@ using Icodeon.Hotwire.Framework.MediaTypes;
 
 namespace Icodeon.Hotwire.Framework.Configuration
 {
-    public interface IModuleConfiguration
+    public interface IModuleConfiguration : IConfigurationSection
     {
         bool Debug { get; set; }
         bool Active { get; set; }

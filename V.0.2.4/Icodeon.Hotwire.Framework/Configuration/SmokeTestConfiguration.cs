@@ -8,7 +8,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public class SmokeTestConfiguration : ModuleConfigurationBase
     {
-        protected override string GetConfigurationSectionName()
+        public override string GetConfigurationSectionName()
         {
             return SmokeTestModule.SmokeTestSectionName;
         }

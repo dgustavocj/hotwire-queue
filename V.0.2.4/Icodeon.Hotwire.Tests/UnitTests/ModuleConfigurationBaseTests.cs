@@ -40,7 +40,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             // wording used above is "similar" so that we don't have to keep refactoring this trace log each time a small change is made.
 
             Trace("When the test configuration is read");
-            IModuleConfiguration config = new TestModuleConfiguration().ReadConfig();
+            IModuleConfiguration config = new TestModuleConfiguration().ReadConfig<IModuleConfiguration>();
 
             Trace("Then the configuration should be read correctly.");
             EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(config);
