@@ -75,7 +75,6 @@
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
-    <Content Include="MockCDN\hello.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -122,6 +121,7 @@
     <Folder Include="App_Data\HotwireFolders\ProcessError\" />
     <Folder Include="App_Data\HotwireFolders\Processing\" />
     <Folder Include="App_Data\HotwireFolders\ProcessQueue\" />
+    <Folder Include="MockCDN\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
