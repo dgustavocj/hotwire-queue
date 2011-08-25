@@ -23,7 +23,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public IAssemblyProvider ReadConfig()
         {
-            return (IAssemblyProvider)ConfigurationManager.GetSection(Constants.Configuration.SectionGroup + @"/" + ProviderName);
+            return (IAssemblyProvider)ConfigurationManager.GetSection(ConfigurationBase.SectionGroup + @"/" + ProviderName);
         }
 
 

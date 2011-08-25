@@ -9,9 +9,9 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
 {
     public class MockModule : ModuleBase
     {
-        protected override string ConfigurationSectionName
+        protected override string GetConfigurationSectionName()
         {
-            get { return "mockModule"; }
+            return "mockModule"; 
         }
 
         public override IEnumerable<string> ActionNames

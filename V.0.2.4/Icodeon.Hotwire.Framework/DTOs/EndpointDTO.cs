@@ -39,5 +39,8 @@ namespace Icodeon.Hotwire.Framework.DTOs
         [DataMember]
         public SecurityType Security { get; set; }
 
+        [DataMember]
+        public string PrivateKey { get; set; }
+
     }
 }

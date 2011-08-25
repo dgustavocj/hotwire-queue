@@ -204,11 +204,13 @@
     <Compile Include="Scripts\IScript.cs" />
     <Compile Include="Scripts\ConsoleScriptRunner.cs" />
     <Compile Include="Scripts\SingleFileProcessorScript.cs" />
+    <Compile Include="Security\RequestAuthenticatorFactory.cs" />
     <Compile Include="Security\LocalOnlyRequestAuthenticator.cs" />
     <Compile Include="Security\IAuthenticateRequest.cs" />
     <Compile Include="Security\NoSecurityRequestAuthenticator.cs" />
     <Compile Include="Security\OAuthRequestAuthenticator.cs" />
     <Compile Include="Security\QuickAuth.cs" />
+    <Compile Include="Security\SimpleMACAuthenticator.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />
     <Compile Include="Utils\AppCacheWrapper.cs" />

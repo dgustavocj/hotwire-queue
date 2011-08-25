@@ -8,6 +8,8 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public abstract class ConfigurationBase : ConfigurationSection, IConfigurationSection
     {
+        public const string SectionGroup = "hotwire";
+
         public string ConfigurationSectionName { get; set; }
 
 
@@ -20,12 +22,9 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public virtual T ReadConfig<T>() where T : IConfigurationSection
         {
-            string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, ConfigurationSectionName);
+            string sectionName = String.Format(@"{0}/{1}", SectionGroup, ConfigurationSectionName);
             var config = ConfigurationManager.GetSection(sectionName);
             return (T)config;
         }
-
-
-
     }
 }

@@ -25,6 +25,14 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { UriTemplateString = value.ToString(); }
         }
 
+
+        [ConfigurationProperty("privateKey", IsKey = false, IsRequired = false)]
+        public string PrivateKey
+        {
+            get { return (string)this["privateKey"]; }
+            set { this["privateKey"] = value; }
+        }
+
         [ConfigurationProperty("name", IsKey = true, IsRequired = true)]
         public string Name
         {
@@ -79,5 +87,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
             get { return (SecurityType)this["security"]; }
             set { this["security"] = value; }
         }
+
+
     }
 }

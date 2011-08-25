@@ -2,6 +2,7 @@
 
 namespace Icodeon.Hotwire.Framework.Contracts
 {
+    //TODO: rename to RequestSecurity
     [DataContract]
     public enum SecurityType
     {
@@ -15,6 +16,10 @@ namespace Icodeon.Hotwire.Framework.Contracts
         oauth,
 
         [EnumMember]
-        localonly
+        localonly,
+
+        [EnumMember]
+        simpleMAC
+
     }
 }

@@ -4,7 +4,6 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public static class Constants
     {
-
         public static class TemporaryKeyAndSecretLookups
         {
             private static string _partnerConsumerKey = null;
@@ -19,19 +18,6 @@ namespace Icodeon.Hotwire.Framework.Configuration
             // for testing ... a value that is definately NOT the partner consumer key.
             public const string NotPartnerConsumerKey = "d933ce9a8d273de4309441e5031585e4";
         }
-
-        //TODO: create a single hotwire configuration file that is shared between projects and stored in the solution root.
-
-
-        public static class Configuration
-        {
-            public const string SectionGroup = "hotwire";
-            
-            public const string QueuesSectionName = "queues";
-            public const string ProcessFileSectionName = "processFile";
-        }
-
-
 
         public static class ProjectFolders
         {

@@ -8,7 +8,7 @@ namespace Icodeon.Hotwire.Framework.DTOs
 {
     public class ModuleConfigurationDTO : IModuleConfiguration
     {
-        public List<IModuleEndpoint> _endpoints;
+        private List<IModuleEndpoint> _endpoints;
 
         public ModuleConfigurationDTO()
         {
@@ -19,7 +19,11 @@ namespace Icodeon.Hotwire.Framework.DTOs
         public bool Active { get; set; }
         public string RootServiceName { get; set; }
         public MethodValidation MethodValidation { get; set; }
-        public IEnumerable<IModuleEndpoint> Endpoints { get; set; }
+        public List<IModuleEndpoint> Endpoints {
+            get { return _endpoints; }
+            set { _endpoints = value;  }
+        }
+
 
         public void AddEndpoint(EndpointConfiguration endpoint)
         {

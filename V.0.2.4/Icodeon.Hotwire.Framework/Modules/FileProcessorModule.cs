@@ -13,9 +13,9 @@ namespace Icodeon.Hotwire.Framework.Modules
     public class FileProcessorModule : ModuleBase
     {
 
-        protected override string ConfigurationSectionName
+        protected override string GetConfigurationSectionName()
         {
-            get { return Constants.Configuration.ProcessFileSectionName; }
+            return ProcessFileConfiguration.ProcessFileSectionName; 
         }
 
         public override object ProcessRequest(ParsedContext context)

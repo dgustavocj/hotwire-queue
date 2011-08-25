@@ -20,7 +20,7 @@ namespace Icodeon.Hotwire.Framework.Modules
     {
         public void Dispose() { }
 
-        abstract protected string ConfigurationSectionName { get; }
+        protected abstract string GetConfigurationSectionName();
         public abstract IEnumerable<string> ActionNames { get; }
 
         public event EventHandler<ExceptionEventArgs> ProcessRequestException;
@@ -34,7 +34,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         //ADH: override this and return null in testing if you don't need logging.
         protected virtual HotLogger GetLogger()
         {
-            var logger = LogManager.GetLogger(ConfigurationSectionName);
+            var logger = LogManager.GetLogger(GetConfigurationSectionName());
             var hotLogger = new HotLogger(logger);
             // don't want to echo every single detail to the console as that will end up in the resharper debugger output window.
             hotLogger.EchoToConsole = false;
@@ -48,25 +48,14 @@ namespace Icodeon.Hotwire.Framework.Modules
                 yield return actionName;
             }
             yield return ActionIndex;
+            yield return ActionEcho;
+            yield return ActionVersion;
         }
 
-        protected virtual IAuthenticateRequest GetRequestAuthenticator(HotLogger logger, SecurityType endpointAuthorisation)
-        {
-            switch (endpointAuthorisation)
-            {
-                case SecurityType.none:
-                    return new NoSecurityRequestAuthenticator();
-                case SecurityType.oauth:
-                    return new OAuthRequestAuthenticator(logger);
-                case SecurityType.localonly:
-                    return new LocalOnlyRequestAuthenticator();
-                default:
-                    throw new ArgumentOutOfRangeException("endpointAuthorisation");
-            }
-        }
-
+        
         internal void PrepareAndProcessRequest(StreamingContext context, EndpointMatch endpointMatch)
         {
+
             HotLogger logger = GetLogger();
             logger.Trace("");
             logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
@@ -83,7 +72,8 @@ namespace Icodeon.Hotwire.Framework.Modules
             logger.Trace("creating HttpApplicationWrapper");
 
             logger.Trace("check that the configured service matches the registered service names");
-            if (!GetActionNamesIncludingDefaults().Contains(endpoint.Action)) throw new ArgumentException(string.Format("Invalid action name ['{0}'] in the configuration. Must be one of:{1}", endpoint.Action, String.Join(",", GetActionNamesIncludingDefaults())));
+            var actionNamesIncludingDefaults = GetActionNamesIncludingDefaults();
+            if (!actionNamesIncludingDefaults.Contains(endpoint.Action)) throw new ArgumentException(string.Format("Invalid action name ['{0}'] in the configuration. Must be one of:{1}", endpoint.Action, String.Join(",", GetActionNamesIncludingDefaults())));
 
             // NB! there is currently no authorisation ('What' permisssions) component, ONLY AUTHENTICATION (who?) as a result it may be tempting to simply write if (endpoint.Security!=none) below
             // but that assumes that if you do nothing then you have access to everything, which is brittle and not scalable, by default you should have access to nothing
@@ -91,8 +81,11 @@ namespace Icodeon.Hotwire.Framework.Modules
             // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
             // -------------------------------------------------------------------------------------------------------------------
             var requestParameters =context.InputStream.ParseNameValues();
-            var authenticator = GetRequestAuthenticator(logger, endpoint.Security);
-            authenticator.AuthenticateRequest(requestParameters);
+            // TODO: inject the RequestAuthenticatorFactory
+            var authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(logger, endpoint.Security);
+            authenticator.AuthenticateRequest(requestParameters, context.HttpMethod, endpointMatch);
+
+            if (ProcessDefaultActions(context, endpointMatch)) return;
 
             var parsedContext = new ParsedContext
             {
@@ -141,32 +134,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             if (endpointMatch==null) return;
             // NB! get the logger AFTER checking if this request matches the httpMethod and Uri, because getting a logger can be very slow,
             // and we don't want this called on every single http request on this server!
-            if(endpointMatch.Endpoint.Action==ActionIndex)
-            {
-                var serviceList = new ServiceListDTO
-                                      {
-                                          ModuleName = GetType().ToString(),
-                                          Endpoints = context.Configuration.Endpoints.Select(e=> e.ToDTO()).ToList()
-                                      };
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType], serviceList, HttpStatusCode.OK, HotLogger.NullLogger);
-                context.CompleteRequest();
-                return;
-            }
-            if (endpointMatch.Endpoint.Action == ActionVersion)
-            {
-                string version = AssemblyHelper.FrameworkVersion;
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType], version, HttpStatusCode.OK, HotLogger.NullLogger);
-                context.CompleteRequest();
-                return;
-            }
 
-            if (endpointMatch.Endpoint.Action == ActionEcho)
-            {
-                string message = endpointMatch.Match.BoundVariables["SAY"];
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType], message, HttpStatusCode.OK, HotLogger.NullLogger);
-                context.CompleteRequest();
-                return;
-            }
             var logger = context.GetLogger();
             try
             {
@@ -207,13 +175,65 @@ namespace Icodeon.Hotwire.Framework.Modules
             }
         }
 
+        // Move these three methods to seperate class?
+        private bool ProcessDefaultActions(StreamingContext context, EndpointMatch endpointMatch)
+        {
+            if (ProcessIndexAction(context, endpointMatch)) return true;
+            if (ProcessVersionAction(context, endpointMatch)) return true;
+            if (ProcessEchoAction(context, endpointMatch)) return true;
+            return false;
+        }
+
+        private static bool ProcessEchoAction(StreamingContext context, EndpointMatch endpointMatch)
+        {
+            if (endpointMatch.Endpoint.Action == ActionEcho)
+            {
+                string message = endpointMatch.Match.BoundVariables["SAY"];
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
+                                                 message, HttpStatusCode.OK, HotLogger.NullLogger);
+                context.CompleteRequest();
+                return true;
+            }
+            return false;
+        }
+
+        private static bool ProcessVersionAction(StreamingContext context, EndpointMatch endpointMatch)
+        {
+            if (endpointMatch.Endpoint.Action == ActionVersion)
+            {
+                string version = AssemblyHelper.FrameworkVersion;
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
+                                                 version, HttpStatusCode.OK, HotLogger.NullLogger);
+                context.CompleteRequest();
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessIndexAction(StreamingContext context, EndpointMatch endpointMatch)
+        {
+            if (endpointMatch.Endpoint.Action == ActionIndex)
+            {
+                var serviceList = new ServiceListDTO
+                                      {
+                                          ModuleName = GetType().ToString(),
+                                          Endpoints = context.Configuration.Endpoints.Select(e => e.ToDTO()).ToList()
+                                      };
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
+                                                 serviceList, HttpStatusCode.OK, HotLogger.NullLogger);
+                context.CompleteRequest();
+                return true;
+            }
+            return false;
+        }
+
         public void Init(HttpApplication context)
         {
             context.BeginRequest += delegate
             {
                 IAppCache appCache = new AppCacheWrapper(context.Application);
                 IModuleConfiguration configuration =
-                    new ModuleConfigurationCache(ConfigurationSectionName, appCache).
+                    new ModuleConfigurationCache(GetConfigurationSectionName(), appCache).
                         Configuration;
                 var writer = new ResponsableHttpContextWriter(context.Response);
                 IMapPath pathMapper = new HttpApplicationWrapper(context);

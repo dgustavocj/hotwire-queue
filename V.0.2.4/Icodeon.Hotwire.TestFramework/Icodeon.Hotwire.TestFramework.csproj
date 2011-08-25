@@ -55,6 +55,7 @@
     <Compile Include="AcceptanceTest.cs" />
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
+    <Compile Include="MockHttpWriterAssertions.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\MockAppCache.cs" />
     <Compile Include="Mocks\MockDownloder.cs" />

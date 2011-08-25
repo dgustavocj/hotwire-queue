@@ -22,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public static ProcessFileScriptSection ReadConfig()
         {
-            string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, "processFileScript");
+            string sectionName = string.Format(@"{0}/{1}", ConfigurationBase.SectionGroup, "processFileScript");
             var config = ConfigurationManager.GetSection(sectionName);
             return (ProcessFileScriptSection)config;
         }

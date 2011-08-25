@@ -42,9 +42,9 @@ namespace Icodeon.Hotwire.Framework.Configuration
             get { return (EndpointCollection)this["endpoints"]; }
         }
 
-        public IEnumerable<IModuleEndpoint> Endpoints
+        public List<IModuleEndpoint> Endpoints
         {
-            get { return EndpointCollection.Cast<EndpointConfiguration>(); }
+            get { return EndpointCollection.Cast<IModuleEndpoint>().ToList(); }
         }
 
         public void AddRange(IEnumerable<EndpointConfiguration> endpoints)

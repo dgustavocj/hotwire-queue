@@ -8,17 +8,11 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public class ProcessFileConfiguration : ModuleConfigurationBase
     {
-
-        //public static new ProcessFileConfiguration ReadConfig()
-        //{
-        //    string sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, "processFile");
-        //    var config = ConfigurationManager.GetSection(sectionName);
-        //    return (ProcessFileConfiguration)config;
-        //}
+        public const string ProcessFileSectionName = "processFile";
 
         public override string GetConfigurationSectionName()
         {
-            return Constants.Configuration.ProcessFileSectionName;
+            return ProcessFileSectionName;
         }
     }
 }

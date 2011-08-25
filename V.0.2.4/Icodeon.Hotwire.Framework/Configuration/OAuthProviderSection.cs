@@ -15,7 +15,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public static IOAuthProviderConfig ReadConfig()
         {
-            return (IOAuthProviderConfig)ConfigurationManager.GetSection(Constants.Configuration.SectionGroup + @"/oAuthProvider");
+            return (IOAuthProviderConfig)ConfigurationManager.GetSection(ConfigurationBase.SectionGroup + @"/oAuthProvider");
         }
 
     } // class

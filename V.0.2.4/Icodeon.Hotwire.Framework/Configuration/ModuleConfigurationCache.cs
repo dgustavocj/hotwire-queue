@@ -22,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
             _configurationSectionName = configurationSectionName;
             _appCache = appCache;
             _key = string.Format("hotwire.config.{0}", _configurationSectionName);
-            _sectionName = string.Format(@"{0}/{1}", Constants.Configuration.SectionGroup, _configurationSectionName);
+            _sectionName = string.Format(@"{0}/{1}", ConfigurationBase.SectionGroup, _configurationSectionName);
         }
 
 
@@ -56,7 +56,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
                               Active = config.Active,
                               MethodValidation = config.MethodValidation,
                               RootServiceName = config.RootServiceName,
-                              Endpoints = config.Endpoints.Select( e=> e.ToDTO()),
+                              Endpoints = config.Endpoints.Select( e=> (IModuleEndpoint)e.ToDTO()).ToList(),
                               Debug = config.Debug
                           };
             _appCache.Set(_key,dto);

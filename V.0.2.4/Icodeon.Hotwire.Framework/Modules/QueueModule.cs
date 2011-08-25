@@ -13,9 +13,9 @@ namespace Icodeon.Hotwire.Framework.Modules
     public class QueueModule : ModuleBase
     {
 
-        protected override string ConfigurationSectionName
+        protected override string GetConfigurationSectionName()
         {
-            get { return Constants.Configuration.QueuesSectionName; }
+            return QueueConfiguration.QueuesSectionName; 
         }
 
         public const string ActionEnqueueRequest = "ENQUEUE-REQUEST";

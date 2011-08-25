@@ -8,9 +8,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 {
     public class QueueConfiguration : ModuleConfigurationBase
     {
-
-
-
+        public const string QueuesSectionName = "queues";
 
         [ConfigurationProperty("requiredParameters", IsRequired = false)]
         public string RequiredParameters
@@ -21,7 +19,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
 
         public override string GetConfigurationSectionName()
         {
-            return Constants.Configuration.QueuesSectionName;
+            return QueuesSectionName;
         }
     }
 }

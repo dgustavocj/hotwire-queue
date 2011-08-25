@@ -8,7 +8,7 @@ namespace Icodeon.Hotwire.Framework.Security
     public class NoSecurityRequestAuthenticator : IAuthenticateRequest 
     {
 
-        public void AuthenticateRequest(System.Collections.Specialized.NameValueCollection queueParameters)
+        public void AuthenticateRequest(System.Collections.Specialized.NameValueCollection requestParameters, string httpMethod, Modules.EndpointMatch endpointMatch)
         {
             // do nothing. (for now).
             return;

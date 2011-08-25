@@ -9,9 +9,9 @@ namespace Icodeon.Hotwire.Framework.Modules
     {
         public const string SmokeTestSectionName = "smokeTests";
 
-        protected override string ConfigurationSectionName
+        protected override string GetConfigurationSectionName()
         {
-            get { return SmokeTestSectionName; }
+            return SmokeTestSectionName; 
         }
 
         public override object ProcessRequest(ParsedContext context)

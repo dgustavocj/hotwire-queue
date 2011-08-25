@@ -7,7 +7,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
     {
         public static FoldersSection ReadConfig()
         {
-            return (FoldersSection)ConfigurationManager.GetSection(Constants.Configuration.SectionGroup + @"/folders");
+            return (FoldersSection)ConfigurationManager.GetSection(ConfigurationBase.SectionGroup + @"/folders");
         }
 
         [ConfigurationProperty("processQueueFolder", IsRequired = true)]

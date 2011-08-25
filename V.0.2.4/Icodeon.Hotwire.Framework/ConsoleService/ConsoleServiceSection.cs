@@ -42,7 +42,7 @@ namespace Icodeon.Hotwire.Framework.ConsoleService
         // todo: replace with config section reader (factory)
         public static IConsoleServiceConfig ReadConfig()
         {
-            return (IConsoleServiceConfig)ConfigurationManager.GetSection( Constants.Configuration.SectionGroup +@"/consoleService");
+            return (IConsoleServiceConfig)ConfigurationManager.GetSection( ConfigurationBase.SectionGroup +@"/consoleService");
         }
 
     } // class

@@ -4,6 +4,7 @@ using System.Net;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 
@@ -18,12 +19,12 @@ namespace Icodeon.Hotwire.Framework.Security
             _logger = logger;
         }
 
-        public void AuthenticateRequest(NameValueCollection queueParameters)
+        public void AuthenticateRequest(NameValueCollection requestParameters, string httpMethod, EndpointMatch endpointMatch)
         {
             // this is the simplified authentication for now, not using ValidateOauthSignature at the bottom.
 
             _logger.Trace("\tSecurity type is set to OAuth authentication.");
-            string key = queueParameters[Constants.OAuth.oauth_consumer_key];
+            string key = requestParameters[Constants.OAuth.oauth_consumer_key];
             _logger.Trace("\t{0}={1}.", Constants.OAuth.oauth_consumer_key, key);
             if (key == null)
             {
