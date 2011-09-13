@@ -6,29 +6,30 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class SingleFileProcessorScript : FileProcessorScript 
     {
         private readonly string _filenameContains;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SingleFileProcessorScript(
             string filenameContains,
             HotwireFilesProvider fileprovider, 
-            LoggerBase logger, 
-            ProcessFileCallerBase processFileCaller) : base(fileprovider, logger, processFileCaller)
+            ProcessFileCallerBase processFileCaller) : base(fileprovider, processFileCaller)
         {
             _filenameContains = filenameContains;
         }
 
-        public override void Run(HotLogger logger, IConsoleWriter console)
+        public override void Run(IConsoleWriter console)
         {
             try
             {
                 _isRunning = true;
                 var dto = EnsureFileStatusIsQueuedReadImportAndMoveToProcessingFolder(console, _filenameContains);
-                if (dto!=null) ProcessFile(console, dto, logger, _processFileCaller);
+                if (dto!=null) ProcessFile(console, dto, _processFileCaller);
                 console.WriteLine("finished processing single file, exiting.");
             }
             finally

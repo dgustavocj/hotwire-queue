@@ -7,19 +7,15 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Security
 {
     public class OAuthRequestAuthenticator : IAuthenticateRequest 
     {
-        private readonly LoggerBase _logger;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public OAuthRequestAuthenticator(LoggerBase logger)
-        {
-            _logger = logger;
-        }
-
-        public void AuthenticateRequest(NameValueCollection requestParameters, string httpMethod, EndpointMatch endpointMatch)
+        public void AuthenticateRequest(NameValueCollection requestParameters, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
             // this is the simplified authentication for now, not using ValidateOauthSignature at the bottom.
 

@@ -9,6 +9,6 @@ namespace Icodeon.Hotwire.Framework.Scripts
     {
         bool isRunning { get; }
         string ScriptName { get; }
-        void Run(HotLogger logger, IConsoleWriter console);
+        void Run(IConsoleWriter console);
     }
 }

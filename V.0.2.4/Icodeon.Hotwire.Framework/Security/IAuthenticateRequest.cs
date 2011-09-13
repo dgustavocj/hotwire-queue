@@ -9,6 +9,6 @@ namespace Icodeon.Hotwire.Framework.Security
 {
     public interface IAuthenticateRequest
     {
-        void AuthenticateRequest(NameValueCollection requestParameters, string httpMethod, EndpointMatch endpointMatch);
+        void AuthenticateRequest(NameValueCollection requestParameters, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch);
     }
 }

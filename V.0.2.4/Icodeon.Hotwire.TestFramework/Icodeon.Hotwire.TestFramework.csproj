@@ -67,6 +67,7 @@
     <Compile Include="Mocks\MockStreamingContext.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
     <Compile Include="ModuleConfigurationDTOFactory.cs" />
+    <Compile Include="StoryParser.cs" />
     <Compile Include="ThreadTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickAssert.cs" />

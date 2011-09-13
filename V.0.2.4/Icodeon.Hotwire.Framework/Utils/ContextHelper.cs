@@ -46,23 +46,16 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         private const string HtmlTemplateWithTitle =
 @"<html>
-    <head>
-    </head>
+    <title>{0}</title>
     <body>
-    <div class='hotwire-object'>
         <h2>{0}</h2>
-        <textarea rows='20' cols='120'>
         {1}
-        </textarea>
-    </div>
     </body>
 </html>";
 
 
             private const string HtmlTemplate =
 @"<html>
-    <head>
-    </head>
     <body>
     <div class='hotwire-object'>
         <textarea rows='20' cols='120'>
@@ -80,6 +73,11 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, IMediaInfo media, T retval, int statusCode, LoggerBase logger)
         {
+            WriteMediaResponse(httpWriter,null, media,retval,statusCode,logger);
+        }
+
+        public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, string title, IMediaInfo media, T retval, int statusCode, LoggerBase logger)
+        {
             logger.Trace("WriteMediaResponse<T>(httpWriter,IMediaInfo[{0}],HttpStatusCode[{0}],logger", statusCode);
             httpWriter.StatusCode = statusCode;
             httpWriter.ContentType = media.ContentType;
@@ -89,8 +87,11 @@ namespace Icodeon.Hotwire.Framework.Utils
             {
                 case (eMediaType.html):
                     string jsonHtml = JSONHelper.Serialize(retval);
-                    string html = string.Format(HtmlTemplate, jsonHtml);
-
+                    string html;
+                    if (title==null)
+                        html = string.Format(HtmlTemplate, jsonHtml);
+                    else
+                        html = string.Format(HtmlTemplateWithTitle,title, (retval is string) ? retval.ToString() : jsonHtml);
                     httpWriter.Write(html);
                     break;
 

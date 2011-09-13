@@ -42,5 +42,8 @@ namespace Icodeon.Hotwire.Framework.DTOs
         [DataMember]
         public string PrivateKey { get; set; }
 
+
+        [DataMember]
+        public int? TimeStampMaxAgeSeconds { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Icodeon.Hotwire.Framework.Scripts;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
@@ -10,8 +11,9 @@ namespace Icodeon.Hotwire.Framework.Providers
     {
         public TimeSpan Timeout { get; set; }
 
-        private CookieContainer cookieContainer = new CookieContainer(); 
-        
+        private CookieContainer cookieContainer = new CookieContainer();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public HotClient()
         {
             Timeout = TimeSpan.FromSeconds(600);
@@ -40,7 +42,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             return request;
         }
 
-        public FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath)
+        public FileDownloadResultDTO DownloadFileWithTiming(Uri uri, string downloadingFilePath)
         {
             // ignoring timeout for now
             var startTime = DateTime.Now;
@@ -49,7 +51,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                 // not using stopwatch to measure the time to download the file 
                 // see here why not: http://kristofverbiest.blogspot.com/2008/10/beware-of-stopwatch.html
                 // also, downloads take a fair time, (few seconds) so DateTime is best
-                logger.Info("Downloading: {0,-20}", downloadingFilePath);
+                _logger.Info("Downloading: {0,-20}", downloadingFilePath);
                 client.DownloadFile(uri, downloadingFilePath);
                 // finished downloading move files to processQueue folder
                 double seconds = DateTime.Now.Subtract(startTime).TotalSeconds;
@@ -65,7 +67,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                                         Seconds = seconds
                                     };
                 var msg = string.Format(" {0,7}Kb in {1,5:0.00} seconds {2,7:0.00}Kb/sec", kb, seconds, kbPerSec);
-                logger.Trace(msg);
+                _logger.Trace(msg);
                 return retval;
             }
         }

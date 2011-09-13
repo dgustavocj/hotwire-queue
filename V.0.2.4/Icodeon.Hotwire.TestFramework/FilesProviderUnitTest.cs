@@ -9,7 +9,7 @@ namespace Icodeon.Hotwire.TestFramework
 
         public FilesProviderUnitTest() 
         {
-            FilesProvider = HotwireFilesProvider.GetFilesProviderInstance(HotLogger.NullLogger);
+            FilesProvider = HotwireFilesProvider.GetFilesProviderInstance();
         }
 
 

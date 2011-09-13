@@ -33,6 +33,14 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["privateKey"] = value; }
         }
 
+        [ConfigurationProperty("timeStampMaxAgeSeconds", IsKey = false, IsRequired = false)]
+        public int? TimeStampMaxAgeSeconds
+        {
+            get { return (int?)this["timeStampMaxAgeSeconds"]; }
+            set { this["timeStampMaxAgeSeconds"] = value; }
+        }
+
+
         [ConfigurationProperty("name", IsKey = true, IsRequired = true)]
         public string Name
         {

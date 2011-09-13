@@ -4,6 +4,7 @@ using System.Reflection;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Security;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;
 
@@ -55,8 +56,14 @@ namespace Icodeon.Hotwire.Framework.Providers
         {
             var httpClient = GetProvider<IHttpClientProvider>();
             return httpClient;
-            
         }
+
+        public IDateTime CreateDateTimeProvider()
+        {
+            var dateTime = GetProvider<IDateTime>();
+            return dateTime;
+        }
+
 
 
         // Make sure that autoWireUpProviders is called onInit() on global.asax in websites!
@@ -65,6 +72,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         {
             ObjectFactory.Initialize(r =>
             {
+                r.For<IDateTime>().Use<DateTimeWrapper>();
                 r.For<HotLogger>().Use<NullLogger>();
                 r.For<LoggerBase>().Use<NullLogger>();
                 r.Scan(x =>
@@ -93,6 +101,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             ProvideDefaultIfProviderNotImplementedFor<IConsumerProvider, ConsumerProvider>();
             ProvideDefaultIfProviderNotImplementedFor<IClassFactoryNotImplemented, DefaultForClassFactoryNotImplemented>();
             ProvideDefaultIfProviderNotImplementedFor<IClassFactoryTestImplemented, DefaultForClassFactoryImplemented>();
+            ProvideDefaultIfProviderNotImplementedFor<IDateTime, DateTimeWrapper>();
             ObjectFactory.AssertConfigurationIsValid();
             _isWiredUp = true;
             return this;

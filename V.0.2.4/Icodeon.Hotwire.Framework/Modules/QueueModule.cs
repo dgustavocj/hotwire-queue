@@ -7,11 +7,13 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
     public class QueueModule : ModuleBase
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         protected override string GetConfigurationSectionName()
         {
@@ -27,33 +29,33 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         public override object ProcessRequest(ParsedContext context)
         {
-            context.Logger.Trace("QueueModule-> Action=" + context.ModuleConfig.Action);
-            context.Logger.Trace("--------------------------------------");
+            _logger.Trace("QueueModule-> Action=" + context.ModuleConfig.Action);
+            _logger.Trace("--------------------------------------");
             switch (context.ModuleConfig.Action)
             {
                 case ModuleBase.ActionVersion:
                     return AssemblyHelper.FrameworkVersion;
 
                 case ActionEnqueueRequest:
-                    BeforeProcessFile(context.Logger, context.RequestParameters);
-                    context.Logger.Trace("\tValidating hotwire enqueue request required parameters.");
+                    BeforeProcessFile(context.RequestParameters);
+                    _logger.Trace("\tValidating hotwire enqueue request required parameters.");
                     EnqueueRequestDTO.validateRequiredParameters(context.RequestParameters);
-                    context.Logger.Trace("\t{0}", DeploymentEnvironment.CurrentBuildConfiguration);
+                    _logger.Trace("\t{0}", DeploymentEnvironment.CurrentBuildConfiguration);
 
                     var enqueueRequest = new EnqueueRequestDTO(context.RequestParameters)
                                              {
                                                  TransactionId = Guid.NewGuid().ToString()
                                              };
 
-                    context.Logger.Trace("\transactionId = {0}", enqueueRequest.TransactionId);
-                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance(context.Logger);
-                    var dal = new QueueDal(fileProvider, context.Logger);
+                    _logger.Trace("\transactionId = {0}", enqueueRequest.TransactionId);
+                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance();
+                    var dal = new QueueDal(fileProvider);
                     dal.Save(enqueueRequest, QueueStatus.QueuedForDownloading);
                     var queuedResource = new QueuedResource
                                              {
                                                  TrackingNumber = enqueueRequest.GetTrackingNumber()
                                              };
-                    context.Logger.Trace("\tTRACKING-NUMBER : {0}", queuedResource.TrackingNumber);
+                    _logger.Trace("\tTRACKING-NUMBER : {0}", queuedResource.TrackingNumber);
                     return queuedResource;
 
                 default: throw new ArgumentOutOfRangeException(context.ModuleConfig.Action + " is not a supported QueueModule action.");
@@ -66,7 +68,7 @@ namespace Icodeon.Hotwire.Framework.Modules
 
 
 
-        protected virtual void BeforeProcessFile(LoggerBase logger, NameValueCollection queueParameters)
+        protected virtual void BeforeProcessFile(NameValueCollection queueParameters)
         {
             // do nothing.
         }

@@ -29,7 +29,7 @@ namespace Icodeon.Hotwire.TestFramework
         {
             string templateFile = Path.Combine(_filesProvider.TestDataFolderPath, "template.import");
             string json = File.ReadAllText(templateFile);
-            var dal = new QueueDal(_filesProvider, HotLogger.NullLogger);
+            var dal = new QueueDal(_filesProvider);
             var template = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
             template.TransactionId = transactionId;
             template.ResourceFile = resourceId;

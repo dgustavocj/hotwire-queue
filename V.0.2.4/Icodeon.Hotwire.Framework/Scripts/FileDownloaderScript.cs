@@ -36,26 +36,28 @@ namespace Icodeon.Hotwire.Framework.Scripts
         public event EventHandler<FileInfoEventArgs> Downloaded;
         public event EventHandler<ExceptionEventArgs> DownloadException;
 
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public FileDownloaderScript(IDownloaderFilesProvider downloaderFilesProvider, IClientDownloader clientDownloader)
         {
             _downloaderFiles = downloaderFilesProvider;
             _clientDownloader = clientDownloader;
         }
 
-        public void Run(LoggerBase logger, IConsoleWriter console, string folderPath)
+        public void Run(IConsoleWriter console, string folderPath)
         {
-            Run(logger, console, null);
+            Run(console, null);
         }
 
-        public void Run(HotLogger logger, IConsoleWriter console)
+        public void Run(IConsoleWriter console)
         {
             EnqueueRequestDTO dto = null;
             try
             {
                 _isRunning = true;
-                while ((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(logger, console)) != null)
+                while ((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(console)) != null)
                 {
-                    DownloadFile(logger, console, dto);
+                    DownloadFile(console, dto);
                 }
                 console.WriteLine("Nothing left to download, exiting.");
             }
@@ -80,7 +82,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        private void DownloadFile(HotLogger logger, IConsoleWriter console, EnqueueRequestDTO dto)
+        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto)
         {
             string trackingFilePath = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");
@@ -96,7 +98,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
-                var downloadResult = _clientDownloader.DownloadFileWithTiming(logger, new Uri(dto.ExtResourceLinkContent), destination);
+                var downloadResult = _clientDownloader.DownloadFileWithTiming(new Uri(dto.ExtResourceLinkContent), destination);
                 console.WriteLine("\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
                 // move the import file from downloading to process queue folder 
                 string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
@@ -112,13 +114,13 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 var msg = "Error during download of " + trackingFilePath;
                 //todo: update IConsole to support writing errors etc.
                 ConsoleHelper.WriteError(msg);
-                logger.ErrorException(msg, ex);
+                _logger.ErrorException(msg, ex);
                 _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
                 RaiseDownloadError(ex,dto);
             }
         }
 
-        internal EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(HotLogger logger, IConsoleWriter console)
+        internal EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(IConsoleWriter console)
         {
             int maxcount=0;
             string importFileNamePath;
@@ -132,7 +134,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
                     if (importFileNamePath == null)
                     {
-                        logger.Trace("nextFile==null, returning.");
+                        _logger.Trace("nextFile==null, returning.");
                         return null;
                     }
                     importFileName = Path.GetFileName(importFileNamePath);
@@ -152,7 +154,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 {
                     if (ioex.FileAlreadyExists())
                     {
-                        SkipFile(importFileNamePath, logger,QueueStatus.Downloading, importFileName, console);
+                        SkipFile(importFileNamePath,QueueStatus.Downloading, importFileName, console);
                         RaiseDownloadError(ioex,importFile);
                     }
                     continue;
@@ -162,14 +164,14 @@ namespace Icodeon.Hotwire.Framework.Scripts
             throw new ApplicationException("safetynet loop value maxcount exceeded! Possible causes would be if were getting 'false negative' IOExceptions, which are supposed to only happen if another thread has moved a file, and the file still exists and the code tries to move the same file again.");
         }
 
-        private void SkipFile(string importFileNamePath, HotLogger logger, QueueStatus status, string importFileName, IConsoleWriter console)
+        private void SkipFile(string importFileNamePath, QueueStatus status, string importFileName, IConsoleWriter console)
         {
             var msg = string.Format("Skipping {0}, \tstatus is {1}.", importFileName, status);
             console.WriteLine(msg);
-            logger.Trace(msg);
+            _logger.Trace(msg);
             // rename as skipped for now.
             string destination = Path.Combine(_downloaderFiles.DownloadErrorFolderPath, importFileName + "." + status + EnqueueRequestDTO.SkippedExtension);
-            logger.Trace("Renaming and moving to " + destination);
+            _logger.Trace("Renaming and moving to " + destination);
             if (File.Exists(destination))
             {
                 destination = destination.IncrementNumberAtEndOfString();

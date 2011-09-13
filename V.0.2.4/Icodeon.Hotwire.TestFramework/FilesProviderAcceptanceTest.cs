@@ -11,7 +11,7 @@ namespace Icodeon.Hotwire.TestFramework
         public HotwireFilesProvider FilesProvider { get; private set; }
         public FilesProviderAcceptanceTest() 
         {
-            FilesProvider = HotwireFilesProvider.GetFilesProviderInstance(HotLogger.NullLogger);
+            FilesProvider = HotwireFilesProvider.GetFilesProviderInstance();
 
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
@@ -18,5 +19,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         public IMapPath PathMapper { get; set; }
         public Stream InputStream { get; set; }
         public Action CompleteRequest { get; set; }
+        public NameValueCollection Headers { get; set; }
+
     }
 }

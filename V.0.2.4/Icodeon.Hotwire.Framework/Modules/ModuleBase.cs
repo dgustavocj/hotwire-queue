@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -81,16 +82,14 @@ namespace Icodeon.Hotwire.Framework.Modules
             // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
             // -------------------------------------------------------------------------------------------------------------------
             var requestParameters =context.InputStream.ParseNameValues();
-            // TODO: inject the RequestAuthenticatorFactory
-            var authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(logger, endpoint.Security);
-            authenticator.AuthenticateRequest(requestParameters, context.HttpMethod, endpointMatch);
+            IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
+            authenticator.AuthenticateRequest(requestParameters, context.Headers, context.HttpMethod, endpointMatch);
 
             if (ProcessDefaultActions(context, endpointMatch)) return;
 
             var parsedContext = new ParsedContext
             {
                 AppCache = context.ApplicationCache,
-                Logger = logger,
                 Match = endpointMatch.Match,
                 MediaInfo = mediaInfo,
                 ModuleConfig = endpoint,
@@ -145,11 +144,9 @@ namespace Icodeon.Hotwire.Framework.Modules
                 logger.Error("({0}) {1}", mex.StatusCode, mex);
                 var mediaInfo = new MediaTypeFactory()[endpointMatch.Endpoint.MediaType];
                 
-                context.HttpWriter.ContentType = mediaInfo.ContentType;
-                context.HttpWriter.StatusCode = (int)mex.StatusCode;
-                // cant set any custom text with this?
-                // this is by design for most of the core status codes ?? to stop users from trying to use them for something else
-                // which would literally "break the internet"? i.e. we need people to trust the codes, not the description. ;-p Makes sense, I  guess.
+                //context.HttpWriter.ContentType = mediaInfo.ContentType;
+                //context.HttpWriter.StatusCode = (int)mex.StatusCode;
+                ContextHelper.WriteMediaResponse<string>(context.HttpWriter,mex.GetType().Name, mediaInfo, mex.Message, (int)mex.StatusCode, logger);
                 RaiseProcessException(mex, context);
             }
             catch (Exception ex)
@@ -238,6 +235,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                 var writer = new ResponsableHttpContextWriter(context.Response);
                 IMapPath pathMapper = new HttpApplicationWrapper(context);
                 Stream inputStream = context.Request.InputStream;
+                NameValueCollection headers = context.Request.Headers;
                 var hotContext = new StreamingContext
                                         {
                                             ApplicationCache = appCache,
@@ -249,7 +247,8 @@ namespace Icodeon.Hotwire.Framework.Modules
                                             UserHostAddress = context.Request.UserHostAddress,
                                             PathMapper = pathMapper,
                                             InputStream = inputStream,
-                                            CompleteRequest = context.CompleteRequest
+                                            CompleteRequest = context.CompleteRequest,
+                                            Headers =  headers
                                         };
                 BeginRequest(hotContext);
             };

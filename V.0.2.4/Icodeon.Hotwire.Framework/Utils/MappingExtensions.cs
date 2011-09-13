@@ -19,7 +19,9 @@ namespace Icodeon.Hotwire.Framework.Utils
                            HttpMethods = endpoint.HttpMethods,
                            MediaType = endpoint.MediaType,
                            Name = endpoint.Name,
-                           UriTemplate = endpoint.UriTemplate
+                           UriTemplate = endpoint.UriTemplate,
+                           PrivateKey = endpoint.PrivateKey,
+                           TimeStampMaxAgeSeconds = endpoint.TimeStampMaxAgeSeconds
                        };
             return dto;
         }

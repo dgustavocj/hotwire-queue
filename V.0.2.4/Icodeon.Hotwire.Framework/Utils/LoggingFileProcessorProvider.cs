@@ -35,7 +35,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             _logger.Trace("ProcessFile(resource_file='{0}', transaction_id='{1}', requestParams=[see below])",trackingNumber, transaction_id, requestParams);
             _logger.TraceParameters(requestParams);
             _logger.Trace("Checking that '{0}' exists in the processing folder.", trackingNumber);
-            string filepath = Path.Combine(HotwireFilesProvider.GetFilesProviderInstance(_logger).ProcessingFolderPath,trackingNumber);
+            string filepath = Path.Combine(HotwireFilesProvider.GetFilesProviderInstance().ProcessingFolderPath,trackingNumber);
             if (!File.Exists(filepath)) throw new FileNotFoundException("Could not find resource file '" + filepath + "' to process!");
             if (trackingNumber.Contains("_THROW_")) throw new ApplicationException("This is a test exception which was triggered because the tracking number contains '_THROW_'.");
             int processingTime = GetProcessingTime()*100; 

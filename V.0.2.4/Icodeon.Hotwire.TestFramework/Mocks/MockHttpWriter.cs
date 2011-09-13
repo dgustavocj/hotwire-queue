@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.TestFramework.Mocks
 {
@@ -14,5 +15,11 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
             Lines.Add(s);
         }
         public int StatusCode { get; set; }
+
+        // poor man's visualizer
+        public override string ToString()
+        {
+            return Lines.ToVisualizerString();
+        }
     }
 }

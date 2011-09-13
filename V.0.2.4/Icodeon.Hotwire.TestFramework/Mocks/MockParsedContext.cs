@@ -12,7 +12,6 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
         public MockParsedContext(string action)
         {
             AppCache = new MockAppCache();
-            Logger = HotLogger.NullLogger;
             PathMapper = new MockMapPath();
             RequestParameters = new NameValueCollection();
             Url = new Uri(@"http://localhost:1234/doesnotexist");

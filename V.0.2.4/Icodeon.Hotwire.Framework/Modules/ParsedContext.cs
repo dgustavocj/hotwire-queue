@@ -19,6 +19,5 @@ namespace Icodeon.Hotwire.Framework.Modules
         public IModuleEndpoint ModuleConfig { get; set; }
         public IMediaInfo MediaInfo { get; set; }
         public IMapPath PathMapper { get; set; }
-        public LoggerBase Logger { get; set; }
     }
 }

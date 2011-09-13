@@ -8,6 +8,7 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Providers
 {
@@ -54,10 +55,6 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
 
-
-
-        private readonly LoggerBase _logger;
-
         //ADH: looks like _folderPaths is never used, need to check, remove and rerun all tests!
         private IHotwireFileProcessorFoldersPaths _foldersPaths;
 
@@ -83,9 +80,10 @@ namespace Icodeon.Hotwire.Framework.Providers
         public string ProcessingFolderPath { get; set; }
         public string ProcessErrorFolderPath { get; set; }
 
-        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders, LoggerBase logger)
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders)
         {
-            _logger = logger;
             SolutionFolderMarkerFile = relativeFolders.SolutionFolderMarkerFile;
             string rootPath = DirectoryHelper.GetSolutionRootPath(relativeFolders.SolutionFolderMarkerFile);
 
@@ -351,13 +349,13 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
         private static HotwireFilesProvider _hotwireFilesProvider;
-        public static HotwireFilesProvider GetFilesProviderInstance(LoggerBase logger)
+        public static HotwireFilesProvider GetFilesProviderInstance()
         {
-            logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
-            logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
+            _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
+            _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
             if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
             var foldersSection = FoldersSection.ReadConfig();
-            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, logger);
+            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection);
             return _hotwireFilesProvider;
         }
 

@@ -37,7 +37,7 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
             _throwOnFileNo = throwOnFileNo;
         }
 
-        public FileDownloadResultDTO DownloadFileWithTiming(HotLogger logger, Uri uri, string downloadingFilePath)
+        public FileDownloadResultDTO DownloadFileWithTiming(Uri uri, string downloadingFilePath)
         {
             _cntFiles++;
             if (_cntFiles == (_throwOnFileNo ?? -1))

@@ -73,7 +73,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             if (script.Script.isRunning) return;
             // ADH 17.03.2011 folderPath is currently being ignored by the current implementation of IFolderWatcherScript 
             // because they're hard coded to use HotwireFilesProvider.
-            script.Script.Run(_logger, _writer, script.Config.FolderPath);
+            script.Script.Run(_writer, script.Config.FolderPath);
         }
 
     }

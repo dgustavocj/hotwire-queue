@@ -18,7 +18,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         protected IHttpClientProvider _httpClient;
         protected readonly ProcessFileCallerBase _processFileCaller;
         protected readonly HotwireFilesProvider _fileprovider;
-        protected readonly LoggerBase _logger;
+
         protected bool _isRunning = false;
 
         public event EventHandler<ExceptionEventArgs> ProcessException;
@@ -30,10 +30,11 @@ namespace Icodeon.Hotwire.Framework.Scripts
             get { return "File Processor script."; }
         }
 
-        public FileProcessorScript(HotwireFilesProvider fileprovider, LoggerBase logger, ProcessFileCallerBase processFileCaller)
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        public FileProcessorScript(HotwireFilesProvider fileprovider, ProcessFileCallerBase processFileCaller)
         {
             _fileprovider = fileprovider;
-            _logger = logger;
             _processFileCaller = processFileCaller;
         }
 
@@ -48,14 +49,14 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        public virtual void Run(HotLogger logger, Utils.IConsoleWriter console, string folderPath)
+        public virtual void Run(Utils.IConsoleWriter console, string folderPath)
         {
             // ignore the folder for now, because the exact folder used for downloading is currently configured in hotwireFilesProvider.
             // will change this later.
-            Run(logger,console,null);
+            Run(console,null);
         }
 
-        public virtual void Run(HotLogger logger, Utils.IConsoleWriter console)
+        public virtual void Run(Utils.IConsoleWriter console)
         {
             EnqueueRequestDTO dto = null;
             try
@@ -66,7 +67,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
                 while ((dto = GetNextImportFileToProcessMoveToProcessingOrDefault(console)) != null)
                 {
-                    ProcessFile(console, dto, logger, _processFileCaller);
+                    ProcessFile(console, dto, _processFileCaller);
                 }
                 console.WriteLine("Nothing left to process, exiting.");
             }
@@ -82,7 +83,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
 
 
-        protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, LoggerBase logger, ProcessFileCallerBase processFileCaller)
+        protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, ProcessFileCallerBase processFileCaller)
         {
             console.WriteLine("Processing {0}",dto.ResourceFile);
             try

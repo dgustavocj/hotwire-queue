@@ -7,11 +7,13 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Modules
 {
     public class FileProcessorModule : ModuleBase
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         protected override string GetConfigurationSectionName()
         {
@@ -23,34 +25,32 @@ namespace Icodeon.Hotwire.Framework.Modules
             DebugContract.Ensure(
                                  ()=> context.Match != null,
                                  () => context.ModuleConfig != null,
-                                 () => context.MediaInfo != null,
-                                 ()=> context.Logger != null);
+                                 () => context.MediaInfo != null);
             
-            var logger = context.Logger;
-            logger.Trace("ProcessRequest, {0}, {1}", context.ModuleConfig.Action, context.Url);
+            _logger.Trace("ProcessRequest, {0}, {1}", context.ModuleConfig.Action, context.Url);
 
             IModuleEndpoint moduleConfig = context.ModuleConfig;
             switch (moduleConfig.Action)
             {
 
                 case ActionProcessFile:
-                    logger.Trace("SmokeTestModule -> PROCESS-FILE");
+                    _logger.Trace("SmokeTestModule -> PROCESS-FILE");
                     string trackingNumber = context.Match.BoundVariables["TRACKING-NUMBER"];
-                    logger.Trace("Tracking Number = " + trackingNumber);
-                    logger.Trace("Security for endpoint is " + moduleConfig.Security);
+                    _logger.Trace("Tracking Number = " + trackingNumber);
+                    _logger.Trace("Security for endpoint is " + moduleConfig.Security);
                     if (moduleConfig.Security==SecurityType.localonly)
                     {
                         if (!context.Url.IsLoopback)
-                            throw new HttpModuleException(logger, HttpStatusCode.Forbidden, "Remote connections not allowed.");
+                            throw new HttpModuleException(HttpStatusCode.Forbidden, "Remote connections not allowed.");
                     }
-                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance(logger);
+                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance();
                     // ADH: queue dal should be injected
-                    var dal = new QueueDal(fileProvider, logger);
+                    var dal = new QueueDal(fileProvider);
                     EnqueueRequestDTO dto = dal.GetByTrackingNumber(trackingNumber);
                     var processor = new ProviderFactory().CreateFileProcessor();
                     var parameters = dto.ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient();
-                    logger.TraceParameters(parameters);
-                    logger.Trace("process the file ...");
+                    _logger.TraceParameters(parameters);
+                    _logger.Trace("process the file ...");
                     try
                     {
                         processor.ProcessFile(dto.GetTrackingNumber(), dto.TransactionId, parameters);

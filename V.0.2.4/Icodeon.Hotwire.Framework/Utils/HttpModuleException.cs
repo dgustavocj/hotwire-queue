@@ -8,23 +8,22 @@ using NLog;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
+    //REFACTOR: choose a better name for HttpXXXException so that we're not tied to using this in HttpModules. e.g. HttpHandlers
     public class HttpModuleException : ApplicationException
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public HttpModuleException(HttpStatusCode statusCode, string message, Exception innerException)
             : base(message, innerException)
         {
+
             StatusCode = statusCode;
         }
 
-        public HttpModuleException(LoggerBase logger, HttpStatusCode statusCode, string message)
-            : this(statusCode, message)
-        {
-            logger.Error("HttpStatusCode=" + statusCode + ". " + message);
-        }
 
         public HttpModuleException(HttpStatusCode statusCode, string message) : base(message)
         {
+            _logger.Error("HttpStatusCode=" + statusCode + ". " + message);
             StatusCode = statusCode;
         }
 

@@ -16,36 +16,19 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         public void CanReadModuleAndEndpointConfiguration()
         {
             TraceTitle("Can read Module and Endpoint configuration:");
-            Trace(
-                @"Given appropriate custom config section and custom config entry has been added to test projects's App.Config, similar to the following:
-                 ----------------------------------------------------------------------------------------------------------------------------------------
-                <configSections>
-                    <sectionGroup name='hotwire'>
-                      <section name='test-module-config' type='Icodeon.Hotwire.Tests.Framework.TestModuleConfiguration, Icodeon.Hotwire.Tests' />
-                    </sectionGroup>
-                </configSections>
-                ...
-                and
-                ...
-              <hotwire>
-                <test-module-config active='true' rootServiceName='test-animals' methodValidation='afterUriValidation'>
-                  <endpoints>
-                    <add name='cat' active='true' uriTemplate='/cat.xml' action='action-cat' httpMethods='GET,POST' mediaType='xml' security='none' />
-                    <add name='dog' active='false' uriTemplate='/dog.xml' action='action-dog' httpMethods='GET' mediaType='json' security='none' />
-                  </endpoints>
-                </test-module-config>
-              </hotwire>
-");
-
-            // wording used above is "similar" so that we don't have to keep refactoring this trace log each time a small change is made.
+            Trace("Given appropriate custom config section and custom config entry has been added to test projects's App.Config");
 
             Trace("When the test configuration is read");
             IModuleConfiguration config = new TestModuleConfiguration().ReadConfig<IModuleConfiguration>();
 
             Trace("Then the configuration should be read correctly.");
             EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(config);
-
+            var secureEndpoint = config.Endpoints.FirstOrDefault(ep => !string.IsNullOrEmpty(ep.PrivateKey));
+            secureEndpoint.Should().NotBeNull();
+            secureEndpoint.PrivateKey.Should().Be("my private key 1234");
         }
+
+        //TODO: see if I can dynamically return different types of endpoints (e.g. simpleMacEndpoint ... instead of using nulls for all other non secured endpoints) ?
 
         public static void EnsureTestModuleConfigurationAndEndpointsAreReadCorrectly(IModuleConfiguration config)
         {
@@ -53,12 +36,14 @@ namespace Icodeon.Hotwire.Tests.UnitTests
                           c => c.Debug,
                           c => c.RootServiceName == "test-animals",
                           c => c.MethodValidation == MethodValidation.afterUriValidation,
-                          c => c.Endpoints != null && c.Endpoints.Count() == 2);
+                          c => c.Endpoints != null && c.Endpoints.Count() == 3);
 
             var catEndpoint = config.Endpoints.ElementAt(0);
 
             catEndpoint.Ensure(c => c.Active,
                                 c => c.Name == "cat",
+                                c => c.PrivateKey == "",
+                                c => c.TimeStampMaxAgeSeconds == null,
                                 c => c.UriTemplate.ToString() == "/cat.xml",
                                 c => c.Action == "action-cat",
                                 c => c.Security == SecurityType.none,
@@ -70,13 +55,28 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 
             dogEndpoint.Ensure(c => c.Active,
                                 c => c.Name == "dog",
+                                c => c.PrivateKey == "",
+                                c => c.TimeStampMaxAgeSeconds == null,
                                 c => c.UriTemplate.ToString() == "/dog.xml",
                                 c => c.Action == "action-dog",
                                 c => c.Security == SecurityType.none,
                                 c => c.MediaType == eMediaType.json);
 
             dogEndpoint.HttpMethods.Should().Equal(new[] { "GET" });
-            
+
+            var securedog = config.Endpoints.ElementAt(2);
+
+            securedog.Ensure(c => c.Active,
+                                c => c.Name == "securedog",
+                                c => c.PrivateKey == "my private key 1234",
+                                c => c.TimeStampMaxAgeSeconds == 10,
+                                c => c.UriTemplate.ToString() == "/secure/dog.xml",
+                                c => c.Action == "action-dog",
+                                c => c.Security == SecurityType.simpleMAC,
+                                c => c.MediaType == eMediaType.json);
+
+            securedog.HttpMethods.Should().ContainInOrder(new[] {"PUT", "GET", "POST"});
+
         }
 
 

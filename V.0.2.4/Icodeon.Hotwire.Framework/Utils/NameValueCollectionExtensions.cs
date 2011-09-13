@@ -19,6 +19,14 @@ namespace Icodeon.Hotwire.Framework
             return nameValues;
         }
 
+
+        public static string GetValueOrDefault(this NameValueCollection src, string key)
+        {
+            if (!src.HasKeys()) return null;
+            if (!src.AllKeys.Contains(key)) return null;
+            return src[key];
+        }
+
         public static string Value(this List<NameValueDTO> src, string key)
         {
             var nameValue = src.FirstOrDefault(nv => nv.Name.Equals(key, StringComparison.OrdinalIgnoreCase));

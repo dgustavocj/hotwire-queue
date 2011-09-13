@@ -3,24 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Providers;
+using Icodeon.Hotwire.Framework.Utils;
+using StructureMap;
 
 namespace Icodeon.Hotwire.Framework.Security
 {
-    public class RequestAuthenticatorFactory
+    //CONSIDER: this design makes it difficult for user of framework to extend (ie use their own custom authorization) without committing extensions to googlecode
+
+    public class RequestAuthenticatorFactory : IRequestAuthenticatorFactory
     {
-        public IAuthenticateRequest GetRequestAuthenticator(HotLogger logger, SecurityType endpointAuthorisation)
+
+        public IAuthenticateRequest GetRequestAuthenticator(SecurityType endpointAuthorisation)
         {
             switch (endpointAuthorisation)
             {
                 case SecurityType.none:
                     return new NoSecurityRequestAuthenticator();
                 case SecurityType.oauth:
-                    return new OAuthRequestAuthenticator(logger);
+                    return new OAuthRequestAuthenticator();
                 case SecurityType.localonly:
                     return new LocalOnlyRequestAuthenticator();
                 case SecurityType.simpleMAC:
-                    return new SimpleMACAuthenticator();
-
+                    var dateTime = ObjectFactory.GetInstance<IDateTime>();
+                    return new SimpleMacAuthenticator(dateTime);
                 default:
                     throw new ArgumentOutOfRangeException("endpointAuthorisation");
             }

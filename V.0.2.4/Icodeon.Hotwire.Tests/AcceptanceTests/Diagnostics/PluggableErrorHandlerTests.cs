@@ -45,7 +45,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             _errorHandler2.Handled.Should().BeFalse();
 
             Trace("when the script tries to download the files");
-            script.Run(Logger, ConsoleWriter);
+            script.Run(ConsoleWriter);
 
             Trace("then an exception should have been thrown by the downloader");
             downloader.HasThrown.Should().BeTrue();
@@ -63,7 +63,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 
             Trace("Given a file proccessor script that will encounter a file process exception");
             var mockFileProcessCaller = new ThrowExceptionIfFileContainsXMockProcessFileCaller("numbers", "Whoops!");
-            var processor = new FileProcessorScript(FilesProvider, Logger, mockFileProcessCaller);
+            var processor = new FileProcessorScript(FilesProvider, mockFileProcessCaller);
 
             Trace("And two registered custom exception handlers");
             processor.ProcessException += _errorHandler1.HandleException;
@@ -75,7 +75,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             Assert.AreEqual(3, FilesProvider.ProcessQueueFilePaths.Count(), "should be 3 files waiting in the process queue.");
 
             Trace("When I run the file processor");
-            Action action = ()=> processor.Run(Logger, ConsoleWriter);
+            Action action = ()=> processor.Run(ConsoleWriter);
             
             Trace("Then the Script should pass the exceptions to the handlers to be handled");
             action.ShouldNotThrow();
@@ -146,7 +146,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             _errorHandler2.Handled.Should().BeFalse();
 
             Trace("when the script tries to download the files");
-            script.Run(Logger, ConsoleWriter);
+            script.Run(ConsoleWriter);
 
             Trace("then an exception should have been thrown by the downloader");
             downloader.HasThrown.Should().BeTrue();

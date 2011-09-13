@@ -15,13 +15,12 @@ namespace Icodeon.Hotwire.Framework.Repository
 {
     public class QueueDal
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly HotwireFilesProvider _fileModel;
-        private readonly LoggerBase _logger;
 
-        public QueueDal(HotwireFilesProvider fileModel, LoggerBase logger)
+        public QueueDal(HotwireFilesProvider fileModel)
         {
             _fileModel = fileModel;
-            _logger = logger;
         }
 
         private const string requestExtension = ".import";
@@ -43,7 +42,7 @@ namespace Icodeon.Hotwire.Framework.Repository
             string filePath = Path.Combine(_fileModel.ProcessingFolderPath, trackingNumber + requestExtension);
             if (!File.Exists(filePath))
             {
-                throw new HttpModuleException(_logger, HttpStatusCode.NotFound, "Could not find enqueueRequest file '" + filePath + "'. Tracking number requested was '" + trackingNumber  +"'");
+                throw new HttpModuleException(HttpStatusCode.NotFound, "Could not find enqueueRequest file '" + filePath + "'. Tracking number requested was '" + trackingNumber  +"'");
             }
             var json = File.ReadAllText(filePath);
             EnqueueRequestDTO dto = JSONHelper.Deserialize<EnqueueRequestDTO>(json);

@@ -72,5 +72,29 @@ namespace Icodeon.Hotwire.Framework.Utils
             return src.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
         }
 
+
+        public static bool? ParseBool(this string src)
+        {
+            src = src.ToLowerInvariant();
+            switch (src)
+            {
+                case "na": return false;
+                case "n/a": return false;
+                case "yes": return true;
+                case "no": return false;
+                default:
+                    bool placeHolder;
+                    if (!bool.TryParse(src, out placeHolder)) return null;
+                    return placeHolder;
+            }
+        }
+
+
+        public static bool IsGuid(this string src)
+        {
+            Guid placeHolder;
+            bool isGuid = Guid.TryParse(src, out placeHolder);
+            return isGuid;
+        }
     }
 }

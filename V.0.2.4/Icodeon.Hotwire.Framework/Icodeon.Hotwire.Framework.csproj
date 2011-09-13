@@ -71,12 +71,8 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.0\lib\NET40\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog.Extended">
-      <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.0\lib\NET40\NLog.Extended.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
@@ -124,6 +120,7 @@
     <Compile Include="ConsoleService\ServiceDTO.cs" />
     <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
     <Compile Include="Contracts\IEnqueueRequest.cs" />
+    <Compile Include="Diagnostics\LoggerExtensions.cs" />
     <Compile Include="Diagnostics\SSLEmailErrorHandler.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />
     <Compile Include="Diagnostics\ExceptionEventArgs.cs" />
@@ -142,6 +139,7 @@
     <Compile Include="FolderWatcher\FolderConfig.cs" />
     <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
     <Compile Include="FolderWatcher\FolderScript.cs" />
+    <Compile Include="Http\HotwireHttpUtility.cs" />
     <Compile Include="Modules\FileProcessorLockedFileException.cs" />
     <Compile Include="Modules\FileProcessorModule.cs" />
     <Compile Include="Modules\HttpRequestContext.cs" />
@@ -204,6 +202,15 @@
     <Compile Include="Scripts\IScript.cs" />
     <Compile Include="Scripts\ConsoleScriptRunner.cs" />
     <Compile Include="Scripts\SingleFileProcessorScript.cs" />
+    <Compile Include="Security\BadRequestSaltNotGuidException.cs" />
+    <Compile Include="Security\BadRequestMissingTimestampException.cs" />
+    <Compile Include="Security\INonceCacheProvider.cs" />
+    <Compile Include="Security\InvalidMACUnauthorizedException.cs" />
+    <Compile Include="Security\HttpUnauthorizedException.cs" />
+    <Compile Include="Security\InvalidMacTimestampExpiredException.cs" />
+    <Compile Include="Security\IRequestAuthenticatorFactory.cs" />
+    <Compile Include="Security\ISignRequest.cs" />
+    <Compile Include="Security\SimpleMACHeaders.cs" />
     <Compile Include="Security\RequestAuthenticatorFactory.cs" />
     <Compile Include="Security\LocalOnlyRequestAuthenticator.cs" />
     <Compile Include="Security\IAuthenticateRequest.cs" />
@@ -220,6 +227,7 @@
     <Compile Include="Utils\ConsoleHelper.cs" />
     <Compile Include="Utils\ConsoleWriter.cs" />
     <Compile Include="Utils\ContextHelper.cs" />
+    <Compile Include="Utils\DateTimeWrapper.cs" />
     <Compile Include="Utils\DeploymentEnvironment.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Utils\HotwireExceptionSummaryDTO.cs" />
@@ -228,7 +236,9 @@
     <Compile Include="Utils\FileProcessorAppCounter.cs" />
     <Compile Include="Utils\HotwireFolderWatcher.cs" />
     <Compile Include="Utils\HttpModuleException.cs" />
+    <Compile Include="Utils\IDateTime.cs" />
     <Compile Include="Utils\IMapPath.cs" />
+    <Compile Include="Utils\EnumerableStringExtensions.cs" />
     <Compile Include="Utils\LoggingFileProcessorProvider.cs" />
     <Compile Include="Utils\MappingExtensions.cs" />
     <Compile Include="Utils\NameValueCollectionExtensions.cs" />
@@ -255,9 +265,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)packages\NLog.2.0.0.0\LICENCE.txt $(TargetDir)NLog-LICENCE.txt
-
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

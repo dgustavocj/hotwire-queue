@@ -4,17 +4,17 @@ using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Serialization;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework
 {
     public class FileProcessorPinger
     {
-        private readonly LoggerBase _logger;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IHttpClientProvider _httpClient;
 
-        public FileProcessorPinger(LoggerBase logger, IHttpClientProvider httpClient)
+        public FileProcessorPinger(IHttpClientProvider httpClient)
         {
-            _logger = logger;
             _httpClient = httpClient;
         }
 

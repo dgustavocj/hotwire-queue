@@ -1,13 +1,14 @@
 ﻿using System;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class ConsoleScriptRunner
     {
         private readonly IConsoleWriter _console;
-        private HotLogger _logger;
+        private static Logger _logger;
 
         public bool Abort { get; set; }
 
@@ -25,23 +26,24 @@ namespace Icodeon.Hotwire.Framework.Scripts
             _console.ReadLine();
         }
 
-        public ConsoleScriptRunner(IConsoleWriter _console, string[] args, HotLogger logger)
-            : this(_console, logger)
+        public ConsoleScriptRunner(IConsoleWriter _console, string[] args) : this(_console)
         {
             if (args.Length != 1 || !int.TryParse(args[0], out _scriptNumber)) 
             {
                 var msg = "the only allowed argument is the number of which script you wish to run.";
-                logger.Fatal(msg);
+                _logger.Fatal(msg);
                 _console.WriteLine(msg);
                 Abort = true;
             }
         }
 
-        public ConsoleScriptRunner(IConsoleWriter console, HotLogger logger)
+        
+
+        public ConsoleScriptRunner(IConsoleWriter console)
         {
+            _logger = LogManager.GetCurrentClassLogger();
             _console = console;
             Abort = false;
-            _logger = logger;
         }
 
         public bool RunConfiguration(Action config)
@@ -78,7 +80,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        public bool RunCode(Action<LoggerBase> code,string scriptName, bool pauseBeforeReturning)
+        public bool RunCode(Action code,string scriptName, bool pauseBeforeReturning)
         {
             _console.WriteLine("Starting {0}", scriptName);
             _console.WriteLine("version:{0}, hotwire framework version:{1}", AssemblyHelper.ExecutingAssemblyVersion, AssemblyHelper.FrameworkVersion);
@@ -88,7 +90,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 _logger.Info("Running script {0}.", scriptName);
-                code(_logger);
+                code();
                 _logger.Info("Script exited with :true");
                 if (pauseBeforeReturning) Pause();
                 return true;
@@ -136,7 +138,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 _logger.Info("Running script {0}.",script.ScriptName);
-                script.Run(_logger, _console);
+                script.Run(_console);
                 _logger.Info("Script exited with :true");
                 if(pauseBeforeReturning) Pause();
                 return true;
