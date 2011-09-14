@@ -14,6 +14,21 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,6 +95,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
@@ -152,6 +168,11 @@
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Modules\EndpointRequestMatcher.cs" />
     <Compile Include="Modules\RestfulProcessFileCaller.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Providers\ClassFactory.cs" />
     <Compile Include="Providers\ConsumerProvider.cs" />
     <Compile Include="Providers\HotClient.cs">
@@ -194,7 +215,14 @@
     <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
     <Compile Include="Repository\IHotwireRepository.cs" />
+    <Compile Include="Repository\ISimpleMacRepository.cs" />
     <Compile Include="Repository\QueueDAL.cs" />
+    <Compile Include="Repository\SimpleMacDb.cs" />
+    <Compile Include="Repository\SimpleMacModel.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SimpleMacModel.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\GetResultDTO.cs" />
     <Compile Include="Scripts\FileProcessorScript.cs" />
     <Compile Include="Scripts\FileDownloaderScript.cs" />
@@ -204,6 +232,7 @@
     <Compile Include="Scripts\SingleFileProcessorScript.cs" />
     <Compile Include="Security\BadRequestSaltNotGuidException.cs" />
     <Compile Include="Security\BadRequestMissingTimestampException.cs" />
+    <Compile Include="Security\BadRequestMacSaltAlreadyUsedException.cs" />
     <Compile Include="Security\INonceCacheProvider.cs" />
     <Compile Include="Security\InvalidMACUnauthorizedException.cs" />
     <Compile Include="Security\HttpUnauthorizedException.cs" />
@@ -250,7 +279,17 @@
     <Compile Include="Utils\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Repository\SimpleMacModel.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>SimpleMacModel.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +301,55 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\RefreshOUList\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SimpleMac.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SimpleMac_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>SimpleMac.mdf</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Sql.Server.Express.10.0">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2008 Express</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Repository\SimpleMacModel.dbml.layout">
+      <DependentUpon>SimpleMacModel.dbml</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

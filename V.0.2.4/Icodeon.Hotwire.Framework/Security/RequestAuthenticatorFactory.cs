@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Providers;
+using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;
 
@@ -26,7 +27,8 @@ namespace Icodeon.Hotwire.Framework.Security
                     return new LocalOnlyRequestAuthenticator();
                 case SecurityType.simpleMAC:
                     var dateTime = ObjectFactory.GetInstance<IDateTime>();
-                    return new SimpleMacAuthenticator(dateTime);
+                    var simpleMacRepo = ObjectFactory.GetInstance<ISimpleMacRepository>();
+                    return new SimpleMacAuthenticator(dateTime, simpleMacRepo);
                 default:
                     throw new ArgumentOutOfRangeException("endpointAuthorisation");
             }

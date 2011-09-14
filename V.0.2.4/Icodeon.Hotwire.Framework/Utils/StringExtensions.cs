@@ -24,6 +24,7 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         public static string StartString(this string src, int numChars)
         {
+            if (src == null) return null;
             if (src.Length >= numChars) return src.Substring(0, numChars);
             return src;
         }

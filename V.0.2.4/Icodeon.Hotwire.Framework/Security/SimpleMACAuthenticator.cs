@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Icodeon.Hotwire.Framework.Modules;
+using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 
@@ -13,27 +14,39 @@ namespace Icodeon.Hotwire.Framework.Security
     public class SimpleMacAuthenticator : IAuthenticateRequest, ISignRequest
     {
         private readonly IDateTime _dateTimeProvider;
+        private readonly ISimpleMacRepository _repo;
         private Logger _logger;
 
 
-        public SimpleMacAuthenticator(IDateTime dateTimeProvider)
+
+        public SimpleMacAuthenticator(IDateTime dateTimeProvider, ISimpleMacRepository repo)
         {
             _dateTimeProvider = dateTimeProvider;
+            _repo = repo;
             _logger = LogManager.GetLogger("Icodeon.Hotwire.Framework.Security.SimpleMACAuthenticator");
         }
-
-        //TODO: Encrypt the expiry time into the nonce (salt)
 
         public void AuthenticateRequest(NameValueCollection requestParameters,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
             string hotwireMac = GetMacOrThrowException(headers);
-            string nonce = GetSaltOrThrowException(headers);
+            string salt = GetSaltOrThrowException(headers);
             int timeStamp = GetTimeStampOrThrowException(headers);
             EnsureTimeStampNotOlderThanMaxAgeSeconds(_dateTimeProvider,timeStamp, endpointMatch.Endpoint.TimeStampMaxAgeSeconds ?? 3);
             string url = endpointMatch.Match.RequestUri.ToString();
             string privateKey = endpointMatch.Endpoint.PrivateKey;
-            string expectedMac = GenerateMd5Mac(privateKey, requestParameters, httpMethod, url, nonce,timeStamp);
+            string expectedMac = GenerateMac(privateKey, requestParameters, httpMethod, url, salt,timeStamp);
             if (!hotwireMac.Equals(expectedMac)) throw new InvalidMacUnauthorizedException();
+            // not validating on user id currently
+            // EnsureMacAndSaltHaveNotBeenUsedBeforeAndRecordRequest(userId, hotwireMac, salt);
+            Guid saltGuid = Guid.Parse(salt);
+            EnsureMacAndSaltHaveNotBeenUsedBefore(hotwireMac, saltGuid);
+            _repo.RecordRequest(hotwireMac,saltGuid, url.StartString(_repo.UrlMaxLength));
+        }
+
+        private void EnsureMacAndSaltHaveNotBeenUsedBefore(string hotwireMac, Guid salt)
+        {
+            bool exists = _repo.RequestsExists(hotwireMac, salt);
+            if (exists) throw new BadRequestMacSaltAlreadyUsedException();
         }
 
         private void EnsureTimeStampNotOlderThanMaxAgeSeconds(IDateTime dateTime, int timeStamp, int endpointTimeStampMaxAge)
@@ -64,7 +77,7 @@ namespace Icodeon.Hotwire.Framework.Security
         public void SignRequestAddToHeaders(NameValueCollection headers, string privateKey, NameValueCollection requestParameters, string httpMethod, Uri uri, string macSalt, int timeStamp)
         {
             if (string.IsNullOrEmpty(macSalt)) throw new ArgumentOutOfRangeException("macSalt", "cannot be null.");
-            string mac = GenerateMd5Mac(privateKey, requestParameters, httpMethod, uri.ToString(), macSalt, timeStamp);
+            string mac = GenerateMac(privateKey, requestParameters, httpMethod, uri.ToString(), macSalt, timeStamp);
             // OAuth allows you to place these values into body, url, or headers 
             headers.Add(SimpleMACHeaders.HotwireMacHeaderKey, mac);
             headers.Add(SimpleMACHeaders.HotwireMacSaltHeaderKey, macSalt);
@@ -77,19 +90,23 @@ namespace Icodeon.Hotwire.Framework.Security
 
         public string CalculateMac(string privateKey, NameValueCollection requestParameters, string httpMethod, Uri uri, string macSalt, int timeStamp)
         {
-            string mac = GenerateMd5Mac(privateKey, requestParameters, httpMethod, uri.ToString(), macSalt, timeStamp);
+            string mac = GenerateMac(privateKey, requestParameters, httpMethod, uri.ToString(), macSalt, timeStamp);
             return mac;
         }
 
 
+        protected virtual HMAC CreateHmac(byte[] bytes)
+        {
+            return new HMACSHA256(bytes);
+        }
 
-        private string GenerateMd5Mac(string privateKey, NameValueCollection requestParameters, string httpMethod, string url, string macSalt, int timeStamp)
+        private string GenerateMac(string privateKey, NameValueCollection requestParameters, string httpMethod, string url, string macSalt, int timeStamp)
         {
             try
             {
                 var utf8Encoder = new UTF8Encoding();
                 byte[] keyBytes = utf8Encoder.GetBytes(privateKey);
-                using (HMACMD5 md5MacGenerator = new HMACMD5(keyBytes))
+                using (HMAC generator = CreateHmac(keyBytes))
                 {
                     var hashableString = ToHashableStringBuilder(requestParameters)
                         .Append(httpMethod)
@@ -98,9 +115,9 @@ namespace Icodeon.Hotwire.Framework.Security
                         .Append(timeStamp)
                         .ToString();
                     var hashableBytes = utf8Encoder.GetBytes(hashableString);
-                    byte[] md5MacBytes = md5MacGenerator.ComputeHash(hashableBytes);
-                    string md5HashString = GetHexString(md5MacBytes);
-                    return md5HashString;
+                    byte[] macBytes = generator.ComputeHash(hashableBytes);
+                    string hashString = GetHexString(macBytes);
+                    return hashString;
                 }
             }
             catch (Exception ex)
@@ -111,10 +128,10 @@ namespace Icodeon.Hotwire.Framework.Security
             }
         }
 
-        private string GetHexString(byte[] md5MacBytes)
+        private string GetHexString(byte[] macBytes)
         {
             StringBuilder sb = new StringBuilder();
-            md5MacBytes.ToList().ForEach(b => sb.AppendFormat("{0:x}",b));
+            macBytes.ToList().ForEach(b => sb.AppendFormat("{0:x}",b));
             return sb.ToString();
         }
 
