@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Repository;
+//using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Repositories
@@ -23,31 +23,35 @@ namespace Icodeon.Hotwire.Framework.Repositories
         }
 
 
-        private SimpleMacModel _db;
+        //private SimpleMacModel _db;
         public MacSaltDAL(string connectionString)
         {
-            _db = new SimpleMacModel(connectionString);
+           // _db = new SimpleMacModel(connectionString);
         }
 
 
         public void CacheRequest(string hotwireMac, Guid salt, string url, int msToExpire)
         {
-            // need to use data time provider
-            var macSaltHistory= new MacSaltHistory()
-                              {
-                                  Mac = hotwireMac,
-                                  Salt = salt,
-                                  Url = url.StartString(UrlMaxLength),
-                                  Expires = DateTime.Now.AddMilliseconds(msToExpire)
-                              };
-            _db.MacSaltHistories.InsertOnSubmit(macSaltHistory);
-            _db.SubmitChanges();
+            // do nothing! TDD
+
+            //// need to use data time provider
+            //var macSaltHistory = new MacSaltHistory()
+            //                  {
+            //                      Mac = hotwireMac,
+            //                      Salt = salt,
+            //                      Url = url.StartString(UrlMaxLength),
+            //                      Expires = DateTime.Now.AddMilliseconds(msToExpire)
+            //                  };
+            //_db.MacSaltHistories.InsertOnSubmit(macSaltHistory);
+            //_db.SubmitChanges();
+
         }
 
         public bool RequestsExists(string hotwireMac, Guid salt)
         {
-            var exists = _db.MacSaltHistories.FirstOrDefault(msh => msh.Mac == hotwireMac && msh.Salt == salt);
-            return (exists != null);
+            return false;
+            //var exists = _db.MacSaltHistories.FirstOrDefault(msh => msh.Mac == hotwireMac && msh.Salt == salt);
+            //return (exists != null);
         }
 
         // mucky but will do for now to get the model meta data.
@@ -64,12 +68,12 @@ namespace Icodeon.Hotwire.Framework.Repositories
 
         void IRepository.Create()
         {
-            _db.CreateDatabase();
+          //  _db.CreateDatabase();
         }
 
         void IRepository.Delete()
         {
-            _db.DeleteDatabase();
+           // _db.DeleteDatabase();
         }
 
 
@@ -84,7 +88,8 @@ namespace Icodeon.Hotwire.Framework.Repositories
 
         bool IRepository.Exists()
         {
-            return _db.DatabaseExists();
+            return true;
+            // return _db.DatabaseExists();
         }
     }
 }
