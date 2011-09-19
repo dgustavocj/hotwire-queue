@@ -7,7 +7,7 @@ using System.Threading;
 using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Repository;
+using Icodeon.Hotwire.Framework.Repositories;
 using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;

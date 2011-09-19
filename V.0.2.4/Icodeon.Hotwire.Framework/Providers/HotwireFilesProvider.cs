@@ -43,6 +43,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public static class MarkerFiles
         {
+            public const string AppDataFolder = "marker-appData.txt";
             public const string SolutionFolder = "HotwireSolutionFolderMarkerFile.txt";
             public const string ProcessingFolder = "marker-processing.txt";
             public const string DownloadErrorFolder = "marker-downloadError.txt";

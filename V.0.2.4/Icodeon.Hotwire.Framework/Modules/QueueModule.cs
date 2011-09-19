@@ -5,7 +5,7 @@ using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Repository;
+using Icodeon.Hotwire.Framework.Repositories;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 

@@ -9,6 +9,7 @@ using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.DTOs;
 using Icodeon.Hotwire.Framework.MediaTypes;
 using Icodeon.Hotwire.Framework.Providers;
+using Icodeon.Hotwire.Framework.Repositories;
 using Icodeon.Hotwire.Framework.Security;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
@@ -98,7 +99,7 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
                     // then the "test" code could be exactly the same for integration tests as it is for unit tests...hmmm?
                     context = new MockStreamingContext(requestParameters, "http://localhost/test/echo/helloWorld", moduleConfiguration);
                     var dateTime = new DateTimeWrapper();
-                    var simpleMacSigner = new SimpleMacAuthenticator(dateTime);
+                    var simpleMacSigner = new SimpleMacAuthenticator(dateTime, new MacSaltDAL(MacSaltDAL.ConnectionString));
                     int timeStamp = dateTime.SecondsSince1970;
                     simpleMacSigner.SignRequestAddToHeaders(context.Headers, requestPrivateKey, requestParameters, context.HttpMethod, context.Url, macSalt, timeStamp);
 

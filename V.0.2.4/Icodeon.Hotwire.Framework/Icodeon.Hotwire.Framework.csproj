@@ -14,6 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -214,14 +214,17 @@
     <Compile Include="Providers\IClassFactoryTestImplemented.cs" />
     <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
-    <Compile Include="Repository\IHotwireRepository.cs" />
-    <Compile Include="Repository\ISimpleMacRepository.cs" />
-    <Compile Include="Repository\QueueDAL.cs" />
-    <Compile Include="Repository\SimpleMacDb.cs" />
-    <Compile Include="Repository\SimpleMacModel.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SimpleMacModel.dbml</DependentUpon>
+    <Compile Include="Repository\IMacSaltDAL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\IRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\MacSaltDALs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\QueueDAL.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Scripts\GetResultDTO.cs" />
     <Compile Include="Scripts\FileProcessorScript.cs" />
@@ -247,6 +250,7 @@
     <Compile Include="Security\OAuthRequestAuthenticator.cs" />
     <Compile Include="Security\QuickAuth.cs" />
     <Compile Include="Security\SimpleMACAuthenticator.cs" />
+    <Compile Include="Security\SimpleMacSigner.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />
     <Compile Include="Utils\AppCacheWrapper.cs" />
@@ -285,11 +289,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Repository\SimpleMacModel.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>SimpleMacModel.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -301,15 +300,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\RefreshOUList\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SimpleMac.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SimpleMac_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>SimpleMac.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -345,11 +335,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Repository\SimpleMacModel.dbml.layout">
-      <DependentUpon>SimpleMacModel.dbml</DependentUpon>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

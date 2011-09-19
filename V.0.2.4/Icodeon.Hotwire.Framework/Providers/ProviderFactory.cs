@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
-using Icodeon.Hotwire.Framework.Repository;
+using Icodeon.Hotwire.Framework.Repositories;
 using Icodeon.Hotwire.Framework.Security;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;
@@ -69,6 +70,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         // Make sure that autoWireUpProviders is called onInit() on global.asax in websites!
 
+
         public ProviderFactory AutoWireUpProviders()
         {
             ObjectFactory.Initialize(r =>
@@ -76,7 +78,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                 r.For<IDateTime>().Use<DateTimeWrapper>();
                 r.For<HotLogger>().Use<NullLogger>();
                 r.For<LoggerBase>().Use<NullLogger>();
-                r.For<ISimpleMacRepository>().Use<SimpleMacDb>().Ctor<>()
+                r.For<IMacSaltDAL>().Use(new MacSaltDAL(MacSaltDAL.ConnectionString));
                 r.Scan(x =>
                         {
                             x.TheCallingAssembly();

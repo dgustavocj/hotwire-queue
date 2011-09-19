@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Providers;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
@@ -96,6 +97,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             }
         }
 
+
         private static IEnumerable<string> ExcludeSVN(this IEnumerable<string> src)
         {
             return src.Where(s => !s.EndsWith(".svn"));
@@ -114,6 +116,7 @@ namespace Icodeon.Hotwire.Framework.Utils
         }
 
 
+
         /// <summary>
         /// returns the physical path to the subfolder at the project level, and checks that a marker file exists. (use backslash for folder seperators)
         /// </summary>
@@ -128,6 +131,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             if (!File.Exists(markerFilePath)) throw new FileNotFoundException("File '" + markerFilePath + "' not found.");
             return newFolder;
         }
+
 
         /// <summary>
         /// returns the physical path to the subfolder at the project level (use backslash for folder seperators)
