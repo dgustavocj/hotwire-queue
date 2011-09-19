@@ -27,7 +27,7 @@ namespace Icodeon.Hotwire.Framework.Security
                     return new LocalOnlyRequestAuthenticator();
                 case SecurityType.simpleMAC:
                     var dateTime = ObjectFactory.GetInstance<IDateTime>();
-                    var guidSaltCache = ObjectFactory.GetInstance<IMacSaltDAL>();
+                    var guidSaltCache = ObjectFactory.GetInstance<ISimpleMacDAL>();
                     return new SimpleMacAuthenticator(dateTime, guidSaltCache);
                 default:
                     throw new ArgumentOutOfRangeException("endpointAuthorisation");

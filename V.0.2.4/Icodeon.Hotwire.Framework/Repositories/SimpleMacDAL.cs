@@ -9,7 +9,7 @@ using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Repositories
 {
-    public class MacSaltDAL : IMacSaltDAL, IRepository
+    public class SimpleMacDal : ISimpleMacDAL, IRepository
     {
 
         public static string ConnectionString
@@ -24,7 +24,7 @@ namespace Icodeon.Hotwire.Framework.Repositories
 
 
         //private SimpleMacModel _db;
-        public MacSaltDAL(string connectionString)
+        public SimpleMacDal(string connectionString)
         {
            // _db = new SimpleMacModel(connectionString);
         }

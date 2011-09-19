@@ -78,7 +78,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                 r.For<IDateTime>().Use<DateTimeWrapper>();
                 r.For<HotLogger>().Use<NullLogger>();
                 r.For<LoggerBase>().Use<NullLogger>();
-                //r.For<IMacSaltDAL>().Use(new MacSaltDAL(MacSaltDAL.ConnectionString));
+                r.For<ISimpleMacDAL>().Use(new SimpleMacDal(SimpleMacDal.ConnectionString));
                 r.Scan(x =>
                         {
                             x.TheCallingAssembly();

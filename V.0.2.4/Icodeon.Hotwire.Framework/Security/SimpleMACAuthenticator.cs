@@ -13,12 +13,12 @@ namespace Icodeon.Hotwire.Framework.Security
 
     public class SimpleMacAuthenticator : SimpleMacSigner, IAuthenticateRequest
     {
-        private readonly IMacSaltDAL _macSaltDal;
+        private readonly ISimpleMacDAL _simpleMacDal;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public SimpleMacAuthenticator(IDateTime dateTimeProvider, IMacSaltDAL macSaltDal) : base(dateTimeProvider)
+        public SimpleMacAuthenticator(IDateTime dateTimeProvider, ISimpleMacDAL simpleMacDal) : base(dateTimeProvider)
         {
-            _macSaltDal = macSaltDal;
+            _simpleMacDal = simpleMacDal;
         }
 
         public void AuthenticateRequest(NameValueCollection requestParameters,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
@@ -35,12 +35,12 @@ namespace Icodeon.Hotwire.Framework.Security
             if (!hotwireMac.Equals(expectedMac)) throw new InvalidMacUnauthorizedException();
             Guid saltGuid = Guid.Parse(salt);
             EnsureMacAndSaltHaveNotBeenUsedBefore(hotwireMac, saltGuid);
-            _macSaltDal.CacheRequest(hotwireMac,saltGuid, url,1000* maxAgeSeconds);
+            _simpleMacDal.CacheRequest(hotwireMac,saltGuid, url,1000* maxAgeSeconds);
         }
 
         private void EnsureMacAndSaltHaveNotBeenUsedBefore(string hotwireMac, Guid salt)
         {
-            bool exists = _macSaltDal.RequestsExists(hotwireMac, salt);
+            bool exists = _simpleMacDal.RequestsExists(hotwireMac, salt);
             if (exists) throw new BadRequestMacSaltAlreadyUsedException();
         }
 

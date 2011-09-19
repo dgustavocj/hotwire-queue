@@ -81,7 +81,10 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
                 if (scenario.EndpointSecuredWithSimpleMac)
                 {
                     // Simple mac security has a dependacy on  IDateTime 
-                    ObjectFactory.Initialize(x => x.For<IDateTime>().Use<DateTimeWrapper>());
+                    ObjectFactory.Initialize(x => {
+                                x.For<IDateTime>().Use<DateTimeWrapper>();
+                                x.For<ISimpleMacDAL>().Use(new SimpleMacDal(SimpleMacDal.ConnectionString));
+                    });
                     // could also have called new ProviderFactory().AutoWireUpProviders(); but I only want to wire up the miniumum needed for this test
                 }
 
@@ -99,7 +102,7 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
                     // then the "test" code could be exactly the same for integration tests as it is for unit tests...hmmm?
                     context = new MockStreamingContext(requestParameters, "http://localhost/test/echo/helloWorld", moduleConfiguration);
                     var dateTime = new DateTimeWrapper();
-                    var simpleMacSigner = new SimpleMacAuthenticator(dateTime, new MacSaltDAL(MacSaltDAL.ConnectionString));
+                    var simpleMacSigner = new SimpleMacAuthenticator(dateTime, new SimpleMacDal(SimpleMacDal.ConnectionString));
                     int timeStamp = dateTime.SecondsSince1970;
                     simpleMacSigner.SignRequestAddToHeaders(context.Headers, requestPrivateKey, requestParameters, context.HttpMethod, context.Url, macSalt, timeStamp);
 

@@ -6,7 +6,7 @@ using System.Text;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Repositories;
-using Icodeon.Hotwire.Framework.Repository;
+//using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using NUnit.Framework;
@@ -18,12 +18,12 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
     {
         private DirectoryInfo _appDataFolder = new DirectoryInfo(DirectoryHelper.MapProjectSubfolder("App_Data", HotwireFilesProvider.MarkerFiles.AppDataFolder));
 
-        private SimpleMacModel _db = new SimpleMacModel(MacSaltDAL.ConnectionString);
+       // private SimpleMacModel _db = new SimpleMacModel(MacSaltDAL.ConnectionString);
         
         [TestFixtureSetUp]
         void FixtureSetup()
         {
-            var cache = new MacSaltDAL(MacSaltDAL.ConnectionString);
+            var cache = new SimpleMacDal(SimpleMacDal.ConnectionString);
             if (_appDataFolder.GetFiles("*.mdf").Count()!=0) cache.Repository.Delete();
             cache.Repository.Create();
         }
@@ -31,7 +31,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         [TestFixtureTearDown]
         void FixtureTearDown()
         {
-            if (_appDataFolder.Exists) new MacSaltDAL(MacSaltDAL.ConnectionString).Repository.Delete();
+            if (_appDataFolder.Exists) new SimpleMacDal(SimpleMacDal.ConnectionString).Repository.Delete();
         }
 
 
@@ -95,13 +95,14 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         [Test]
         public void ShouldBeAbleToRecordRequest()
         {
+            throw new NotImplementedException();
             TraceTitle("Should be able to record requests");
 
             Trace("Given a macSalt cache");
-            var cache = new MacSaltDAL(MacSaltDAL.ConnectionString);
+            var cache = new SimpleMacDal(SimpleMacDal.ConnectionString);
 
             Trace("Given no requests have been made");
-            _db.MacSaltHistories.Count().Should().Be(0);
+           // _db.MacSaltHistories.Count().Should().Be(0);
 
             Trace("When I cache a new request");
 
@@ -112,13 +113,13 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
             int ms = 10*1000;
             cache.CacheRequest("1234", salt, url, ms);
             
-            Trace("then the request should be recorded");
-            var msh = _db.MacSaltHistories.FirstOrDefault();
+            //Trace("then the request should be recorded");
+            //var msh = _db.MacSaltHistories.FirstOrDefault();
 
-            msh.Mac.Should().Be(mac);
-            msh.Url.Should().Be(url); // todo : test that should truncate at 50?
-            msh.Salt.Should().Be(salt);
-            msh.Expires.Should().BeAfter(startTime.AddMilliseconds(ms-1));
+            //msh.Mac.Should().Be(mac);
+            //msh.Url.Should().Be(url); // todo : test that should truncate at 50?
+            //msh.Salt.Should().Be(salt);
+            //msh.Expires.Should().BeAfter(startTime.AddMilliseconds(ms-1));
         }
 
         [Test]

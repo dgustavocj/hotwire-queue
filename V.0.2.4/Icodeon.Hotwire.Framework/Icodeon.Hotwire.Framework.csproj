@@ -214,18 +214,10 @@
     <Compile Include="Providers\IClassFactoryTestImplemented.cs" />
     <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
-    <Compile Include="Repository\IMacSaltDAL.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Repository\IRepository.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Repository\MacSaltDALs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Repository\QueueDAL.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Repositories\ISimpleMacDAL.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\SimpleMacDAL.cs" />
+    <Compile Include="Repositories\QueueDAL.cs" />
     <Compile Include="Scripts\GetResultDTO.cs" />
     <Compile Include="Scripts\FileProcessorScript.cs" />
     <Compile Include="Scripts\FileDownloaderScript.cs" />
@@ -337,12 +329,12 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Repository\Schemas\HotwireSchema.mdf">
+    <Content Include="Repositories\Schemas\HotwireSchema.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Repository\Schemas\HotwireSchema_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Repositories\Schemas\HotwireSchema_log.LDF">
       <DependentUpon>HotwireSchema.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
