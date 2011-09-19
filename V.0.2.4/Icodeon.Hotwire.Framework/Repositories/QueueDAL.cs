@@ -11,7 +11,7 @@ using Icodeon.Hotwire.Framework.Serialization;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 
-namespace Icodeon.Hotwire.Framework.Repositories
+namespace Icodeon.Hotwire.Framework.DAL
 {
     public class QueueDal
     {

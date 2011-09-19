@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Utils;
 
-namespace Icodeon.Hotwire.Framework.Repositories
+namespace Icodeon.Hotwire.Framework.DAL
 {
     public interface ISimpleMacDAL
     {

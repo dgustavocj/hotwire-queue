@@ -7,7 +7,7 @@ using Icodeon.Hotwire.Framework.Providers;
 //using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 
-namespace Icodeon.Hotwire.Framework.Repositories
+namespace Icodeon.Hotwire.Framework.DAL
 {
     public class SimpleMacDal : ISimpleMacDAL, IRepository
     {

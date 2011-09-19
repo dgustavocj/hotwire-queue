@@ -1,4 +1,4 @@
-﻿namespace Icodeon.Hotwire.Framework.Repositories
+﻿namespace Icodeon.Hotwire.Framework.DAL
 {
     public interface IRepository
     {
