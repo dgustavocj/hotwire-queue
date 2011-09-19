@@ -116,6 +116,14 @@ namespace Icodeon.Hotwire.Framework.Utils
         }
 
 
+        public static DirectoryInfo AppDataFolder
+        {
+            get
+            {
+                var di = new DirectoryInfo(Environment.CurrentDirectory).GetDirectories("App_Data").FirstOrDefault();
+                return di;
+            }
+        }
 
         /// <summary>
         /// returns the physical path to the subfolder at the project level, and checks that a marker file exists. (use backslash for folder seperators)

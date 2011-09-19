@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Repositories;
+using Icodeon.Hotwire.Framework.DAL;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;
 

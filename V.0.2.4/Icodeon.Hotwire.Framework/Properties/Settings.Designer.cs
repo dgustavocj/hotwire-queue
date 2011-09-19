@@ -22,16 +22,5 @@ namespace Icodeon.Hotwire.Framework.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;AttachDbFilename=|DataDirectory|\\SimpleMac.mdf;Integrate" +
-            "d Security=True;User Instance=True")]
-        public string SimpleMacConnectionString {
-            get {
-                return ((string)(this["SimpleMacConnectionString"]));
-            }
-        }
     }
 }

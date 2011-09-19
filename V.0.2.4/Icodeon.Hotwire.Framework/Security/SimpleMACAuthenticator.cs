@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Icodeon.Hotwire.Framework.Modules;
-using Icodeon.Hotwire.Framework.Repositories;
+using Icodeon.Hotwire.Framework.DAL;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 

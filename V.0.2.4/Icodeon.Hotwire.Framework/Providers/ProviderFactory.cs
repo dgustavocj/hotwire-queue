@@ -5,7 +5,7 @@ using System.Reflection;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
-using Icodeon.Hotwire.Framework.Repositories;
+using Icodeon.Hotwire.Framework.DAL;
 using Icodeon.Hotwire.Framework.Security;
 using Icodeon.Hotwire.Framework.Utils;
 using StructureMap;

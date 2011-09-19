@@ -214,6 +214,11 @@
     <Compile Include="Providers\IClassFactoryTestImplemented.cs" />
     <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
+    <Compile Include="Repositories\HotwireContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HotwireContext.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Repositories\ISimpleMacDAL.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\SimpleMacDAL.cs" />
@@ -281,7 +286,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="web.config" />
+    <None Include="Repositories\HotwireContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>HotwireContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Icodeon.Hotwire.Contracts\Icodeon.Hotwire.Contracts.csproj">
@@ -336,6 +345,12 @@
       <DependentUpon>HotwireSchema.mdf</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Repositories\HotwireContext.dbml.layout">
+      <DependentUpon>HotwireContext.dbml</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
