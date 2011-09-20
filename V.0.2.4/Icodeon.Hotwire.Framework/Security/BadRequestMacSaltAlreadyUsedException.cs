@@ -9,6 +9,6 @@ namespace Icodeon.Hotwire.Framework.Security
 {
     public class BadRequestMacSaltAlreadyUsedException : HttpModuleException
     {
-        public BadRequestMacSaltAlreadyUsedException() : base(HttpStatusCode.BadRequest, "Salt and Mac have already been used.") { }
+        public BadRequestMacSaltAlreadyUsedException() : base(HttpStatusCode.BadRequest, "Salt and-or Mac have already been used.") { }
     }
 }

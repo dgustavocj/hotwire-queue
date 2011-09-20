@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Icodeon.Hotwire.Framework.DAL.Params;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.DAL;
 using Icodeon.Hotwire.Framework.Utils;
@@ -34,13 +35,13 @@ namespace Icodeon.Hotwire.Framework.Security
             string expectedMac = GenerateMac(privateKey, requestParameters, httpMethod, url, salt,timeStamp);
             if (!hotwireMac.Equals(expectedMac)) throw new InvalidMacUnauthorizedException();
             Guid saltGuid = Guid.Parse(salt);
-            EnsureMacAndSaltHaveNotBeenUsedBefore(hotwireMac, saltGuid);
-            _simpleMacDal.CacheRequest(hotwireMac,saltGuid, url,1000* maxAgeSeconds);
+            EnsureMacAndSaltHaveNotBeenUsedBefore(saltGuid);
+            _simpleMacDal.CacheRequest(new CacheRequestParams(saltGuid, url, 1000* maxAgeSeconds));
         }
 
-        private void EnsureMacAndSaltHaveNotBeenUsedBefore(string hotwireMac, Guid salt)
+        private void EnsureMacAndSaltHaveNotBeenUsedBefore(Guid salt)
         {
-            bool exists = _simpleMacDal.RequestsExists(hotwireMac, salt);
+            bool exists = _simpleMacDal.RequestsExists(salt);
             if (exists) throw new BadRequestMacSaltAlreadyUsedException();
         }
 

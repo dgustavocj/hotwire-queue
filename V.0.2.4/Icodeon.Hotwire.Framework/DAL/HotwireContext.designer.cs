@@ -22,6 +22,7 @@ namespace Icodeon.Hotwire.Framework.DAL
 	using System;
 	
 	
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="HotwireUnitTest")]
 	public partial class HotwireContext : System.Data.Linq.DataContext
 	{
 		
@@ -29,7 +30,16 @@ namespace Icodeon.Hotwire.Framework.DAL
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
+    partial void InsertSimpleMacHistory(SimpleMacHistory instance);
+    partial void UpdateSimpleMacHistory(SimpleMacHistory instance);
+    partial void DeleteSimpleMacHistory(SimpleMacHistory instance);
     #endregion
+		
+		public HotwireContext() : 
+				base(global::Icodeon.Hotwire.Framework.Properties.Settings.Default.HotwireUnitTestConnectionString, mappingSource)
+		{
+			OnCreated();
+		}
 		
 		public HotwireContext(string connection) : 
 				base(connection, mappingSource)
@@ -53,6 +63,148 @@ namespace Icodeon.Hotwire.Framework.DAL
 				base(connection, mappingSource)
 		{
 			OnCreated();
+		}
+		
+		public System.Data.Linq.Table<SimpleMacHistory> SimpleMacHistories
+		{
+			get
+			{
+				return this.GetTable<SimpleMacHistory>();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SimpleMacHistory")]
+	public partial class SimpleMacHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Salt;
+		
+		private string _Url;
+		
+		private System.DateTime _Created;
+		
+		private System.DateTime _Expires;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSaltChanging(System.Guid value);
+    partial void OnSaltChanged();
+    partial void OnUrlChanging(string value);
+    partial void OnUrlChanged();
+    partial void OnCreatedChanging(System.DateTime value);
+    partial void OnCreatedChanged();
+    partial void OnExpiresChanging(System.DateTime value);
+    partial void OnExpiresChanged();
+    #endregion
+		
+		public SimpleMacHistory()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Salt", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Salt
+		{
+			get
+			{
+				return this._Salt;
+			}
+			set
+			{
+				if ((this._Salt != value))
+				{
+					this.OnSaltChanging(value);
+					this.SendPropertyChanging();
+					this._Salt = value;
+					this.SendPropertyChanged("Salt");
+					this.OnSaltChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Url", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
+		public string Url
+		{
+			get
+			{
+				return this._Url;
+			}
+			set
+			{
+				if ((this._Url != value))
+				{
+					this.OnUrlChanging(value);
+					this.SendPropertyChanging();
+					this._Url = value;
+					this.SendPropertyChanged("Url");
+					this.OnUrlChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Created", DbType="DateTime NOT NULL")]
+		public System.DateTime Created
+		{
+			get
+			{
+				return this._Created;
+			}
+			set
+			{
+				if ((this._Created != value))
+				{
+					this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._Created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expires", DbType="DateTime NOT NULL")]
+		public System.DateTime Expires
+		{
+			get
+			{
+				return this._Expires;
+			}
+			set
+			{
+				if ((this._Expires != value))
+				{
+					this.OnExpiresChanging(value);
+					this.SendPropertyChanging();
+					this._Expires = value;
+					this.SendPropertyChanged("Expires");
+					this.OnExpiresChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

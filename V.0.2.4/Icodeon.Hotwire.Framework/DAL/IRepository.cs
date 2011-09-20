@@ -5,5 +5,6 @@
         void Create();
         void Delete();
         bool Exists();
+        void SubmitChanges();
     }
 }

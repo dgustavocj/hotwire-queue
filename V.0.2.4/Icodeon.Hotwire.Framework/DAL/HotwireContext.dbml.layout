@@ -1,4 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="HotwireContext">
   <DataContextMoniker Name="/HotwireContext" />
+  <nestedChildShapes>
+    <classShape Id="4865d0c5-6307-4307-89ec-9737218f0d90" absoluteBounds="1.5, 1, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/HotwireContext/SimpleMacHistory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="901c2e84-0365-467a-bd96-f17c8f04a3ba" absoluteBounds="1.5150000000000001, 1.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
 </ordesignerObjectsDiagram>

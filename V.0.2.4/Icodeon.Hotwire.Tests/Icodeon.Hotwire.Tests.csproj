@@ -89,7 +89,7 @@
     <Compile Include="AcceptanceTests\Diagnostics\LoggingErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
-    <Compile Include="AcceptanceTests\Repositories\MacSaltCacheTests.cs" />
+    <Compile Include="AcceptanceTests\Repositories\SimpleMacDALTests.cs" />
     <Compile Include="AcceptanceTests\Security\SimpleMacSecurityTests.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
@@ -109,7 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AcceptanceTests\HttpModules\" />
-    <Folder Include="App_Data\TestData\" />
     <Folder Include="UnitTests\Configuration\" />
   </ItemGroup>
   <ItemGroup>
@@ -130,7 +129,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="App_Data\marker-appData.txt" />
     <Content Include="NLog.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

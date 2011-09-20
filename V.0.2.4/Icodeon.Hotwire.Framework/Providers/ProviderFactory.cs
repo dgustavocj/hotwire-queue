@@ -78,7 +78,10 @@ namespace Icodeon.Hotwire.Framework.Providers
                 r.For<IDateTime>().Use<DateTimeWrapper>();
                 r.For<HotLogger>().Use<NullLogger>();
                 r.For<LoggerBase>().Use<NullLogger>();
-                r.For<ISimpleMacDAL>().Use(new SimpleMacDal(SimpleMacDal.ConnectionString));
+                // Should use a singleton "per request" for hotwire context
+                // for now it's not necessary since the current usage will only hit the database once per request
+                // if this increases and/or gets more complicated then this can be adjusted.
+                r.For<ISimpleMacDAL>().Use(new SimpleMacDal(new DateTimeWrapper(), new HotwireContext(ConnectionStringManager.HotwireConnectionString)));
                 r.Scan(x =>
                         {
                             x.TheCallingAssembly();

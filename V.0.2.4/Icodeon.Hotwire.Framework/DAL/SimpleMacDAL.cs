@@ -3,77 +3,51 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using Icodeon.Hotwire.Framework.DAL.Params;
 using Icodeon.Hotwire.Framework.Providers;
 //using Icodeon.Hotwire.Framework.Repository;
 using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.DAL
 {
-    public class SimpleMacDal : ISimpleMacDAL, IRepository
+    public class SimpleMacDal : ISimpleMacDAL
     {
 
-        public static string ConnectionString
+        private HotwireContext _db;
+        private IDateTime _dateTime;
+            
+        public SimpleMacDal(IDateTime dateTime, HotwireContext context)
         {
-            get
-            {
-                var cStringConfig = ConfigurationManager.ConnectionStrings["hotwire.simpleMac"];
-                if (cStringConfig == null) throw new ArgumentNullException("Could not find connection string setting 'hotwire.simpleMac'");
-                return cStringConfig.ConnectionString;
-            }
+           //_db = new HotwireContext(connectionString);
+            _db = context;
+           _dateTime = dateTime;
         }
 
 
-        //private SimpleMacModel _db;
-        public SimpleMacDal(string connectionString)
+        public void CacheRequest(CacheRequestParams cacheRequestParams)
         {
-           // _db = new SimpleMacModel(connectionString);
+            var simpleMacHistory = new SimpleMacHistory()
+                              {
+                                  Salt = cacheRequestParams.Salt,
+                                  Created = _dateTime.Now,
+                                  Url = cacheRequestParams.Url.StartString(UrlMaxLength),
+                                  Expires = _dateTime.Now.AddMilliseconds(cacheRequestParams.MsToExpire)
+                              };
+            _db.SimpleMacHistories.InsertOnSubmit(simpleMacHistory);
+            _db.SubmitChanges();
         }
 
-
-        public void CacheRequest(string hotwireMac, Guid salt, string url, int msToExpire)
+        public bool RequestsExists(Guid salt)
         {
-            // do nothing! TDD
-
-            //// need to use data time provider
-            //var macSaltHistory = new MacSaltHistory()
-            //                  {
-            //                      Mac = hotwireMac,
-            //                      Salt = salt,
-            //                      Url = url.StartString(UrlMaxLength),
-            //                      Expires = DateTime.Now.AddMilliseconds(msToExpire)
-            //                  };
-            //_db.MacSaltHistories.InsertOnSubmit(macSaltHistory);
-            //_db.SubmitChanges();
-
-        }
-
-        public bool RequestsExists(string hotwireMac, Guid salt)
-        {
-            return false;
-            //var exists = _db.MacSaltHistories.FirstOrDefault(msh => msh.Mac == hotwireMac && msh.Salt == salt);
-            //return (exists != null);
+            //TODO: get the sql below
+            var exists = _db.SimpleMacHistories.FirstOrDefault(msh => msh.Salt.Equals(salt));
+            return exists != null;
         }
 
         // mucky but will do for now to get the model meta data.
         public int UrlMaxLength
         {
-            get { return 50; }
-        }
-
-
-        public IRepository Repository
-        {
-            get { return this; }
-        }
-
-        void IRepository.Create()
-        {
-          //  _db.CreateDatabase();
-        }
-
-        void IRepository.Delete()
-        {
-           // _db.DeleteDatabase();
+            get { return 200; }
         }
 
 
@@ -81,15 +55,10 @@ namespace Icodeon.Hotwire.Framework.DAL
         {
             // this is where linq2sql will suffer as it doesnt support batch updates
             // if this becomes a bottleneck, then consider changing to simple.data
-            // I am keeping the linq2sql model in place because linq2sql gives us the wonderful
-            // if (!db.Exists()) db.CreateDatabase(); which we need for testing and for deployment
+            
+            var expiredItems = _db.SimpleMacHistories.Where(h => h.Expires < _dateTime.Now).ToList();
+            _db.SimpleMacHistories.DeleteAllOnSubmit(expiredItems);
         }
 
-
-        bool IRepository.Exists()
-        {
-            return true;
-            // return _db.DatabaseExists();
-        }
     }
 }

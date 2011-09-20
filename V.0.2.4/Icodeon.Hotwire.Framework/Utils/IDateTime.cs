@@ -8,5 +8,6 @@ namespace Icodeon.Hotwire.Framework.Utils
     public interface IDateTime
     {
         int SecondsSince1970 { get; }
+        DateTime Now { get; }
     }
 }

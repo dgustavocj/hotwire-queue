@@ -136,6 +136,17 @@
     <Compile Include="ConsoleService\ServiceDTO.cs" />
     <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
     <Compile Include="Contracts\IEnqueueRequest.cs" />
+    <Compile Include="DAL\ConnectionStringManager.cs" />
+    <Compile Include="DAL\Params\CacheRequestParams.cs" />
+    <Compile Include="DAL\HotwireContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HotwireContext.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\IRepository.cs" />
+    <Compile Include="DAL\ISimpleMacDAL.cs" />
+    <Compile Include="DAL\QueueDAL.cs" />
+    <Compile Include="DAL\SimpleMacDAL.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
     <Compile Include="Diagnostics\SSLEmailErrorHandler.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />
@@ -168,7 +179,7 @@
     <Compile Include="Modules\ModuleBase.cs" />
     <Compile Include="Modules\EndpointRequestMatcher.cs" />
     <Compile Include="Modules\RestfulProcessFileCaller.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -214,15 +225,6 @@
     <Compile Include="Providers\IClassFactoryTestImplemented.cs" />
     <Compile Include="Providers\IClientDownloader.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
-    <Compile Include="Repositories\HotwireContext.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HotwireContext.dbml</DependentUpon>
-    </Compile>
-    <Compile Include="Repositories\ISimpleMacDAL.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Repositories\SimpleMacDAL.cs" />
-    <Compile Include="Repositories\QueueDAL.cs" />
     <Compile Include="Scripts\GetResultDTO.cs" />
     <Compile Include="Scripts\FileProcessorScript.cs" />
     <Compile Include="Scripts\FileDownloaderScript.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Security\SimpleMacSigner.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />
+    <Content Include="Sql\HotwireCreate.sql" />
     <Compile Include="Utils\AppCacheWrapper.cs" />
     <Compile Include="Utils\AbstractAppCounter.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
@@ -281,15 +284,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Repositories\HotwireContext.dbml">
+    <None Include="DAL\HotwireContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>HotwireContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -338,18 +341,8 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Repositories\Schemas\HotwireSchema.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Repositories\Schemas\HotwireSchema_log.LDF">
-      <DependentUpon>HotwireSchema.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Repositories\HotwireContext.dbml.layout">
+    <None Include="DAL\HotwireContext.dbml.layout">
       <DependentUpon>HotwireContext.dbml</DependentUpon>
-      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

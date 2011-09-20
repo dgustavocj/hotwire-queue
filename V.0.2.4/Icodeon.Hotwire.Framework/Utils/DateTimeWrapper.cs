@@ -16,5 +16,10 @@ namespace Icodeon.Hotwire.Framework.Utils
                 return serverTimeStamp;
             }
         }
+
+        public DateTime Now
+        {
+            get { return DateTime.Now; }
+        }
     }
 }
