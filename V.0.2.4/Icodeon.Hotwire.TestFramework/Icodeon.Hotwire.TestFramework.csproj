@@ -41,6 +41,10 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\..\Icodeon.OUIntegration.Solution\packages\FluentAssertions.1.4.0.0\Lib\.NetFramework 4.0\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -55,6 +59,7 @@
     <Compile Include="AcceptanceTest.cs" />
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
+    <Compile Include="LMHosts.cs" />
     <Compile Include="MockHttpWriterAssertions.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\MockAppCache.cs" />

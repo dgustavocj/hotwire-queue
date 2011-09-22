@@ -29,7 +29,15 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
 
 
 
-
+    [TestFixtureSetUp]
+    public void FixtureSetup()
+    {
+        using(var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
+        {
+            db.DeleteDatabase();
+            db.CreateDatabase();
+        }
+    }
 
 
 
