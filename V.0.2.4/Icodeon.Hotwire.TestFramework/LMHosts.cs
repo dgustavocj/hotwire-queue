@@ -68,7 +68,7 @@ namespace Icodeon.Hotwire.TestFramework
         {
             var adresses = System.Net.Dns.GetHostAddresses(hostname);
             var address = adresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-            address.Should().Be("127.0.0.2");
+            address.Should().Be("127.0.0.1");
         }
 
         private void RestoreBackup()
@@ -130,7 +130,7 @@ namespace Icodeon.Hotwire.TestFramework
             }
             catch (Exception ex)
             {
-                // while a failure is bad...very bad, it should not take down the server as long as we're only using the LHMosts file to append #Include's
+                // while a failure is bad...very bad, it should not take down the server as long as we're only using the LHMosts file to append #Include's or few non real and non live (test) dns names
                 // the worst that should happen is that various testing will fail until the hosts file is restored. The bad side is that it's possible that
                 // "other" testing could fail with strange side effects because a backup of the lmhosts file was not restored.
                 _logger.LogException(LogLevel.Fatal,"Fatal error during LmHosts disposal, hosts files may be in an invalid state and it's possible host file backup may not have been restored! Please investigate.",ex);
