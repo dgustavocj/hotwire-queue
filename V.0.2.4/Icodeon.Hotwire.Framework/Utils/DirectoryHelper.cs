@@ -103,26 +103,23 @@ namespace Icodeon.Hotwire.Framework.Utils
             return src.Where(s => !s.EndsWith(".svn"));
         }
 
-
-        public static List<DirectoryInfo> CreateFolders(string rootPath, string[] folderPaths, string markerFile)
+        public static List<DirectoryInfo> CreateFolders(string rootPath, string[] folderPaths)
         {
 
             // gotta watch out that if I create a folder by using path.combine, that the resulting path is not a root by some mistake,
             // NB! make sure second part of the path you are combining with does not start with a slash.
+
             var folders = new List<DirectoryInfo>();
             folderPaths.ToList().ForEach(
                 folder =>
                 {
                     var rootPathTrimmed = rootPath.TrimStart(new[] { '\\', '/' });
-                    var markerFilePath = Path.Combine(rootPath, markerFile);
                     string folderPath = Path.Combine(rootPath, rootPathTrimmed);
                     var directoryInfo = new DirectoryInfo(folderPath);
                     if (directoryInfo.Exists) throw new ApplicationException("folder " + folderPath + " already exists. This indicates that a test teardown has not completed correctly. Test aborted.");
                     directoryInfo.Create();
-                    File.WriteAllText(markerFilePath, "marker file, created :" + DateTime.Now.ToString());
                     folders.Add(directoryInfo);
-                }
-                );
+                });
             return folders;
         }
 

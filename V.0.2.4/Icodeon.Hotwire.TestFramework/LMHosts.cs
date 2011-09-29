@@ -10,7 +10,6 @@ using NLog;
 
 namespace Icodeon.Hotwire.TestFramework
 {
-
     public sealed class LMHosts : IDisposable
     {
 
@@ -86,7 +85,7 @@ namespace Icodeon.Hotwire.TestFramework
         {
             ThrowItsReadOnlyExceptionIfNotBackedUp("AppendLine()");
             _hasModifiedHosts = true;
-            File.WriteAllText(_hostsPath, line);
+            File.AppendAllText(_hostsPath,"\r\n"+ line);
         }
 
         public LMHosts AddHostEntryIfNotExist(string hostName, string ipAddress)
@@ -95,7 +94,7 @@ namespace Icodeon.Hotwire.TestFramework
             if (!Lines.Contains(hostName))
             {
                 _hasModifiedHosts = true;
-                string hostLine = string.Format("\n{0}    {1}", ipAddress, hostName);
+                string hostLine = string.Format("\r\n{0}    {1}", ipAddress, hostName);
                 File.AppendAllText(_hostsPath,hostLine);
             }
             return this;

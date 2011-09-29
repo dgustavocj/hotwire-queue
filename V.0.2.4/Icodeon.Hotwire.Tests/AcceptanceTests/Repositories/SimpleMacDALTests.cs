@@ -19,7 +19,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
     {
         
         [TestFixtureSetUp]
-        void FixtureSetup()
+        public void FixtureSetup()
         {
             // teardown the database 
             using(var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
@@ -30,7 +30,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         }
 
         [TestFixtureTearDown]
-        void FixtureTearDown()
+        public void FixtureTearDown()
         {
             // dont delete the database, in cae we need to manually inspect it
             //using (var db = new HotwireContext(ConnectionStringManager.HotwireUnitTestConnectionString))
@@ -41,11 +41,11 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
 
         private HotwireContext _context;
 
-        [SetUp]
-        void Setup()
-        {
+        //[SetUp]
+        //public void Setup()
+        //{
          
-        }
+        //}
 
 
         [Test]
@@ -89,7 +89,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
             {
                 Trace("Given a request is made");
                 var dal = new SimpleMacDal(new DateTimeWrapper(), context);
-                context.SimpleMacHistories.Count().Should().Be(0);
+
                 var request = createRequest();
                 dal.CacheRequest(request);                
                context.SubmitChanges();
