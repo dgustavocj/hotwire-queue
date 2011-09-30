@@ -3,7 +3,7 @@
 
 	<target name="init">
 		<loadtasks assembly="Icodeon.Hotwire.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
-		<exec program="Icodeon.Hotwire.Solution\packages\NonDistributed\UpdateAndCopyPackages" output="PackageUpdate.log" />
+		<exec program="Icodeon.Hotwire.Solution\packages\NonDistributed\UpdateAndCopyPackages.bat" output="PackageUpdate.log" />
 	</target>
 
 
