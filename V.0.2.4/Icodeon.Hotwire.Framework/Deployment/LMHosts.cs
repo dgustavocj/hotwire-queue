@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
-using FluentAssertions;
 using NLog;
 
-namespace Icodeon.Hotwire.TestFramework
+namespace Icodeon.Hotwire.Framework.Deployment
 {
     public sealed class LMHosts : IDisposable
     {
@@ -56,19 +51,10 @@ namespace Icodeon.Hotwire.TestFramework
             File.Copy(_hostsPath, _backupPath);
         }
 
-        public void ShouldNotResolveHostName(string hostname)
-        {
-            Action action = () => System.Net.Dns.GetHostAddresses(hostname);
-            action.ShouldThrow<SocketException>();
-        }
 
 
-        public void ShouldResolveToLocalhost(string hostname)
-        {
-            var adresses = System.Net.Dns.GetHostAddresses(hostname);
-            var address = adresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-            address.Should().Be("127.0.0.1");
-        }
+
+
 
         private void RestoreBackup()
         {

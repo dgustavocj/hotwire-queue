@@ -86,6 +86,10 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NonDistributed\Microsoft.Web.Administration.6.1.7601\Microsoft.Web.Administration.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
@@ -147,6 +151,9 @@
     <Compile Include="DAL\ISimpleMacDAL.cs" />
     <Compile Include="DAL\QueueDAL.cs" />
     <Compile Include="DAL\SimpleMacDAL.cs" />
+    <Compile Include="Deployment\DeployManager.cs" />
+    <Compile Include="Deployment\LMHosts.cs" />
+    <Compile Include="Deployment\VersionedSiteManager.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
     <Compile Include="Diagnostics\SSLEmailErrorHandler.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />

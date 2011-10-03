@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Web.Administration;
 
-namespace Icodeon.Hotwire.TestFramework
+namespace Icodeon.Hotwire.Framework.Deployment
 {
     public class DeployManager
     {

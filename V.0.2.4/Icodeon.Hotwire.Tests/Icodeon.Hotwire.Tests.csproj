@@ -59,6 +59,7 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\FluentAssertions.1.4.0.0\Lib\.NetFramework 4.0\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NUnit.2.5.10.11092\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -85,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
+    <Compile Include="AcceptanceTests\Deployment\GoLiveRestfulServiceTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\LoggingErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
@@ -129,6 +131,18 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_DefaultWebsite\Index.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v1\Index.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v2\Index.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v3\Index.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="NLog.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

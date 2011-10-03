@@ -62,10 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTest.cs" />
-    <Compile Include="DeployManager.cs" />
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
-    <Compile Include="LMHosts.cs" />
+    <Compile Include="LMHostsTestHelper.cs" />
     <Compile Include="MockHttpWriterAssertions.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\MockAppCache.cs" />
