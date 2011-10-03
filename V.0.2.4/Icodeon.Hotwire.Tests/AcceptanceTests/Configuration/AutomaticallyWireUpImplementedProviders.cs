@@ -8,6 +8,7 @@ using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.Framework.Http;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
@@ -72,7 +73,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
             
             Trace("then valid test providers should be returned.");
             client.Should().NotBeNull();
-            client.Should().BeOfType<TestClientProvider>();
+            client.Should().BeOfType<HttpClientProvider>();
 
             fileProcessor.Should().NotBeNull();
             fileProcessor.Should().BeOfType<LoggingFileProcessorProvider>();
@@ -85,18 +86,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Configuration
         
         }
 
-        public class TestClientProvider : IHttpClientProvider
-        {
-
-            public void GetAndEnsureStatusIsSuccessful(Uri uri)
-            {
-                throw new NotImplementedException();
-            }
-            public string GetResponseAsStringEnsureStatusIsSuccessful(Uri uri)
-            {
-                throw new NotImplementedException();
-            }
-        }
 
         public class TestFileProcessorProvider : IFileProcessorProvider
         {

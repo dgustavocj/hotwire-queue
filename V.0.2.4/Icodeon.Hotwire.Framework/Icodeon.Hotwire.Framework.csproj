@@ -86,6 +86,9 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Net.Http">
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NonDistributed\HttpClient.0.5.0\lib\40\Microsoft.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NonDistributed\Microsoft.Web.Administration.6.1.7601\Microsoft.Web.Administration.dll</HintPath>
@@ -174,6 +177,7 @@
     <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
     <Compile Include="FolderWatcher\FolderScript.cs" />
     <Compile Include="Http\HotwireHttpUtility.cs" />
+    <Compile Include="Http\HttpClientProvider.cs" />
     <Compile Include="Modules\FileProcessorLockedFileException.cs" />
     <Compile Include="Modules\FileProcessorModule.cs" />
     <Compile Include="Modules\HttpRequestContext.cs" />
