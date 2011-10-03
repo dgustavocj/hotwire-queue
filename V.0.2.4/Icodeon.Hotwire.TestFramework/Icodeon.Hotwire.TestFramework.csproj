@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Icodeon.Hotwire.Solution\packages\FluentAssertions.1.4.0.0\Lib\.NetFramework 4.0\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\NonDistributed\Microsoft.Web.Administration.6.1.7601\Microsoft.Web.Administration.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTest.cs" />
+    <Compile Include="DeployManager.cs" />
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="LMHosts.cs" />
