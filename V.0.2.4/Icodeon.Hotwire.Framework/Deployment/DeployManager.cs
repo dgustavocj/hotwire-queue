@@ -8,7 +8,7 @@ namespace Icodeon.Hotwire.Framework.Deployment
     public class DeployManager
     {
 
-        public void CreateApplicationPoolIfNotExistRecycleIfExist(string poolName)
+        public void CreateApplicationPoolIfNotExist(string poolName)
         {
             using (ServerManager manager = new ServerManager())
             {
@@ -16,15 +16,13 @@ namespace Icodeon.Hotwire.Framework.Deployment
                 if (pool == null)
                 {
                     pool = manager.ApplicationPools.Add(poolName);
-                    pool.Start();
-                }
-                else
-                {
-                    pool.Recycle();
+                    pool.AutoStart = true;
                 }
                 manager.CommitChanges();
             }
         }
+
+
 
         // do I need to assert appropriate permissions for this?
         // must test what happens if I don't run with right permissions so that I get a suitable error message.
@@ -33,13 +31,13 @@ namespace Icodeon.Hotwire.Framework.Deployment
             if (!Directory.Exists(path)) throw new ArgumentOutOfRangeException("Could not find path, path expected was:" + path);
             using (ServerManager manager = new ServerManager())
             {
-                CreateApplicationPoolIfNotExistRecycleIfExist(applicationPoolName);
+                CreateApplicationPoolIfNotExist(applicationPoolName);
                 // Consider? Dow we need to create site with default started = false so that we can change a few things before it "starts" automatically?
                 Site site = manager.Sites.Add(websiteName, path, port);
                 // application pool must already exist.
                 site.Applications[0].ApplicationPoolName = applicationPoolName;
                 CreateHttpProtocolBinding(site, domainName,port);
-                manager.ApplicationPools[applicationPoolName].Recycle();
+                //manager.ApplicationPools[applicationPoolName].Recycle();
                 //site.Start();
                 manager.CommitChanges();
             }

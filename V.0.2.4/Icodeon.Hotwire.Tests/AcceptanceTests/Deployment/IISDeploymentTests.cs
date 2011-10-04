@@ -13,13 +13,13 @@ using NUnit.Framework;
 namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
 {
     [TestFixture]
-    public class GoLiveRestfulServiceTests : UnitTest
+    public class IISDeploymentTests : UnitTest
     {
 
 
-        readonly string _testDomainName = "test.GoLiveRestfulServiceTests";
+        readonly string _testDomainName = "test.IISDeploymentTests";
         private readonly string _defaultWebsiteMarkerText = "34BC28B7-CA23-491F-A1CA-060CEFB53B44";
-        int _port = int.Parse(ConfigurationManager.AppSettings["Icodeon.Hotwire.Tests.AcceptanceTests.Deployment.GoLiveRestfulServiceTests-Port"]);
+        int _port = int.Parse(ConfigurationManager.AppSettings["Icodeon.Hotwire.Tests.AcceptanceTests.Deployment.IISDeploymentTests-Port"]);
         private string _rootFolder;
 
         [TestFixtureSetUp]
@@ -53,14 +53,14 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
 
         // security assert ? (we need to be running as administrator, otherwise we can't create host entry)
         [Test]
-        public void ShouldBeAbleToAutomaticallyGoLiveWithAnyVersion()
+        public void ShouldCreateAndTakeDownIISWebsites()
         {
             TraceTitle("end to  end happy case");
 
             using (var hosts = new LMHosts(createBackup:true))
             {
 
-                Trace("given the LHMOSTS file contains entry 'test.GoLiveRestfulServiceTests' ");
+                Trace("given the LHMOSTS file contains entry 'test.IISDeploymentTests' ");
                 Trace("and three folders golive/v1 /golive/v2 and golive/v3");
                 Trace("with 3 versions of the same website, that return 'hello world 1!' 'Hello world 2!' and 'Hello world 3!' in each folder respetively");
                 //--------------------------------------------------------------------------------------

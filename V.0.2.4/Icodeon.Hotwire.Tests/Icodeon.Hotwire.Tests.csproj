@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
-    <Compile Include="AcceptanceTests\Deployment\GoLiveRestfulServiceTests.cs" />
+    <Compile Include="AcceptanceTests\Deployment\IISDeploymentTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\LoggingErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
