@@ -131,16 +131,16 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_DefaultWebsite\Index.htm">
+    <Content Include="App_Data\golive\test.IISDeploymentTests_DefaultWebsite\Index.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v1\Index.htm">
+    <Content Include="App_Data\golive\test.IISDeploymentTests_v1\Index.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v2\Index.htm">
+    <Content Include="App_Data\golive\test.IISDeploymentTests_v2\Index.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\golive\test.GoLiveRestfulServiceTests_v3\Index.htm">
+    <Content Include="App_Data\golive\test.IISDeploymentTests_v3\Index.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="NLog.config">

@@ -26,28 +26,20 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         public void FixtureSetup()
         {
             _rootFolder = Path.Combine(Environment.CurrentDirectory, @"App_Data\golive");
-             using (ServerManager manager = new ServerManager())
-             {
-                 if (manager.ApplicationPools[_testDomainName]!=null)
-                    throw new ApplicationException("Application pool '" + _testDomainName + "' found, aborting tests. Indicates possible teardown in previous tes run not run correctly.");
-                 var appPool = manager.ApplicationPools.Add(_testDomainName);
-                 manager.CommitChanges();
-             }
+            var dm = new DeployManager();
+            dm.DeleteAllSitesStartingWith(_testDomainName);
+            dm.DeleteApplicationPoolIfExists(_testDomainName);
+            dm.CreateApplicationPoolIfNotExist(_testDomainName);
+            dm.StartAppPoolMustExist(_testDomainName,false,0,0);
         }
 
 
         [TestFixtureTearDown]
         public void FixtureTearDown()
         {
-            // delete any websites starting with:
-            new DeployManager().DeleteAllSitesStartingWith(_testDomainName,_testDomainName);
-            using (ServerManager manager = new ServerManager())
-            {
-                var pool = manager.ApplicationPools[_testDomainName];
-                pool.Stop();
-                pool.Delete();
-                manager.CommitChanges();
-            }
+            var dm = new DeployManager();
+            dm.DeleteAllSitesStartingWith(_testDomainName);
+            dm.DeleteApplicationPoolIfExists(_testDomainName);
         }
 
 
@@ -66,7 +58,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
                 //--------------------------------------------------------------------------------------
                 var dm = new DeployManager();
                 hosts.AddHostEntryIfNotExist(_testDomainName, "127.0.0.1");
-                dm.DeleteAllSitesStartingWith(_testDomainName, _testDomainName);
 
                 // When I call GoLive versions 1,2,3,2,1 respectively
                 // Then the appropriate version should be live each time

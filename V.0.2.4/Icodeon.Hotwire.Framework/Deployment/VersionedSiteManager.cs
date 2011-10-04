@@ -34,9 +34,12 @@ namespace Icodeon.Hotwire.Framework.Deployment
         public void GoLive(string version)
         {
             var dm = new DeployManager();
-            dm.DeleteAllSitesStartingWith(_domainName, NamePrefix);
+            dm.StopAppPoolIfExist(_applicationPool,true, 100,200); // default timeout of 20 seconds, quite long, but represents a severe failure.
+            dm.DeleteAllSitesStartingWith(NamePrefix);
+            dm.CreateApplicationPoolIfNotExist(_applicationPool);
             string path = Path.Combine(_rootPath, VersionedName(version));
             dm.CreateSite(VersionedName(version),_domainName,_applicationPool, path, _port);
+            dm.StartAppPoolMustExist(_applicationPool,true, 50, 200);
         }
     }
 }
