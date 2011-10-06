@@ -8,6 +8,7 @@ using Icodeon.Hotwire.Framework.Deployment;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Microsoft.Web.Administration;
+using NLog;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
@@ -15,7 +16,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
     [TestFixture]
     public class IISDeploymentTests : UnitTest
     {
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         readonly string _testDomainName = "test.IISDeploymentTests";
         private readonly string _defaultWebsiteMarkerText = "34BC28B7-CA23-491F-A1CA-060CEFB53B44";
@@ -25,11 +26,21 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
+            _logger.Debug("IISDeploymentTests.FixtureSetup()");
             _rootFolder = Path.Combine(Environment.CurrentDirectory, @"App_Data\golive");
             var dm = new DeployManager();
+            _logger.Trace("_testDomainName:{0}", _testDomainName);
+
+            _logger.Trace("DeleteAllSitesStartingWith({0})", _testDomainName);
             dm.DeleteAllSitesStartingWith(_testDomainName);
+
+            _logger.Trace("DeleteApplicationPoolIfExists({0})", _testDomainName);
             dm.DeleteApplicationPoolIfExists(_testDomainName);
+
+            _logger.Trace("CreateApplicationPoolIfNotExist({0})", _testDomainName);
             dm.CreateApplicationPoolIfNotExist(_testDomainName);
+
+            _logger.Trace("StartAppPoolMustExist({0},...)", _testDomainName);
             dm.StartAppPoolMustExist(_testDomainName,false,0,0);
         }
 

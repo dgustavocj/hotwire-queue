@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.Web.Administration;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Deployment
 {
     public class DeployManager
     {
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        
         /// <summary>
         /// Returns false if not exist, true if exists and now stopped.
         /// </summary>
