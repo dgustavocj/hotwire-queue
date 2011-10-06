@@ -63,7 +63,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
                 // Then the appropriate version should be live each time
                 //--------------------------------------------------------------------------------------
                 var vm = new VersionedSiteManager(_rootFolder, _testDomainName, _testDomainName, _port);
-                var versions = new List<string> {"1", "2", "3", "2", "1"};
+                var versions = new List<string> {"1", "2", "3", "2","3", "1"}; 
                 string result = null;
                 versions.ForEach(v =>{
                     Trace("when I call goLive('{0}')", v);
