@@ -88,6 +88,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Net.Http">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NonDistributed\HttpClient.0.5.0\lib\40\Microsoft.Net.Http.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -96,9 +97,11 @@
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\Icodeon.Hotwire.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
