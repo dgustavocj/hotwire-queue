@@ -48,14 +48,12 @@ namespace Icodeon.Hotwire.Framework.Deployment
         }
 
 
-
-
-
         // do I need to assert appropriate permissions for this?
         // must test what happens if I don't run with right permissions so that I get a suitable error message.
         public void CreateSite(string websiteName, string domainName, string applicationPoolName, string path, int port)
         {
-            if (!Directory.Exists(path)) throw new ArgumentOutOfRangeException("Could not find path, path expected was:" + path);
+            _logger.Debug("CreateSite({0}, {1}, {2}, string path, int port)",websiteName,domainName,applicationPoolName);
+            if (!Directory.Exists(path)) throw new LoggedException(_logger, "Could not find path, path expected was:" + path);
             using (ServerManager manager = new ServerManager())
             {
                 if (manager.ApplicationPools[applicationPoolName] == null)
