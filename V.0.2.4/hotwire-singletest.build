@@ -3,7 +3,11 @@
 
 	<target name="init">
 		<loadtasks assembly="Icodeon.Hotwire.Solution\packages\Nant.Contrib.085\NAnt.Contrib.Tasks.dll" />
-		<property name="log-directory" value="testlogs" />
+    <exec
+			program="Icodeon.Hotwire.Solution\packages\NonDistributed\UpdateAndCopyPackages.bat"
+			output="PackageUpdate.log"
+			workingdir="Icodeon.Hotwire.Solution\packages\NonDistributed" />
+    <property name="log-directory" value="testlogs" />
 		<property name="configuration" value="Debug" />
 	</target>
 
