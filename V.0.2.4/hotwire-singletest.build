@@ -6,8 +6,15 @@
 		<property name="log-directory" value="testlogs" />
 		<property name="configuration" value="Debug" />
 	</target>
-		
+
+  <target name="build-hotwire" description="Build Hotwire opensource project" depends="init">
+    <msbuild project="Icodeon.Hotwire.Solution\Icodeon.Hotwire.sln">
+      <property name="Configuration" value="Debug" />
+    </msbuild>
+  </target>
+
   <target name="tests" depends="init">
+    <call target="build-hotwire" />
     <mkdir dir="${log-directory}"/>
     <nunit2 verbose="true">
       <formatter type="Xml" usefile="true" outputdir="${log-directory}" extension=".xml"/>
