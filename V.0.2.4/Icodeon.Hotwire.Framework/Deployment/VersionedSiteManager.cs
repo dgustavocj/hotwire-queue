@@ -34,7 +34,7 @@ namespace Icodeon.Hotwire.Framework.Deployment
         public void GoLive(string version)
         {
             var dm = new DeployManager();
-            dm.StopAppPoolIfExist(_applicationPool,true, 100,200); // default timeout of 20 seconds, quite long, but represents a severe failure.
+            dm.DeleteApplicationPoolIfExists(_applicationPool); 
             dm.DeleteAllSitesStartingWith(NamePrefix);
             dm.CreateApplicationPoolIfNotExist(_applicationPool);
             string path = Path.Combine(_rootPath, VersionedName(version));

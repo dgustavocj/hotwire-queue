@@ -156,7 +156,9 @@
     <Compile Include="DAL\SimpleMacDAL.cs" />
     <Compile Include="Deployment\DeployManager.cs" />
     <Compile Include="Deployment\LMHosts.cs" />
+    <Compile Include="Deployment\ServerManagerExtensions.cs" />
     <Compile Include="Deployment\VersionedSiteManager.cs" />
+    <Compile Include="Diagnostics\LoggedException.cs" />
     <Compile Include="Diagnostics\LoggerExtensions.cs" />
     <Compile Include="Diagnostics\SSLEmailErrorHandler.cs" />
     <Compile Include="Diagnostics\DebugContract.cs" />

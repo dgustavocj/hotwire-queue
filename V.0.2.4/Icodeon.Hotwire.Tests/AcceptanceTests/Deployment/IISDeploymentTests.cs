@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Deployment;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Microsoft.Web.Administration;
@@ -26,31 +27,27 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            _logger.Debug("IISDeploymentTests.FixtureSetup()");
-            _rootFolder = Path.Combine(Environment.CurrentDirectory, @"App_Data\golive");
-            var dm = new DeployManager();
-            _logger.Trace("_testDomainName:{0}", _testDomainName);
-
-            _logger.Trace("DeleteAllSitesStartingWith({0})", _testDomainName);
-            dm.DeleteAllSitesStartingWith(_testDomainName);
-
-            _logger.Trace("DeleteApplicationPoolIfExists({0})", _testDomainName);
-            dm.DeleteApplicationPoolIfExists(_testDomainName);
-
-            _logger.Trace("CreateApplicationPoolIfNotExist({0})", _testDomainName);
-            dm.CreateApplicationPoolIfNotExist(_testDomainName);
-
-            _logger.Trace("StartAppPoolMustExist({0},...)", _testDomainName);
-            dm.StartAppPoolMustExist(_testDomainName,false,0,0);
+            _logger.LoggedExecution(() =>{
+                _logger.Debug("IISDeploymentTests.FixtureSetup()");
+                _rootFolder = Path.Combine(Environment.CurrentDirectory, @"App_Data\golive");
+                var dm = new DeployManager();
+                dm.DeleteAllSitesStartingWith(_testDomainName);
+                dm.DeleteApplicationPoolIfExists(_testDomainName);
+                dm.CreateApplicationPoolIfNotExist(_testDomainName);
+                dm.StartAppPoolMustExist(_testDomainName, false, 0, 0);
+            });
         }
 
 
         [TestFixtureTearDown]
         public void FixtureTearDown()
         {
-            var dm = new DeployManager();
-            dm.DeleteAllSitesStartingWith(_testDomainName);
-            dm.DeleteApplicationPoolIfExists(_testDomainName);
+            _logger.LoggedExecution(() =>{
+                _logger.Debug("IISDeploymentTests.FixtureTearDown()");
+                var dm = new DeployManager();
+                dm.DeleteAllSitesStartingWith(_testDomainName);
+                dm.DeleteApplicationPoolIfExists(_testDomainName);
+            });
         }
 
 
