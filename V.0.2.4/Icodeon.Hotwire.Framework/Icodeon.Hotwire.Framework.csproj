@@ -99,9 +99,8 @@
       <HintPath>..\Icodeon.Hotwire.Solution\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="StructureMap">
-      <HintPath>..\Icodeon.Hotwire.Solution\packages\structuremap.2.6.2\lib\StructureMap.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="StructureMap, Version=2.6.3.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <HintPath>..\Icodeon.Hotwire.Solution\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
