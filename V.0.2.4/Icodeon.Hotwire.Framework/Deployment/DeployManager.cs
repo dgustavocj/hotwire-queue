@@ -37,6 +37,7 @@ namespace Icodeon.Hotwire.Framework.Deployment
                                                 var pool = manager.ApplicationPools[poolName];
                                                 if (pool != null)
                                                 {
+                                                    _logger.Trace("about to read properties of the pool object, which at this point is probably poked!");
                                                     _logger.Trace("app pool state is:{0}", pool.State);
                                                     _logger.Trace("removing pool:{0}:{1}",pool.Name,pool.State);
                                                     manager.ApplicationPools.Remove(pool);
