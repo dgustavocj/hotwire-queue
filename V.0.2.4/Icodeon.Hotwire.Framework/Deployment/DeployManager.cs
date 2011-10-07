@@ -12,64 +12,6 @@ namespace Icodeon.Hotwire.Framework.Deployment
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         
-        // NOW USING DELETE INSTEAD OF STOP FOR DEPLOYMENTS! MORE RELIABLE, NO WAITING FOR PROCESSING TO COMPLETE 
-        //public bool StopAppPoolIfExist(string poolName, bool waitForPoolToStop, int msBetweenWaits, int maxTries)
-        //{
-
-            //using (ServerManager manager = new ServerManager())
-            //{
-            //    var pool = manager.ApplicationPools[poolName];
-            //    if (pool == null) return false;
-            //    pool.Stop();
-            //    if (waitForPoolToStop && (pool.State == ObjectState.Stopping))
-            //    {
-            //        int cnt = 0;
-            //        while(pool.State==ObjectState.Stopping)
-            //        {
-            //            Thread.Sleep(msBetweenWaits);
-            //            if(++cnt>maxTries) throw new ApplicationException("timed out waiting for ApplicationPool '" + poolName + "' to stop.");
-            //        }
-            //        return true;
-            //    }
-            //    if (pool.State == ObjectState.Stopped) return true;
-            //    if (pool.State==ObjectState.Unknown) throw new ApplicationException("ApplicationPool '" + poolName + "' is in an unknown state. Unable to Stop.");
-            //    // will (should) never get to line below
-            //    throw new  Exception("Unable to stop application pool '" + poolName + "'.");
-            //}
-        //}
-
-        // START IS INSTANT, NO NEED FOR COMPLICATED SCRIPTS TO WAIT UNTIL ...
-        // Additional checks are here in case something else kicks the server into some wierd state.
-        public void StartAppPoolMustExist(string poolName, bool waitForPoolToStart, int msBetweenWaits, int maxTries)
-        {
-            _logger.Debug("StartAppPoolMustExist({0},...)",poolName);
-            
-            using (ServerManager manager = new ServerManager())
-            {
-                var pool = manager.ApplicationPools[poolName];
-
-                if (pool == null) throw new LoggedException( _logger,"Could not find AppPool '" + poolName + "'.");
-                pool.Start();
-                if (pool.State == ObjectState.Started) return;
-                if (waitForPoolToStart && (pool.State == ObjectState.Starting))
-                {
-                    int cnt = 0;
-                    while (pool.State == ObjectState.Starting)
-                    {
-                        Thread.Sleep(msBetweenWaits);
-                        if (++cnt > maxTries) throw new LoggedException(_logger, "timed out waiting for ApplicationPool '" + poolName + "' to start.");
-                    }
-                    return;
-                }
-                if (pool.State == ObjectState.Started) return;
-                if (pool.State == ObjectState.Unknown) throw new LoggedException(_logger, "ApplicationPool '" + poolName + "' is in an unknown state. Unable to Start.");
-                // will (should) never get to line below
-                throw new LoggedException(_logger, "Unable to start application pool '" + poolName + "'.");
-            }
-        }
-
-
-
         public void CreateApplicationPoolIfNotExist(string poolName)
         {
             _logger.Debug("CreateApplicationPoolIfNotExist('{0}')",poolName);

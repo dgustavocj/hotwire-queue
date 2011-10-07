@@ -1,9 +1,11 @@
 using System.IO;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Deployment
 {
     public class VersionedSiteManager
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string _rootPath;
         private readonly string _domainName;
         private readonly int _port;
@@ -33,13 +35,13 @@ namespace Icodeon.Hotwire.Framework.Deployment
 
         public void GoLive(string version)
         {
+            _logger.Debug("GoLive('{0}')", version);
             var dm = new DeployManager();
             dm.DeleteApplicationPoolIfExists(_applicationPool); 
             dm.DeleteAllSitesStartingWith(NamePrefix);
             dm.CreateApplicationPoolIfNotExist(_applicationPool);
             string path = Path.Combine(_rootPath, VersionedName(version));
             dm.CreateSite(VersionedName(version),_domainName,_applicationPool, path, _port);
-            dm.StartAppPoolMustExist(_applicationPool,true, 50, 200);
         }
     }
 }

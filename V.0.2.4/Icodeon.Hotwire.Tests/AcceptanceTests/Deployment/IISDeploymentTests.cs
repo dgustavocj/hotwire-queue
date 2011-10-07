@@ -34,7 +34,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
                 dm.DeleteAllSitesStartingWith(_testDomainName);
                 dm.DeleteApplicationPoolIfExists(_testDomainName);
                 dm.CreateApplicationPoolIfNotExist(_testDomainName);
-                dm.StartAppPoolMustExist(_testDomainName, false, 0, 0);
             });
         }
 
