@@ -91,7 +91,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             {
                 AppCache = context.ApplicationCache,
                 Match = endpointMatch.Match,
-
+                MediaInfo = mediaInfo,
                 ModuleConfig = endpoint,
                 PathMapper = context.PathMapper,
                 RequestParameters = requestParameters,
