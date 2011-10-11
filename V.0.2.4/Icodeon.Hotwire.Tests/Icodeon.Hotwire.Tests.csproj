@@ -97,6 +97,7 @@
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
     <Compile Include="AcceptanceTests\Repositories\SimpleMacDALTests.cs" />
     <Compile Include="AcceptanceTests\Security\SimpleMacSecurityTests.cs" />
+    <Compile Include="GlobalFixtureSetup.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
     <Compile Include="NLogConfigConstants.cs" />
@@ -132,6 +133,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Sql\CreateHotwireUnitTest.sql" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -152,6 +154,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
+    <None Include="Sql\CreateHotwireUnitTest.bat" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

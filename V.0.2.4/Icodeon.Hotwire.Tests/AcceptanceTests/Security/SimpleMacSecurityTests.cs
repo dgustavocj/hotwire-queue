@@ -27,23 +27,6 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
         //        the salt cache provider will have to be a distributed cache of some kind.
 
 
-
-
-    [TestFixtureSetUp]
-    public void FixtureSetup()
-    {
-        using(var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
-        {
-            db.DeleteDatabase();
-            db.CreateDatabase();
-        }
-    }
-
-
-
-
-
-
         public class ValidMacRequiredIfEndpointIsSecuredRow : RestScenario
         {
             public bool MacHeaderProvided { get; set; }
@@ -73,7 +56,7 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
                 MockModule module;
                 string privateKey = "4497BB2A-6782-4403-970C-1A7F50BBC7CB";
                 string requestPrivateKey = scenario.CorrectKeyUsedToSign ? privateKey : "AAEEDDCC";
-                string macSalt = "4E1196EC-020A-474E-8019-794ABA48DE8D";
+                string macSalt = Guid.NewGuid().ToString();
                 Trace("");
                 TraceTitle(scenario.Title);
                 Trace("Given an endpoint " + (scenario.EndpointSecuredWithSimpleMac ? " configured with simple mac" : "with no security"));

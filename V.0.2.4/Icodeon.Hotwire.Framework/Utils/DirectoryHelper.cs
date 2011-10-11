@@ -171,6 +171,12 @@ namespace Icodeon.Hotwire.Framework.Utils
         }
 
 
+        public static string SqlFolderPath()
+        {
+            string path = DirectoryHelper.MapSubFolderPathFromSolutionRoot(@"Icodeon.Hotwire.Tests\Sql", HotwireFilesProvider.MarkerFiles.SolutionFolder);
+            return path;
+        }
+
         public static string MapSubFolderPathFromSolutionRoot(string subfolder, string solutionFolderMarkerFile)
         {
             string fullPath = Path.Combine(GetSolutionRootPath(solutionFolderMarkerFile), subfolder);

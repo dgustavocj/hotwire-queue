@@ -157,6 +157,7 @@
     <Compile Include="DAL\ISimpleMacDAL.cs" />
     <Compile Include="DAL\QueueDAL.cs" />
     <Compile Include="DAL\SimpleMacDAL.cs" />
+    <Compile Include="Deployment\CommandShell.cs" />
     <Compile Include="Deployment\DeployManager.cs" />
     <Compile Include="Deployment\LMHosts.cs" />
     <Compile Include="Deployment\ServerManagerExtensions.cs" />
