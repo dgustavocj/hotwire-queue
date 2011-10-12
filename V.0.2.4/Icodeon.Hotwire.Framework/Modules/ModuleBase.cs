@@ -81,7 +81,8 @@ namespace Icodeon.Hotwire.Framework.Modules
             // and a seperate step of authorisation provides permission to resources, which is why there is a placeholder NoSecurityRequestAuthenticator being 
             // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
             // -------------------------------------------------------------------------------------------------------------------
-            var requestParameters =context.InputStream.ParseNameValues();
+            var parsedBody = context.InputStream.ParseBody();
+            var requestParameters = parsedBody.Parameters;
             IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
             authenticator.AuthenticateRequest(requestParameters, context.Headers, context.HttpMethod, endpointMatch);
 

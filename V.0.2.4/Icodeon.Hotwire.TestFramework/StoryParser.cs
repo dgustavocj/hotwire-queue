@@ -119,7 +119,7 @@ namespace Icodeon.Hotwire.TestFramework
         private static IEnumerable<string> GetColumns(string titlerow)
         {
             IEnumerable<string> headings =
-                titlerow.Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(h => h.Trim());
+                titlerow.Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(h => h.Trim().TrimEnd(new[]{'?'}) );
             return headings;
         }
 

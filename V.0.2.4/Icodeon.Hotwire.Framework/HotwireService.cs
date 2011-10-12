@@ -33,7 +33,8 @@ namespace Icodeon.Hotwire.Framework
         {
             // todo validate module is configured
             _serviceRequesting("Enqueue");
-            var bodyParameters = body.ParseNameValues();
+            var bodyParsed = body.ParseBody();
+            var bodyParameters = bodyParsed.Parameters;
             _enqueuing("Enqueue", module, bodyParameters);
             var er = new EnqueueRequestDTO(bodyParameters);
             try
@@ -70,7 +71,8 @@ namespace Icodeon.Hotwire.Framework
         public string EnqueueStream(Stream body, string module)
         {
             _serviceRequesting("EnqueueStream");
-            var parameters = body.ParseNameValues();
+            var parsedBody = body.ParseBody();
+            var parameters = parsedBody.Parameters;
             return string.Join(",", parameters.AllKeys.Select(k => k + ":" + parameters[k]).ToArray());
         }
 

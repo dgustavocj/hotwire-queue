@@ -17,8 +17,6 @@ namespace Icodeon.Hotwire.Framework.Security
 
         public void AuthenticateRequest(NameValueCollection requestParameters, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
-            // this is the simplified authentication for now, not using ValidateOauthSignature at the bottom.
-
             _logger.Trace("\tSecurity type is set to OAuth authentication.");
             string key = requestParameters[Constants.OAuth.oauth_consumer_key];
             _logger.Trace("\t{0}={1}.", Constants.OAuth.oauth_consumer_key, key);
@@ -27,12 +25,15 @@ namespace Icodeon.Hotwire.Framework.Security
                 throw new HttpModuleException(HttpStatusCode.Unauthorized, "The resource you requested requires that requests are oauth signed.");
             }
 
-#if DEBUG
-                CheckConsumerKeyIsDevKey(key);
-#endif
-#if RELEASE
-                CheckConsumerKeyIsHardCodedPartners(key);
-#endif
+//#if DEBUG
+//                CheckConsumerKeyIsDevKey(key);
+//#endif
+//#if RELEASE
+//                CheckConsumerKeyIsHardCodedPartners(key);
+//#endif
+
+            bool valid  = ValidateOauthSignature(key, requestParameters, endpointMatch.Match.RequestUri);
+            if (!valid) throw new HttpModuleException(HttpStatusCode.Unauthorized, "Invalid OAuth signature. The resource you requested requires that requests are oauth signed.");
         }
 
 
@@ -55,15 +56,13 @@ namespace Icodeon.Hotwire.Framework.Security
                 _logger.Trace("The oauth consumer key is the correct key for RELEASE build.");
         }
 
+        // TODO: dont use factories here...pass in as a dependancy!
         private bool ValidateOauthSignature(string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
         {
             IConsumerProvider consumer = new ProviderFactory().CreateConsumerProvider();
             var secret = consumer.GetConsumerSecret(consumerKey);
-
-            // use structureMap to obtain wired up oauth provider so we can override it.
             var oauthProvider = new ProviderFactory().CreateOauthProvider();
-            var oauth = new QuickAuth(consumerKey, secret, oauthProvider);
-            bool isvalid = oauth.ValidateSignature(requestUrl, queueParameters);
+            bool isvalid = oauthProvider.IsValidSignatureForPost(consumerKey, secret, requestUrl, queueParameters);
             return isvalid;
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.DAL;
@@ -14,7 +15,7 @@ namespace Icodeon.Hotwire.Framework.Security
 
     public class RequestAuthenticatorFactory : IRequestAuthenticatorFactory
     {
-
+        //todo: should accept lambdas for constructing all the objects. (as dependancies)
         public IAuthenticateRequest GetRequestAuthenticator(SecurityType endpointAuthorisation)
         {
             switch (endpointAuthorisation)

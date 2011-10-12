@@ -258,13 +258,13 @@
     <Compile Include="Security\InvalidMacTimestampExpiredException.cs" />
     <Compile Include="Security\IRequestAuthenticatorFactory.cs" />
     <Compile Include="Security\ISignRequest.cs" />
+    <Compile Include="Security\SimpleHttp.cs" />
     <Compile Include="Security\SimpleMACHeaders.cs" />
     <Compile Include="Security\RequestAuthenticatorFactory.cs" />
     <Compile Include="Security\LocalOnlyRequestAuthenticator.cs" />
     <Compile Include="Security\IAuthenticateRequest.cs" />
     <Compile Include="Security\NoSecurityRequestAuthenticator.cs" />
     <Compile Include="Security\OAuthRequestAuthenticator.cs" />
-    <Compile Include="Security\QuickAuth.cs" />
     <Compile Include="Security\SimpleMACAuthenticator.cs" />
     <Compile Include="Security\SimpleMacSigner.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
