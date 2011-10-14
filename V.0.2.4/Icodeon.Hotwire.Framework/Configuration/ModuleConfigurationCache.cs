@@ -53,6 +53,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
             // if we use different configuration types, then this class needs to update to check the type being returned (switch) and assign to appropriate DTOs
             var dto = new ModuleConfigurationDTO
                           {
+                              ExclusiveUse = config.ExclusiveUse,
                               Active = config.Active,
                               MethodValidation = config.MethodValidation,
                               RootServiceName = config.RootServiceName,

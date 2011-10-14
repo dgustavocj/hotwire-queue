@@ -10,6 +10,7 @@ namespace Icodeon.Hotwire.Framework.Configuration
     {
         bool Debug { get; set; }
         bool Active { get; set; }
+        bool ExclusiveUse { get; set; }
         string RootServiceName { get; set; }
         MethodValidation MethodValidation { get; set; }
         List<IModuleEndpoint> Endpoints { get; }

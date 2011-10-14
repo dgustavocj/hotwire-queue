@@ -14,16 +14,5 @@ namespace Icodeon.Hotwire.Framework.Security
             // do nothing. (for now).
             return;
         }
-
-
-        public void SignRequestAddToHeaders(NameValueCollection headers, string privateKey, string httpMethod, Uri uri, string macSalt)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SignRequestAddToHeaders(NameValueCollection headers, string privateKey, NameValueCollection requestParameters, string httpMethod, Uri uri, string macSalt)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

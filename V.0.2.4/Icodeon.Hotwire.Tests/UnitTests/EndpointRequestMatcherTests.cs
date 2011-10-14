@@ -29,6 +29,50 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             }; 
         }
 
+
+        [Test]
+        public void ShouldReturn404IfExclusiveAndNoMatchingEndpointFound()
+        {
+            
+
+            TraceTitle("Should return 404 if exclusive is true and no valid match [endpoint] found.");
+
+
+            Logger.Trace("Given an active configuration with one '/animals/cat.xml' endpoint");
+            Logger.Trace("and configuration is Exclusive");
+            _config.ExclusiveUse = true;
+            _config.MethodValidation = MethodValidation.afterUriValidation;
+            var endpoint = new EndpointConfiguration
+            {
+                Name = "cat",
+                Active = true,
+                UriTemplate = new UriTemplate("/animals/cat.xml"),
+                CommaDelimitedListHttpMethods = "POST"
+            };
+            _config.AddEndpoint(endpoint);
+            var matcher = new EndpointRequestMatcher(_config);
+            
+            Logger.Trace("WHEN request for '/animals/dog.xml' is made THEN the match should throw HttpModuleException");
+            Logger.Trace("AND the httpStatusCode should be 404.");
+            EndpointMatch match;
+            Action action = () => match = matcher.MatchRequestOrNull("POST", new Uri("http://localhost/test-service/animals/dog.xml"));
+            action.ShouldThrow<HttpModuleException>().And.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            Logger.Trace("WHEN request for '/animals/cat.xml' is made THEN the match should be found");
+            action = () => match = matcher.MatchRequestOrNull("POST", new Uri("http://localhost/test-service/animals/cat.xml"));
+            action.ShouldNotThrow();
+
+            Logger.Trace("WHEN exclusive is false AND WHEN a non matching request is made");
+            _config.ExclusiveUse = false;
+            action = () => match = matcher.MatchRequestOrNull("GET", new Uri("http://localhost/test-service/animals/nosuchanimal.xml"));
+            Logger.Trace("THEN the matcher should not throw an exception");
+            action.ShouldNotThrow();
+
+
+        }
+
+
+
         [Test]
         public void ShouldThrowHttpModuleExceptionIfRequestUrlMatchesButHttpMethodNotSupported()
         {

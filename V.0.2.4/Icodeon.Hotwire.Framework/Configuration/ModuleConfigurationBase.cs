@@ -35,6 +35,14 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["active"] = value; }
         }
 
+        [ConfigurationProperty("exclusiveUse", DefaultValue = false, IsRequired = false)]
+        public bool ExclusiveUse
+        {
+            get { return (bool)this["exclusiveUse"]; }
+            set { this["exclusiveUse"] = value; }
+        }
+
+
         // this attributes defines the xml collection element name
         [ConfigurationProperty("endpoints")]
         public EndpointCollection EndpointCollection

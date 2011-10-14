@@ -17,6 +17,7 @@ namespace Icodeon.Hotwire.Framework.DTOs
 
         public bool Debug { get; set; }
         public bool Active { get; set; }
+        public bool ExclusiveUse { get; set; }
         public string RootServiceName { get; set; }
         public MethodValidation MethodValidation { get; set; }
         public List<IModuleEndpoint> Endpoints {

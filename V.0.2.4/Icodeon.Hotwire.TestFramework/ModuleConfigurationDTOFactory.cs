@@ -14,6 +14,7 @@ namespace Icodeon.Hotwire.TestFramework
             {
                 Active = true,
                 Debug = false,
+                ExclusiveUse = true,
                 MethodValidation = MethodValidation.beforeUriValidation,
                 Endpoints = new List<IModuleEndpoint> { new EndpointDTO() { 
                     Action = MockModule.ActionHttpModuleException, 
