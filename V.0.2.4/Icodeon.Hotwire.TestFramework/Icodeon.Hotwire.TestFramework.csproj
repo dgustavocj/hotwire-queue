@@ -75,6 +75,7 @@
     <Compile Include="Mocks\MockModule.cs" />
     <Compile Include="Mocks\MockParsedContext.cs" />
     <Compile Include="Mocks\MockStreamingContext.cs" />
+    <Compile Include="Mocks\StubConsumerProvider.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
     <Compile Include="ModuleConfigurationDTOFactory.cs" />
     <Compile Include="StoryParser.cs" />

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Net;
+using System.Text;
+using System.Web;
 using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
+using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Modules;
 using Icodeon.Hotwire.Framework.Providers;
@@ -11,60 +14,34 @@ using NLog;
 
 namespace Icodeon.Hotwire.Framework.Security
 {
-    public class OAuthRequestAuthenticator : IAuthenticateRequest 
+    public class OAuthRequestAuthenticator : IAuthenticateRequest
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public void AuthenticateRequest(NameValueCollection requestParameters, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
+        private IConsumerProvider _consumer;
+        private IOAuthProvider _oAuthProvider;
+
+        public OAuthRequestAuthenticator(IConsumerProvider consumer, IOAuthProvider oauthProvider)
         {
+            _consumer = consumer;
+            _oAuthProvider = oauthProvider;
+        }
+
+        public void AuthenticateRequest(BodyParsed bodyParsed, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
+        {
+            if (endpointMatch.Endpoint.Security != SecurityType.oauth) throw new HttpModuleException(HttpStatusCode.InternalServerError, "Endpoint is not secured with oauth yet oauth authenticator is authenticating the request!");
             _logger.Trace("\tSecurity type is set to OAuth authentication.");
-            string key = requestParameters[Constants.OAuth.oauth_consumer_key];
+
+            //TODO: Fix later... this class is not really used, because the oauth provider uses a library that ignores all the passed in params and accesses them via the httpContext! aargh!!
+            string key = bodyParsed.Parameters[Constants.OAuth.oauth_consumer_key];
+            if (key == null) throw new HttpModuleException(HttpStatusCode.Unauthorized, "The resource you requested requires that requests are oauth signed and no oauth consumer key was found.");
+
             _logger.Trace("\t{0}={1}.", Constants.OAuth.oauth_consumer_key, key);
-            if (key == null)
-            {
-                throw new HttpModuleException(HttpStatusCode.Unauthorized, "The resource you requested requires that requests are oauth signed.");
-            }
-
-//#if DEBUG
-//                CheckConsumerKeyIsDevKey(key);
-//#endif
-//#if RELEASE
-//                CheckConsumerKeyIsHardCodedPartners(key);
-//#endif
-
-            bool valid  = ValidateOauthSignature(key, requestParameters, endpointMatch.Match.RequestUri);
+            var secret = _consumer.GetConsumerSecret(key);
+            bool valid = _oAuthProvider.IsValidSignatureForPost(key, secret, endpointMatch.Match.RequestUri, bodyParsed.Parameters);
             if (!valid) throw new HttpModuleException(HttpStatusCode.Unauthorized, "Invalid OAuth signature. The resource you requested requires that requests are oauth signed.");
         }
 
-
-
-        private void CheckConsumerKeyIsDevKey(string key)
-        {
-
-            if (!key.ToLowerInvariant().Equals("key"))
-                throw new HttpModuleException(HttpStatusCode.Unauthorized, "Invalid oauth key, key was " + key);
-            else
-                _logger.Trace("The oauth consumer key is the correct key for DEBUG build.");
-        }
-
-        private void CheckConsumerKeyIsHardCodedPartners(string key)
-        {
-            //TODO: Move message texts to resource files
-            if (!key.ToLowerInvariant().Equals(Constants.TemporaryKeyAndSecretLookups.PartnerConsumerKey))
-                throw new HttpModuleException(HttpStatusCode.Unauthorized, "Invalid oauth key, key was " + key);
-            else
-                _logger.Trace("The oauth consumer key is the correct key for RELEASE build.");
-        }
-
-        // TODO: dont use factories here...pass in as a dependancy!
-        private bool ValidateOauthSignature(string consumerKey, NameValueCollection queueParameters, Uri requestUrl)
-        {
-            IConsumerProvider consumer = new ProviderFactory().CreateConsumerProvider();
-            var secret = consumer.GetConsumerSecret(consumerKey);
-            var oauthProvider = new ProviderFactory().CreateOauthProvider();
-            bool isvalid = oauthProvider.IsValidSignatureForPost(consumerKey, secret, requestUrl, queueParameters);
-            return isvalid;
-        }
 
     }
 }

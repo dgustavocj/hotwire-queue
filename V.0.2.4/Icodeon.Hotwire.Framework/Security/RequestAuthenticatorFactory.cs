@@ -23,7 +23,9 @@ namespace Icodeon.Hotwire.Framework.Security
                 case SecurityType.none:
                     return new NoSecurityRequestAuthenticator();
                 case SecurityType.oauth:
-                    return new OAuthRequestAuthenticator();
+                    var consumer = new ProviderFactory().CreateConsumerProvider();
+                    var oAuthProvider = new ProviderFactory().CreateOauthProvider();
+                    return new OAuthRequestAuthenticator(consumer, oAuthProvider);
                 case SecurityType.localonly:
                     return new LocalOnlyRequestAuthenticator();
                 case SecurityType.simpleMAC:

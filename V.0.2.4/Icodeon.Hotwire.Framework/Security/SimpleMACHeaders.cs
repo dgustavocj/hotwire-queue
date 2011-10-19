@@ -13,12 +13,3 @@ namespace Icodeon.Hotwire.Framework.Security
         //public const string HotwireMacUserIdKey = "HotwireMacUserIdKey";
     }
 }
-
-//<simpleMac maxTimeStampAgeSeconds="10">
-//<users>
-//    <user id="OU"         privateKey="fsdfsd"/>
-//    <user id="Aquella"    privateKey="fsdfsd"/>
-//    <user id="test"       privateKey="fsdfsd"/> 
-//    <user id="dev1"       privateKey="fsdfsd"/> 
-//</users>
-//</simpleMac>

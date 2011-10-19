@@ -22,10 +22,10 @@ namespace Icodeon.Hotwire.Framework.Security
         {
             StringBuilder sb = new StringBuilder();
             if (requestParameters == null) return sb;
-            foreach (var requestParameter in requestParameters)
+            foreach (string key in requestParameters.AllKeys)
             {
                 // don't need carriage returns or any line terminations
-                sb.Append("{0}{1}");
+                sb.AppendFormat("{0}{1}", key, requestParameters[key]);
             }
             return sb;
         }

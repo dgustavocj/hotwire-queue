@@ -71,12 +71,12 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
 
                 if (scenario.EndpointSecuredWithSimpleMac)
                 {
-                    // Simple mac security has a dependacy on  IDateTime 
+                    //todo: NB! it's not currently obvious (without knowing the code) that OauthRequestAuthenticator requires an instance of ISimpleMacDAL. Change module base to accept the authenticators as dependancies ! That way it will be obvious! doh..bad. ... accepts a lambda that creates the requestAuthenticator... this will eliminate the really bad factory initialisation required below.
+
                     ObjectFactory.Initialize(x => {
                                 x.For<IDateTime>().Use<DateTimeWrapper>();
                                 x.For<ISimpleMacDAL>().Use(new SimpleMacDal(new DateTimeWrapper(), new HotwireContext(ConnectionStringManager.HotwireConnectionString)));
                     });
-                    // could also have called new ProviderFactory().AutoWireUpProviders(); but I only want to wire up the miniumum needed for this test
                 }
 
                 var requestParameters = new NameValueCollection();
@@ -85,7 +85,7 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
 
                 MockStreamingContext context = null;
 
-
+                
                 if (scenario.Signed)
                 {
                     Trace("And a signed context");

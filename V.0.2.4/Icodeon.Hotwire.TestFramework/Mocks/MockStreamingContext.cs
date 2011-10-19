@@ -31,7 +31,6 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
         {
             ApplicationCache = new MockAppCache();
             HttpMethod = "GET";
-            GetLogger = () => HotLogger.NullLogger;
             MockWriter = new MockHttpWriter();
             HttpWriter = MockWriter;
             PathMapper = new MockMapPath();

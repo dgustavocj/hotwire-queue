@@ -84,6 +84,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -92,7 +93,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcceptanceTests\Configuration\AutomaticallyWireUpImplementedProviders.cs" />
     <Compile Include="AcceptanceTests\Deployment\IISDeploymentTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\EmailErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\LoggingErrorHandlerTests.cs" />
@@ -118,6 +118,7 @@
     <Compile Include="UnitTests\ThreadTestRunnerTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AcceptanceTests\Configuration\" />
     <Folder Include="AcceptanceTests\HttpModules\" />
     <Folder Include="UnitTests\Configuration\" />
   </ItemGroup>

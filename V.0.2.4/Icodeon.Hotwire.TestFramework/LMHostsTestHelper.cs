@@ -13,7 +13,7 @@ namespace Icodeon.Hotwire.TestFramework
         {
             var adresses = System.Net.Dns.GetHostAddresses(hostname);
             var address = adresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-            address.Should().Be("127.0.0.1");
+            address.Should().Be("localhost");
         }
 
         public void ShouldNotResolveHostName(string hostname)

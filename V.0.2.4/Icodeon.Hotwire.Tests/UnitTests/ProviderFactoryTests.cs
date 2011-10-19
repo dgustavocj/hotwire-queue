@@ -48,9 +48,9 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             Trace("when I call autoWireUp (A)");
             providerFactoryA.AutoWireUpProviders();
 
-            Trace("and request an instance");
-            IClassFactoryTestImplemented testClass;
-            Action actionA = () => testClass = providerFactoryA.GetProvider<IClassFactoryTestImplemented>();
+            Trace("and request a date time instance");
+            IDateTime testClass;
+            Action actionA = () => testClass = providerFactoryA.GetProvider<IDateTime>();
             actionA.ShouldNotThrow();
             Trace("then the factory should not throw an exception");
 
@@ -58,7 +58,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             var providerFactoryB = new ProviderFactory();
 
             Trace("And request the same instance again from provider factoryB");
-            Action actionB = () => testClass = providerFactoryA.GetProvider<IClassFactoryTestImplemented>();
+            Action actionB = () => testClass = providerFactoryA.GetProvider<IDateTime>();
 
             Trace("then the factoryB should not throw an exception because it's also wired up.");
             actionB.ShouldNotThrow();
@@ -69,7 +69,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 
             Trace("and make a third request from a new provider FactoryC");
             var providerFactoryC = new ProviderFactory();
-            Action actionC = () => testClass = providerFactoryC.GetProvider<IClassFactoryTestImplemented>();
+            Action actionC = () => testClass = providerFactoryC.GetProvider<IDateTime>();
 
             Trace("then the factoryC should throw notWiredUpException");
             actionC.ShouldThrow<NotWiredUpException>();
@@ -92,22 +92,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             action.ShouldThrow<NotWiredUpException>();
         }
 
-        [Test]
-        public void ShouldNotThrowExceptionIfAutomaticallyWiredUpBeforeUse()
-        {
-            Trace("given I have implemented one of the autowired up interfaces");
-            // MyClassFactoryTest implements IClassFactoryTestImplemented
 
-            Trace("when I call autoWireUp");
-            var providerFactory = new ProviderFactory();
-            providerFactory.AutoWireUpProviders();
-
-            Trace("and request an instance");
-            IClassFactoryTestImplemented testClass;
-            Action action = ()=> testClass = providerFactory.GetProvider<IClassFactoryTestImplemented>();
-            action.ShouldNotThrow();
-            Trace("then the factory should not throw an exception");
-        }
 
 
 
@@ -171,41 +156,25 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 
 
 
-        [Test]
-        public void ShouldReturnMyImplementationIfInterfaceIsImplemented()
+
+
+
+
+
+
+        private class MyOverrideDateTime : IDateTime
         {
-            Trace("given I have implemented one of the autowired up interfaces");
-            // MyClassFactoryTest implements IClassFactoryTestImplemented
-            
-            Trace("when I call autoWireUp and request an instance");
-            var providerFactory = new ProviderFactory();
-            providerFactory.AutoWireUpProviders();
-            var testClass = providerFactory.GetProvider<IClassFactoryTestImplemented>();
 
-            Trace("then the factory should return my implemented class");
-            testClass.Should().NotBeNull();
-            testClass.Should().BeOfType<MyClassFactoryTest>();
-            testClass.Message().Should().Be("MyClassFactoryTest");
+            public int SecondsSince1970
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public DateTime Now
+            {
+                get { throw new NotImplementedException(); }
+            }
         }
-
-
-
-        [Test]
-        public void ShouldReturnTheDefaultIfNoClassImplemented()
-        {
-            Trace("given I have not implemented one of the auto wired up interfaces");
-            Trace("when I call autoWireUp");
-            var providerFactory = new ProviderFactory();
-            providerFactory.AutoWireUpProviders();
-            Trace("and request an instance");
-            var testClass = providerFactory.GetProvider<IClassFactoryNotImplemented>();
-
-            Trace("then the factory should return the framework's default");
-            testClass.Should().NotBeNull();
-            testClass.Should().BeOfType<DefaultForClassFactoryNotImplemented>();
-            testClass.Greet().Should().Be("I am a DefaultForClassFactoryNotImplemented");
-        }
-
 
         [Test]
         public void ShouldBeAbleOverrideAutomaticWiringUpDefaultsWithFluentWirings()
@@ -217,15 +186,15 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             var providerFactory = new ProviderFactory();
             providerFactory.AutoWireUpProviders();
 
-            Trace("When I request instance of ProcessFile");
+            Trace("When I request instance of DateTime");
 
-            IFileProcessorProvider fpp = null;
-            Action action = () => fpp = providerFactory.GetProvider<IFileProcessorProvider>();
+            IDateTime dateTime = null;
+            Action action = () => dateTime = providerFactory.GetProvider<IDateTime>();
 
             Trace("Then I the instance returned should be the default implementation");
             action.ShouldNotThrow();
-            fpp.Should().NotBeNull();
-            fpp.Should().BeOfType<LoggingFileProcessorProvider>();
+            dateTime.Should().NotBeNull();
+            dateTime.Should().BeOfType<DateTimeWrapper>();
 
             // but when I configure it fluently, then this should override automatic implementation
             // ************************************************************************************
@@ -234,15 +203,15 @@ namespace Icodeon.Hotwire.Tests.UnitTests
             providerFactory.AutoWireUpProviders();
 
             Trace("When I fluently wire up MY implementation of IProcessFile");
-            providerFactory.WireUp<IFileProcessorProvider, DummyProcessorProvider>();
+            providerFactory.WireUp<IDateTime, MyOverrideDateTime>();
 
             Trace("When I request instance of ProcessFile");
-            Action action2 = () => fpp = providerFactory.GetProvider<IFileProcessorProvider>();
+            Action action2 = () => dateTime = providerFactory.GetProvider<IDateTime>();
 
             Trace("Then the instance returned should be my implementation (i.e. fluent should override automatic.)");
             action2.ShouldNotThrow();
-            fpp.Should().NotBeNull();
-            fpp.Should().BeOfType<DummyProcessorProvider>();
+            dateTime.Should().NotBeNull();
+            dateTime.Should().BeOfType<MyOverrideDateTime>();
         }
 
         [Test]

@@ -21,22 +21,12 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            // teardown the database 
-            using(var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
-            {
-                if (db.DatabaseExists()) db.DeleteDatabase();
-                db.CreateDatabase();
-            }
+            
         }
 
         [TestFixtureTearDown]
         public void FixtureTearDown()
         {
-            // dont delete the database, in cae we need to manually inspect it
-            //using (var db = new HotwireContext(ConnectionStringManager.HotwireUnitTestConnectionString))
-            //{
-            //    if (db.DatabaseExists()) db.DeleteDatabase();
-            //}
         }
 
         private HotwireContext _context;
@@ -59,6 +49,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
                 var dal = new SimpleMacDal(new DateTimeWrapper(), context);
 
                 Trace("Given no requests have been made");
+                context.SimpleMacHistories.DeleteAllOnSubmit(context.SimpleMacHistories);
+                context.SubmitChanges();
                 context.SimpleMacHistories.Count().Should().Be(0);
 
                 Trace("When I cache a new request");

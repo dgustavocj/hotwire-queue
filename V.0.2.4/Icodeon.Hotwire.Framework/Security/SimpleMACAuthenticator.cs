@@ -22,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.Security
             _simpleMacDal = simpleMacDal;
         }
 
-        public void AuthenticateRequest(NameValueCollection requestParameters,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
+        public void AuthenticateRequest(BodyParsed body,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
             // not validating on user id currently. will add in userId later if/when needed.
             string hotwireMac = GetMacOrThrowException(headers);
@@ -32,7 +32,7 @@ namespace Icodeon.Hotwire.Framework.Security
             EnsureTimeStampNotOlderThanMaxAgeSeconds(DateTimeProvider,timeStamp, maxAgeSeconds);
             string url = endpointMatch.Match.RequestUri.ToString();
             string privateKey = endpointMatch.Endpoint.PrivateKey;
-            string expectedMac = GenerateMac(privateKey, requestParameters, httpMethod, url, salt,timeStamp);
+            string expectedMac = GenerateMac(privateKey, body.Parameters, httpMethod, url, salt,timeStamp);
             if (!hotwireMac.Equals(expectedMac)) throw new InvalidMacUnauthorizedException();
             Guid saltGuid = Guid.Parse(salt);
             EnsureMacAndSaltHaveNotBeenUsedBefore(saltGuid);

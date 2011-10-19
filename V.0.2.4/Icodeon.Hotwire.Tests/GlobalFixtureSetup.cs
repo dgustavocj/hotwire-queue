@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Transactions;
 using Icodeon.Hotwire.Framework.DAL;
 using Icodeon.Hotwire.Framework.Deployment;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 using NLog;
@@ -20,29 +22,15 @@ namespace Icodeon.Hotwire.Tests
         [TestFixtureSetUp]
         public void SetUp()
         {
-            _logger.Debug("");
-            _logger.Debug("GlobalFixtureSetup.SetUp()");
-            _logger.Debug("--------------------------");
-            _logger.Debug("");
-            using (var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
-            {
-                if (!db.DatabaseExists()) db.CreateDatabase();
-            }
+            new SchemaChecker(ConnectionStringManager.HotwireConnectionString)
+                .CheckSchemaThrowExceptionIfInvalid()
+                .ClearoutAnyTestData();
         }
 
-        [TestFixtureTearDown]
-        public void TearDown()
+        [Test]
+        public void SimpleSchemaCheck()
         {
-            _logger.Debug("");
-            _logger.Debug("GlobalFixtureSetup.TearDown()");
-            _logger.Debug("--------------------------");
-            _logger.Debug("");
-            using (var db = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
-            {
-                db.DeleteDatabase();
-            }
+            // do nothing... can only pass if setup is valid.
         }
-
-
     }
 }

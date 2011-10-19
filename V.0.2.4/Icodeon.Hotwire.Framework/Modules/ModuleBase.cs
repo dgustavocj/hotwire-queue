@@ -20,7 +20,7 @@ namespace Icodeon.Hotwire.Framework.Modules
     public abstract class ModuleBase : IHttpModule
     {
         public void Dispose() { }
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         protected abstract string GetConfigurationSectionName();
         public abstract IEnumerable<string> ActionNames { get; }
 
@@ -32,15 +32,6 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         public abstract object ProcessRequest(ParsedContext context);
         
-        //ADH: override this and return null in testing if you don't need logging.
-        protected virtual HotLogger GetLogger()
-        {
-            var logger = LogManager.GetLogger(GetConfigurationSectionName());
-            var hotLogger = new HotLogger(logger);
-            // don't want to echo every single detail to the console as that will end up in the resharper debugger output window.
-            hotLogger.EchoToConsole = false;
-            return hotLogger;
-        }
 
         private IEnumerable<string> GetActionNamesIncludingDefaults()
         {
@@ -57,22 +48,21 @@ namespace Icodeon.Hotwire.Framework.Modules
         internal void PrepareAndProcessRequest(StreamingContext context, EndpointMatch endpointMatch)
         {
 
-            HotLogger logger = GetLogger();
-            logger.Trace("");
-            logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
-            logger.Trace("*****************************************************************");
-            logger.Trace("{0} requested [{1}] -> \"{1}\"", context.UserHostAddress, context.HttpMethod,context.Url);
+           _logger.Trace("");
+           _logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
+           _logger.Trace("*****************************************************************");
+           _logger.Trace("{0} requested [{1}] -> \"{1}\"", context.UserHostAddress, context.HttpMethod,context.Url);
 
-            logger.Trace("Reading endpoint configuration.");
+           _logger.Trace("Reading endpoint configuration.");
             
             IModuleEndpoint endpoint = endpointMatch.Endpoint;
             var mediaInfo = new MediaTypeFactory()[endpoint.MediaType];
-            logger.Trace("Media type for configured endpoint is '{0}'.", mediaInfo.Type);
+           _logger.Trace("Media type for configured endpoint is '{0}'.", mediaInfo.Type);
 
-            logger.Trace("ProcessRequest(contextWriter, logger)", context.Url);
-            logger.Trace("creating HttpApplicationWrapper");
+           _logger.Trace("ProcessRequest(contextWriter, logger)", context.Url);
+           _logger.Trace("creating HttpApplicationWrapper");
 
-            logger.Trace("check that the configured service matches the registered service names");
+           _logger.Trace("check that the configured service matches the registered service names");
             var actionNamesIncludingDefaults = GetActionNamesIncludingDefaults();
             if (!actionNamesIncludingDefaults.Contains(endpoint.Action)) throw new ArgumentException(string.Format("Invalid action name ['{0}'] in the configuration. Must be one of:{1}", endpoint.Action, String.Join(",", GetActionNamesIncludingDefaults())));
 
@@ -84,7 +74,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             var parsedBody = context.InputStream.ParseBody();
             var requestParameters = parsedBody.Parameters;
             IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
-            authenticator.AuthenticateRequest(requestParameters, context.Headers, context.HttpMethod, endpointMatch);
+            authenticator.AuthenticateRequest(parsedBody, context.Headers, context.HttpMethod, endpointMatch);
 
             if (ProcessDefaultActions(context, endpointMatch)) return;
 
@@ -100,9 +90,9 @@ namespace Icodeon.Hotwire.Framework.Modules
             };
             object result = ProcessRequest(parsedContext);
 
-            logger.Trace("Writing response.");
+           _logger.Trace("Writing response.");
             
-            ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK, logger);
+            ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK);
         }
 
         [DataContract]
@@ -129,47 +119,53 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         public void BeginRequest(StreamingContext context)
         {
-            var matcher = new EndpointRequestMatcher(context.Configuration);
-            var endpointMatch = matcher.MatchRequestOrNull(context.HttpMethod, context.Url);
-            if (endpointMatch==null) return;
-            // NB! get the logger AFTER checking if this request matches the httpMethod and Uri, because getting a logger can be very slow,
-            // and we don't want this called on every single http request on this server!
-
-            var logger = context.GetLogger();
+            EndpointMatch endpointMatch = null;
             try
             {
-                PrepareAndProcessRequest(context,endpointMatch);
+                var matcher = new EndpointRequestMatcher(context.Configuration);
+                endpointMatch = matcher.MatchRequestOrNull(context.HttpMethod, context.Url);
+                if (endpointMatch==null) return;
+                // NB! get the logger AFTER checking if this request matches the httpMethod and Uri, because getting a logger can be very slow,
+                // and we don't want this called on every single http request on this server!
+
+                    PrepareAndProcessRequest(context,endpointMatch);
             }
             catch (HttpModuleException mex)
             {
-                logger.Error("({0}) {1}", mex.StatusCode, mex);
-                var mediaInfo = new MediaTypeFactory()[endpointMatch.Endpoint.MediaType];
+                _logger.Error("({0}) {1}", mex.StatusCode, mex);
+
+                // if there is no match, then we can't tell what media type was specified, so default to html.
+                var mediaInfo = (endpointMatch==null) 
+                    ? new MediaTypeFactory().Html
+                    : new MediaTypeFactory()[endpointMatch.Endpoint.MediaType];
                 
                 //context.HttpWriter.ContentType = mediaInfo.ContentType;
                 //context.HttpWriter.StatusCode = (int)mex.StatusCode;
-                ContextHelper.WriteMediaResponse<string>(context.HttpWriter,mex.GetType().Name, mediaInfo, mex.Message, (int)mex.StatusCode, logger);
+                ContextHelper.WriteMediaResponse<string>(context.HttpWriter,mex.GetType().Name, mediaInfo, mex.Message, (int)mex.StatusCode);
                 RaiseProcessException(mex, context);
             }
             catch (Exception ex)
             {
-                logger.FatalException(ex.Message, ex);
-                logger.Trace(ex.ToString());
-                var mediaInfo = new MediaTypeFactory()[endpointMatch.Endpoint.MediaType];
+                _logger.FatalException(ex.Message, ex);
+                _logger.Trace(ex.ToString());
+                var mediaInfo = (endpointMatch==null) 
+                    ? new MediaTypeFactory().Html
+                    : new MediaTypeFactory()[endpointMatch.Endpoint.MediaType];
                 if(context.Configuration.Debug)
                 {
                     var hotException = new HotwireExceptionDTO(ex);
-                    ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, hotException, HttpStatusCode.InternalServerError, logger);
+                    ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, hotException, HttpStatusCode.InternalServerError);
                 }
                 else
                 {
                     var hotExceptionSummary = new HotwireExceptionSummaryDTO(ex);
-                    ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, hotExceptionSummary, HttpStatusCode.InternalServerError, logger);
+                    ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, hotExceptionSummary, HttpStatusCode.InternalServerError);
                 }
                 RaiseProcessException(ex, context);
             }
             finally
             {
-                if (context.CompleteRequest!=null) context.CompleteRequest();
+                if (endpointMatch !=null && context.CompleteRequest != null) context.CompleteRequest();
             }
         }
 
@@ -187,8 +183,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             if (endpointMatch.Endpoint.Action == ActionEcho)
             {
                 string message = endpointMatch.Match.BoundVariables["SAY"];
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
-                                                 message, HttpStatusCode.OK, HotLogger.NullLogger);
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],message, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
             }
@@ -200,8 +195,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             if (endpointMatch.Endpoint.Action == ActionVersion)
             {
                 string version = AssemblyHelper.FrameworkVersion;
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
-                                                 version, HttpStatusCode.OK, HotLogger.NullLogger);
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],version, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
             }
@@ -217,8 +211,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                                           ModuleName = GetType().ToString(),
                                           Endpoints = context.Configuration.Endpoints.Select(e => e.ToDTO()).ToList()
                                       };
-                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],
-                                                 serviceList, HttpStatusCode.OK, HotLogger.NullLogger);
+                ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],serviceList, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
             }
@@ -243,7 +236,6 @@ namespace Icodeon.Hotwire.Framework.Modules
                                             Configuration = configuration,
                                             HttpMethod = context.Request.HttpMethod,
                                             Url = context.Request.Url,
-                                            GetLogger = GetLogger,
                                             HttpWriter = writer,
                                             UserHostAddress = context.Request.UserHostAddress,
                                             PathMapper = pathMapper,

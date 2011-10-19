@@ -29,32 +29,17 @@ namespace Icodeon.Hotwire.Framework.Utils
 
 
 
-        // if not OAUTH only do this once, otherwise twice as below.
-        //public static BodyParsed ParseBody(this Stream body, bool isOAuth)
         public static BodyParsed ParseBody(this Stream body)
         {
-            
+            var retval = new BodyParsed();
             using (StreamReader reader = new StreamReader(body))
             {
                 String res = reader.ReadToEnd();
-                NameValueCollection coll = HttpUtility.ParseQueryString(res);
-
-                // if using oauth then there is some strange encoding going on with slashes that HttpUtility does not take into account? so urldecode?
-                //if (isOAuth)
-                //{
-                //    foreach (var key in coll.AllKeys)
-                //    {
-                //        coll[key] = HttpUtility.UrlDecode(coll[key]);
-                //    }
-                //}
-                var retval = new BodyParsed()
-                {
-                    BodyText = res,
-                    Parameters = coll
-                };
-
-                return retval;
-            }
+                NameValueCollection coll = HttpUtility.ParseQueryString(res, Encoding.UTF8);
+                retval.BodyText = res;
+                retval.Parameters = coll;
+            };
+            return retval;
         }
     }
 }

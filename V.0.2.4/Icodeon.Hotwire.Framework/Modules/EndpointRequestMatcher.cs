@@ -35,9 +35,15 @@ namespace Icodeon.Hotwire.Framework.Modules
             string rootUriString = string.Format("http://{0}:{1}/{2}", requestUrl.Host, requestUrl.Port, _configuration.RootServiceName);
             var rootUri = new Uri(rootUriString);
             var endpoint = _configuration.Endpoints.FirstOrDefault(ep => ep.Active && ep.UriTemplate.Match(rootUri, requestUrl) != null);
-            if (_configuration.ExclusiveUse && endpoint == null) throw new HttpModuleException(HttpStatusCode.NotFound, "Endpoint service is configured as 'exclusiveUse' meaning that requests must match at least one endpoint. No matching endpoints found.");
-            if (endpoint == null) return null;
+            
 
+            if (_configuration.ExclusiveUse && endpoint == null && requestUrl.LocalPath.TrimStart(new char[]{'\\','/'}).StartsWith(_configuration.RootServiceName))
+            {
+                throw new HttpModuleException(HttpStatusCode.NotFound, "Endpoint service is configured as 'exclusiveUse' meaning that requests must match at least one endpoint. No endpoints matching '" + requestUrl + "' found.");
+            }
+
+            if (endpoint == null) return null;
+            
             if (_configuration.MethodValidation == MethodValidation.afterUriValidation)
             {
                 if (!endpoint.HttpMethods.Any(ep2 => ep2.Contains(httpMethod)))

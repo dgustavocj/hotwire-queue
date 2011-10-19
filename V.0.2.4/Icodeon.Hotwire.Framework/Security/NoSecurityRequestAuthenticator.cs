@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using Icodeon.Hotwire.Framework.Utils;
 
 namespace Icodeon.Hotwire.Framework.Security
 {
     public class NoSecurityRequestAuthenticator : IAuthenticateRequest 
     {
 
-        public void AuthenticateRequest(NameValueCollection requestParameters,NameValueCollection headers,  string httpMethod, Modules.EndpointMatch endpointMatch)
+        public void AuthenticateRequest(BodyParsed bodyParsed,NameValueCollection headers,  string httpMethod, Modules.EndpointMatch endpointMatch)
         {
-            // do nothing. (for now).
             return;
         }
     }
