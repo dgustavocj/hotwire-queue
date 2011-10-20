@@ -51,6 +51,19 @@ namespace Icodeon.Hotwire.TestFramework
                                                   });
         }
 
+        
+        public bool FileExistsInDownloadQueueFolder(string fileName)
+        {
+            var filePath = Path.Combine(_filesProvider.DownloadQueueFolderPath, fileName);
+            return File.Exists(filePath);
+        }
+
+        public bool FileExistsInProcessFileFolder(string fileName)
+        {
+            var filePath = Path.Combine(_filesProvider.ProcessedFolderPath, fileName);
+            return File.Exists(filePath);
+        }
+
 
         public void CopyFilesToDownloadQueueFolder(IEnumerable<string> importFileNames, IConsoleWriter console)
         {

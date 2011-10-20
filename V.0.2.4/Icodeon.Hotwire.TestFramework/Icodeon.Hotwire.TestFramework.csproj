@@ -51,8 +51,10 @@
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTest.cs" />
+    <Compile Include="Approval.cs" />
     <Compile Include="FilesProviderAcceptanceTest.cs" />
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="LMHostsTestHelper.cs" />
@@ -78,6 +81,7 @@
     <Compile Include="Mocks\StubConsumerProvider.cs" />
     <Compile Include="Mocks\ThrowExceptionIfFileContainsXMockProcessFileCaller.cs" />
     <Compile Include="ModuleConfigurationDTOFactory.cs" />
+    <Compile Include="ServiceHelper.cs" />
     <Compile Include="StoryParser.cs" />
     <Compile Include="TestCategory.cs" />
     <Compile Include="ThreadTestRunner.cs" />
