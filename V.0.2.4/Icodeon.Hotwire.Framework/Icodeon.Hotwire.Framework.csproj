@@ -322,6 +322,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\RefreshOUList\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
