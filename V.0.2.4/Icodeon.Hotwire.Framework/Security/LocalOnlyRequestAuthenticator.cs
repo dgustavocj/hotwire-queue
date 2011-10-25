@@ -10,7 +10,7 @@ namespace Icodeon.Hotwire.Framework.Security
 {
     public class LocalOnlyRequestAuthenticator : IAuthenticateRequest 
     {
-        public void AuthenticateRequest(BodyParsed bodyParsed, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
+        public void AuthenticateRequest(ParsedBody parsedBody, NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
             throw new NotImplementedException();
         }

@@ -13,7 +13,7 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             var dto = new EndpointDTO
                        {
-                           
+                           RequiredFields = endpoint.RequiredFields,
                            Security = endpoint.Security,
                            Action = endpoint.Action,
                            Active = endpoint.Active,

@@ -19,5 +19,6 @@ namespace Icodeon.Hotwire.Framework.Configuration
         SecurityType Security { get; set; }
         string PrivateKey { get; set; }
         int? TimeStampMaxAgeSeconds { get; set; }
+        IEnumerable<string> RequiredFields { get; set; }
     }
 }

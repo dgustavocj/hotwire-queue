@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
-    public class BodyParsed
+    public class ParsedBody
     {
         public NameValueCollection Parameters { get; set; }
         public string BodyText { get; set; }
@@ -29,9 +29,9 @@ namespace Icodeon.Hotwire.Framework.Utils
 
 
 
-        public static BodyParsed ParseBody(this Stream body)
+        public static ParsedBody ParseBody(this Stream body)
         {
-            var retval = new BodyParsed();
+            var retval = new ParsedBody();
             using (StreamReader reader = new StreamReader(body))
             {
                 String res = reader.ReadToEnd();

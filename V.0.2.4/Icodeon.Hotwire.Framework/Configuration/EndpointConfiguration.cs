@@ -62,6 +62,20 @@ namespace Icodeon.Hotwire.Framework.Configuration
             set { this["httpMethods"] = value; }
         }
 
+        public IEnumerable<string> RequiredFields
+        {
+            get { return CommaDelimitedListRequiredFields.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries); }
+            set { CommaDelimitedListRequiredFields = string.Join(",", value); }
+        }
+
+
+        [ConfigurationProperty("requiredFields", IsKey = false, IsRequired = false)]
+        public string CommaDelimitedListRequiredFields
+        {
+            get { return (string)this["requiredFields"]; }
+            set { this["requiredFields"] = value; }
+        }
+
         [ConfigurationProperty("mediaType", IsKey = false, IsRequired = true)]
         public eMediaType MediaType
         {

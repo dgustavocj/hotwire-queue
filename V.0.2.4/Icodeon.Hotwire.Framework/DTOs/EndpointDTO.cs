@@ -25,6 +25,9 @@ namespace Icodeon.Hotwire.Framework.DTOs
         public IEnumerable<string> HttpMethods { get; set; }
 
         [DataMember]
+        public IEnumerable<string> RequiredFields { get; set; }
+
+        [DataMember]
         public MediaTypes.eMediaType MediaType { get; set; }
 
         [DataMember]

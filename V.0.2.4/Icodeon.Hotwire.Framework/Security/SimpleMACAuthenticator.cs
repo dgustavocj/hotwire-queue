@@ -22,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.Security
             _simpleMacDal = simpleMacDal;
         }
 
-        public void AuthenticateRequest(BodyParsed body,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
+        public void AuthenticateRequest(ParsedBody body,NameValueCollection headers, string httpMethod, EndpointMatch endpointMatch)
         {
             // not validating on user id currently. will add in userId later if/when needed.
             string hotwireMac = GetMacOrThrowException(headers);

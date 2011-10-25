@@ -71,8 +71,17 @@ namespace Icodeon.Hotwire.Framework.Modules
             // and a seperate step of authorisation provides permission to resources, which is why there is a placeholder NoSecurityRequestAuthenticator being 
             // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
             // -------------------------------------------------------------------------------------------------------------------
+            var boundVariables = ExtractBoundVariableParameters(endpointMatch.Match);
             var parsedBody = context.InputStream.ParseBody();
             var requestParameters = parsedBody.Parameters;
+
+            if(endpointMatch.Endpoint.RequiredFields!=null)
+            {
+                if(endpointMatch.Endpoint.HttpMethods.Contains("GET")) throw new HttpModuleException(HttpStatusCode.InternalServerError,"Endpoint cannot be configured with RequiredFields as well as support GET method.");
+                ValidateRequiredFields(parsedBody.Parameters, endpointMatch.Endpoint.RequiredFields);    
+            }
+            
+
             IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
             authenticator.AuthenticateRequest(parsedBody, context.Headers, context.HttpMethod, endpointMatch);
 
@@ -93,6 +102,28 @@ namespace Icodeon.Hotwire.Framework.Modules
            _logger.Trace("Writing response.");
             
             ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK);
+        }
+
+        private NameValueCollection ExtractBoundVariableParameters(UriTemplateMatch match)
+        {
+            var nv = new NameValueCollection();
+            foreach (string variableName in match.BoundVariables)
+            {
+                nv.Add(variableName,match.BoundVariables[variableName]);
+            }
+            return nv;
+        }
+
+        private void ValidateRequiredFields(NameValueCollection parameters, IEnumerable<string> requiredFields)
+        {
+            foreach (var requiredField in requiredFields)
+            {
+                if (!parameters.AllKeys.Contains(requiredField))
+                {
+                    var msg = string.Format("field '{0}' is missing, but is required.", requiredField);
+                    throw new HttpModuleException(HttpStatusCode.BadRequest, msg);
+                }
+            }
         }
 
         [DataContract]
@@ -182,7 +213,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         {
             if (endpointMatch.Endpoint.Action == ActionEcho)
             {
-                string message = endpointMatch.Match.BoundVariables["SAY"];
+                string message = endpointMatch.Match.BoundVariables["SAY"] ?? "";
                 ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],message, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
