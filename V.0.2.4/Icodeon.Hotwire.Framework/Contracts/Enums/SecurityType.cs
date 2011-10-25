@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
-namespace Icodeon.Hotwire.Framework.Contracts
+namespace Icodeon.Hotwire.Framework.Contracts.Enums
 {
     //TODO: rename to RequestSecurity
     [DataContract]
