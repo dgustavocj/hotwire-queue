@@ -75,13 +75,8 @@ namespace Icodeon.Hotwire.Framework.Modules
             var parsedBody = context.InputStream.ParseBody();
             var requestParameters = parsedBody.Parameters;
 
-            if(endpointMatch.Endpoint.RequiredFields!=null)
-            {
-                if(endpointMatch.Endpoint.HttpMethods.Contains("GET")) throw new HttpModuleException(HttpStatusCode.InternalServerError,"Endpoint cannot be configured with RequiredFields as well as support GET method.");
-                ValidateRequiredFields(parsedBody.Parameters, endpointMatch.Endpoint.RequiredFields);    
-            }
+            ValidateRequiredFieldsIfNeeded(endpointMatch, parsedBody);
             
-
             IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
             authenticator.AuthenticateRequest(parsedBody, context.Headers, context.HttpMethod, endpointMatch);
 
@@ -102,6 +97,18 @@ namespace Icodeon.Hotwire.Framework.Modules
            _logger.Trace("Writing response.");
             
             ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK);
+        }
+
+        private void ValidateRequiredFieldsIfNeeded(EndpointMatch endpointMatch, ParsedBody parsedBody)
+        {
+            if (endpointMatch.Endpoint.RequiredFields != null && endpointMatch.Endpoint.RequiredFields.Count() > 0)
+            {
+                if (endpointMatch.Endpoint.HttpMethods.Contains("GET"))
+                    throw new HttpModuleException(HttpStatusCode.InternalServerError,
+                                                  "Endpoint '" + endpointMatch.Endpoint.Name +
+                                                  "' cannot be configured with RequiredFields as well as support GET method.");
+                ValidateRequiredFields(parsedBody.Parameters, endpointMatch.Endpoint.RequiredFields);
+            }
         }
 
         private NameValueCollection ExtractBoundVariableParameters(UriTemplateMatch match)
