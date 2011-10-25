@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IFileUrlSignatureProvider.cs" />
     <Compile Include="IHttpClientProvider.cs" />
     <Compile Include="IConsumerProvider.cs" />
     <Compile Include="IFileProcessorProvider.cs" />
