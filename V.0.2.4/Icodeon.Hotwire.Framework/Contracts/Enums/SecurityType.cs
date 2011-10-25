@@ -19,7 +19,10 @@ namespace Icodeon.Hotwire.Framework.Contracts
         localonly,
 
         [EnumMember]
-        simpleMAC
+        simpleMAC,
+
+        [EnumMember]
+        consumer
 
     }
 }
