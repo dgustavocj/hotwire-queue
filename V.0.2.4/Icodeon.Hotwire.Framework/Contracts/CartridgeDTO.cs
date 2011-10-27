@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Icodeon.Hotwire.Contracts;
+using Icodeon.Hotwire.Framework.Contracts.Enums;
 
 namespace Icodeon.Hotwire.Framework.Contracts
 {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Contracts.Enums;
 using Icodeon.Hotwire.Framework.MediaTypes;
 
 namespace Icodeon.Hotwire.Framework.Configuration

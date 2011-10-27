@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Contracts.Enums;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Events;
 using Icodeon.Hotwire.Framework.FolderWatcher;
@@ -98,7 +100,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
-                var downloadResult = _clientDownloader.DownloadFileWithTiming(new Uri(dto.ExtResourceLinkContent), destination);
+                Uri uri = new Uri(dto.ExtResourceLinkContent);
+                var downloadResult = _clientDownloader.DownloadFileWithTiming(uri, destination);
                 console.WriteLine("\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
                 // move the import file from downloading to process queue folder 
                 string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
@@ -119,6 +122,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 RaiseDownloadError(ex,dto);
             }
         }
+
 
         internal EnqueueRequestDTO GetNextImportFileToDownloadMoveToDownloadingOrDefault(IConsoleWriter console)
         {

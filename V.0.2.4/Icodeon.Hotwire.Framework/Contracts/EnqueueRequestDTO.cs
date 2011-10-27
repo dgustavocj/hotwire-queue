@@ -41,12 +41,14 @@ namespace Icodeon.Hotwire.Framework.Contracts
                 yield return ParamUserId;
                 yield return ParamExtResourcelinkcontent;
                 yield return ParamResourceId;
+                yield return ParamExtResourceLinkAuthoriseType;
             }
         }
 
         public const string ParamHotwireVersion = "hotwire_version";
         public const string ParamUserId = "user_id";
         public const string ParamExtResourcelinkcontent = "ext_resource_link_content";
+        public const string ParamExtResourceLinkAuthoriseType = "ext_resource_link_authorise_type";
         public const string ParamResourceId = "resource_id";
         public const string ParamResourceTitle = "resource_title";
         public const string ParamQueueCategory = "queue_category";
@@ -59,14 +61,17 @@ namespace Icodeon.Hotwire.Framework.Contracts
             HotwireVersion = parameters[ParamHotwireVersion];
             UserId = parameters[ParamUserId];
             ExtResourceLinkContent = parameters[ParamExtResourcelinkcontent];
+            ExtResourceLinkAuthoriseType = parameters[ParamExtResourceLinkAuthoriseType];
             ResourceFile = Path.GetFileName(ExtResourceLinkContent);
             ResourceId = parameters[ParamResourceId];
             ResourceTitle = parameters[ParamResourceTitle];
             QueueCategory = parameters[ParamQueueCategory];
             
+            
             QueuePriority = Int32.Parse(parameters[ParamQueuePriority] ?? "0");
 
             var restOfParameters = parameters.AllKeys.Except( new[] {
+                        ParamExtResourceLinkAuthoriseType,
                         ParamHotwireVersion, 
                         ParamUserId, 
                         ParamExtResourcelinkcontent, 
@@ -95,6 +100,9 @@ namespace Icodeon.Hotwire.Framework.Contracts
 
         [DataMember]
         public string UserId { get; set; }
+
+        [DataMember]
+        public string ExtResourceLinkAuthoriseType { get; set; }
 
         [DataMember]
         public string ExtResourceLinkContent { get; set; }
@@ -145,6 +153,7 @@ namespace Icodeon.Hotwire.Framework.Contracts
                                                {"QueueCategory", QueueCategory },
                                                {ParamHotwireVersion,HotwireVersion },
                                                {ParamUserId, UserId },
+                                               {ParamExtResourceLinkAuthoriseType, ExtResourceLinkAuthoriseType},
                                                {ParamExtResourcelinkcontent, ExtResourceLinkContent},
                                                {ParamResourceId, ResourceId },
                                                {ParamResourceTitle, ResourceTitle},
@@ -155,8 +164,9 @@ namespace Icodeon.Hotwire.Framework.Contracts
             return coll;
         }
 
-        public NameValueCollection ToNameValueCollectionIncludingExtraParamsPostedByConsumer()
+        public NameValueCollection ToDebugListOfParameters()
         {
+            // todo use reflection to get all the property values!
             NameValueCollection coll = new NameValueCollection()
                                            {
                                                {"TransactionId", TransactionId},
@@ -169,6 +179,7 @@ namespace Icodeon.Hotwire.Framework.Contracts
                                                {"HotwireVersion",HotwireVersion },
                                                {"UserId", UserId },
                                                {"ExtResourceLinkContent", ExtResourceLinkContent},
+                                               {"ExtResourceLinkAuthoriseType", ExtResourceLinkAuthoriseType },
                                                {"ResourceId", ResourceId },
                                                {"ResourceTitle", ResourceTitle},
                                                {"QueueCategory", QueueCategory },

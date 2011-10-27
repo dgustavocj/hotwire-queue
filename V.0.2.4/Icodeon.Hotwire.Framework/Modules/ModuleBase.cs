@@ -220,7 +220,9 @@ namespace Icodeon.Hotwire.Framework.Modules
         {
             if (endpointMatch.Endpoint.Action == ActionEcho)
             {
+                _logger.Debug("ProcessEchoAction()");
                 string message = endpointMatch.Match.BoundVariables["SAY"] ?? "";
+                _logger.Trace("message:{0}",message);
                 ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],message, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
@@ -232,7 +234,9 @@ namespace Icodeon.Hotwire.Framework.Modules
         {
             if (endpointMatch.Endpoint.Action == ActionVersion)
             {
+                _logger.Debug("ProcessVersionAction()");
                 string version = AssemblyHelper.FrameworkVersion;
+                _logger.Trace("version:{0}",version);
                 ContextHelper.WriteMediaResponse(context.HttpWriter, new MediaTypeFactory()[endpointMatch.Endpoint.MediaType],version, HttpStatusCode.OK);
                 context.CompleteRequest();
                 return true;
@@ -244,6 +248,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         {
             if (endpointMatch.Endpoint.Action == ActionIndex)
             {
+                _logger.Debug("ProcessIndexAction()");
                 var serviceList = new ServiceListDTO
                                       {
                                           ModuleName = GetType().ToString(),

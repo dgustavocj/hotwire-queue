@@ -55,6 +55,13 @@ namespace Icodeon.Hotwire.Framework.Providers
             return provider;
         }
 
+        public IFileUrlSignatureProvider CreateUrlSignatureProvider()
+        {
+            var provider = GetProvider<IFileUrlSignatureProvider>();
+            return provider;
+        }
+
+
         public IHttpClientProvider CreateHttpClient()
         {
             var httpClient = GetProvider<IHttpClientProvider>();

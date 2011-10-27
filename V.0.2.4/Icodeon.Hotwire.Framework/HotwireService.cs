@@ -46,7 +46,7 @@ namespace Icodeon.Hotwire.Framework
                 
                 logger.Trace("Request validated. Has been Oauth 1.0 signed.");
 
-                logger.TraceParameters(er.ToNameValueCollectionIncludingExtraParamsPostedByConsumer());
+                logger.TraceParameters(er.ToDebugListOfParameters());
                 Guid transactionId = Guid.NewGuid();
 
                 var filename = Path.GetFileName(er.ExtResourceLinkContent);

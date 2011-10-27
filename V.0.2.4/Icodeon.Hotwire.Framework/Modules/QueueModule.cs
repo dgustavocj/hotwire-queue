@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Contracts.Enums;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.DAL;
@@ -49,7 +50,22 @@ namespace Icodeon.Hotwire.Framework.Modules
 
                     _logger.Trace("\transactionId = {0}", enqueueRequest.TransactionId);
                     var fileProvider = HotwireFilesProvider.GetFilesProviderInstance();
+
+                    // if resource security type is "consumer" then sign the file url before writing to disk
+                    if (enqueueRequest.ExtResourceLinkAuthoriseType==SecurityType.consumer.ToString())
+                    {
+                        var signer = new ProviderFactory().CreateUrlSignatureProvider();
+                        enqueueRequest.ExtResourceLinkContent = signer.SignUrl(new Uri(enqueueRequest.ExtResourceLinkContent),
+                                           enqueueRequest.
+                                               ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient
+                                               ()).ToString();
+                    }
+
                     var dal = new QueueDal(fileProvider);
+
+                    
+
+
                     dal.Save(enqueueRequest, QueueStatus.QueuedForDownloading);
                     var queuedResource = new QueuedResource
                                              {

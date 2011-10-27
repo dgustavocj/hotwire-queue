@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
+using Icodeon.Hotwire.Framework.Contracts.Enums;
 using Icodeon.Hotwire.Framework.MediaTypes;
 using Icodeon.Hotwire.TestFramework;
 using Icodeon.Hotwire.Tests.Internal;

@@ -146,6 +146,7 @@
     <Compile Include="ConsoleService\ServiceContextDTO.cs" />
     <Compile Include="ConsoleService\ServiceDTO.cs" />
     <Compile Include="ConsoleService\ConsoleServiceFactory.cs" />
+    <Compile Include="Contracts\Enums\SecurityType.cs" />
     <Compile Include="Contracts\IEnqueueRequest.cs" />
     <Compile Include="DAL\ConnectionStringManager.cs" />
     <Compile Include="DAL\Params\CacheRequestParams.cs" />
@@ -213,7 +214,6 @@
     <Compile Include="Contracts\EchoResponseDTO.cs" />
     <Compile Include="Contracts\EnqueueRequestDTO.cs" />
     <Compile Include="Contracts\Enums\QueueStatus.cs" />
-    <Compile Include="Contracts\Enums\SecurityType.cs" />
     <Compile Include="Contracts\EventArguments\EnqueuingEventArgs.cs" />
     <Compile Include="Contracts\EventArguments\ServiceRequestEventArgs.cs" />
     <Compile Include="Contracts\IAppCache.cs" />

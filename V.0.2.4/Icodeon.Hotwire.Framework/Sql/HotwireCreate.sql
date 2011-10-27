@@ -1,4 +1,4 @@
-﻿use hotwireUnitTest
+﻿use thisdbdoesnotexist ## hotwireUnitTest
 
 -- drop table --
 
