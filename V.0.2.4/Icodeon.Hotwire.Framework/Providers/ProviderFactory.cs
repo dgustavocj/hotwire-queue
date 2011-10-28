@@ -78,6 +78,12 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         // Make sure that autoWireUpProviders is called onInit() on global.asax in websites!
 
+        public void WireUpSimpleMacDalProvider()
+        {
+            ObjectFactory.Configure(
+                r=> r.For<ISimpleMacDAL>().Use(new SimpleMacDal(new DateTimeWrapper(), new HotwireContext(ConnectionStringManager.HotwireConnectionString)))
+                );
+        }
 
         public ProviderFactory AutoWireUpProviders()
         {
@@ -90,7 +96,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                 // for now it's not necessary since the current usage will only hit the database once per request
                 // if this increases and/or gets more complicated then this can be adjusted.
                 
-                r.For<ISimpleMacDAL>().Use(new SimpleMacDal(new DateTimeWrapper(), new HotwireContext(ConnectionStringManager.HotwireConnectionString)));
+                //r.For<ISimpleMacDAL>().Use(new SimpleMacDal(new DateTimeWrapper(), new HotwireContext(ConnectionStringManager.HotwireConnectionString)));
             });
 
             ObjectFactory.AssertConfigurationIsValid();
