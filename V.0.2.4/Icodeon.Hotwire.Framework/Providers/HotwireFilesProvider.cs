@@ -100,6 +100,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
 
+
         public ImportCartridgeDTO GetBulkImportSettingsForNextFileToProcessAndMoveFileToProcessingOrNull()
         {
             _logger.Trace("\t\tGetBulkImportSettingsForNextFileToProcessAndMoveFileToProcessingOrNull");
@@ -177,6 +178,22 @@ namespace Icodeon.Hotwire.Framework.Providers
             DirectoryHelper.DeleteAllFilesExceptMarker(DownloadingFolderPath, MarkerFiles.DownloadingFolder);
         }
 
+        public string ReadDownloadErrorFile(string trackingNumber)
+        {
+            string errorFilePath = DownloadErrorFilePaths.FirstOrDefault(p => p.EndsWith(".error") && p.Contains(trackingNumber));
+            if (errorFilePath == null) return "";
+            if (!File.Exists(errorFilePath)) return "#could not find error file " + errorFilePath + ".";
+            return File.ReadAllText(errorFilePath);
+        }
+
+        public string ReadProcessErrorFile(string trackingNumber)
+        {
+            string errorFilePath = ProcessErrorFilePaths.FirstOrDefault(p => p.EndsWith(".error") && p.Contains(trackingNumber));
+            if (errorFilePath == null) return "";
+            if (!File.Exists(errorFilePath)) return "#could not find error file " + errorFilePath + ".";
+            return File.ReadAllText(errorFilePath);
+        }
+
         public string GetFolderByStatus(QueueStatus status)
         {
             switch (status)
@@ -215,6 +232,22 @@ namespace Icodeon.Hotwire.Framework.Providers
             _logger.Trace("\t\t\tFile.Move('{0}',{1}')", importSrcFile, importDestFile);
             File.Move(importSrcFile, importDestFile);
             return importDestFile;
+        }
+
+        public void CopyFileAndSettingsFileToFolder(string trackingNumber, string srcFolderPath, string destFolderPath)
+        {
+            // move file
+            var filesrc = Path.Combine(srcFolderPath, trackingNumber);
+            var filedest = Path.Combine(destFolderPath, trackingNumber);
+            _logger.Trace("\t\t\tFile.Move('{0}',{1}')", filesrc, filedest);
+            File.Copy(filesrc, filedest);
+
+            // move settings file
+            var settingFilename = EnqueueRequestDTO.AddImportExtension(trackingNumber);
+            var settingSrcPath = Path.Combine(srcFolderPath, settingFilename);
+            var settingDestPath = Path.Combine(destFolderPath, settingFilename);
+            _logger.Trace("\t\t\tFile.Move('{0}',{1}')", settingSrcPath, settingDestPath);
+            File.Copy(settingSrcPath, settingDestPath);
         }
 
 
@@ -299,6 +332,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             DownloadQueueFilePaths = Directory.GetFiles(DownloadQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             DownloadingFilePaths = Directory.GetFiles(DownloadingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             DownloadErrorFilePaths = Directory.GetFiles(DownloadErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
+            ProcessErrorFilePaths= Directory.GetFiles( ProcessErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
         }
 
         public IProcessFiles GetFiles()

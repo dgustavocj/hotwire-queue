@@ -22,7 +22,7 @@ namespace Icodeon.Hotwire.Framework.Serialization
         public static T Deserialize<T>(string json)
         {
             T obj = Activator.CreateInstance<T>();
-            using(var ms = new MemoryStream(Encoding.Unicode.GetBytes(json)))
+            using(var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
                 var serializer = new DataContractJsonSerializer( obj.GetType());
                 obj = (T)serializer.ReadObject(ms);

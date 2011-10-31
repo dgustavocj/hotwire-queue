@@ -12,6 +12,8 @@ namespace Icodeon.Hotwire.Framework.Modules
 {
     public class ParsedContext
     {
+        // Bound variables are matches from the querystring and UriTemplate
+        public NameValueCollection EndpointBoundVariables { get; set; }
         public IAppCache AppCache { get; set; }
         public NameValueCollection RequestParameters { get; set; }
         public Uri Url { get; set; }

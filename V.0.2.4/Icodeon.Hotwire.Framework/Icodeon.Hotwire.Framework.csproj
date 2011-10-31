@@ -191,6 +191,7 @@
     <Compile Include="Modules\FileProcessorModule.cs" />
     <Compile Include="Modules\HttpRequestContext.cs" />
     <Compile Include="Modules\ParsedContext.cs" />
+    <Compile Include="Modules\QueueStatusDTO.cs" />
     <Compile Include="Modules\SmokeTestModule.cs" />
     <Compile Include="Modules\StreamingContext.cs" />
     <Compile Include="Modules\ProcessFileCallerBase.cs" />

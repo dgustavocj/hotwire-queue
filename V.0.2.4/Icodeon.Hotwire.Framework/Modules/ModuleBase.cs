@@ -29,6 +29,7 @@ namespace Icodeon.Hotwire.Framework.Modules
         public const string ActionVersion = "VERSION";
         public const string ActionEcho = "ECHO";
         public const string ActionIndex = "INDEX";
+        public const string ActionStatus = "STATUS";
 
         public abstract object ProcessRequest(ParsedContext context);
         
@@ -42,6 +43,7 @@ namespace Icodeon.Hotwire.Framework.Modules
             yield return ActionIndex;
             yield return ActionEcho;
             yield return ActionVersion;
+            yield return ActionStatus;
         }
 
         
@@ -84,6 +86,7 @@ namespace Icodeon.Hotwire.Framework.Modules
 
             var parsedContext = new ParsedContext
             {
+                EndpointBoundVariables = boundVariables,
                 AppCache = context.ApplicationCache,
                 Match = endpointMatch.Match,
                 MediaInfo = mediaInfo,

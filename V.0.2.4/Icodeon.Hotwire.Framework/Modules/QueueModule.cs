@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
+using System.Net;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Contracts.Enums;
@@ -22,10 +24,11 @@ namespace Icodeon.Hotwire.Framework.Modules
         }
 
         public const string ActionEnqueueRequest = "ENQUEUE-REQUEST";
+        public const string ActionStatus = "QUEUE-STATUS";
 
         public override IEnumerable<string> ActionNames
         {
-            get { return new[] {ActionEnqueueRequest, ModuleBase.ActionVersion }; }
+            get { return new[] {ActionEnqueueRequest, ModuleBase.ActionVersion, ActionStatus  }; }
         }
 
         public override object ProcessRequest(ParsedContext context)
@@ -34,9 +37,32 @@ namespace Icodeon.Hotwire.Framework.Modules
             _logger.Trace("--------------------------------------");
             switch (context.ModuleConfig.Action)
             {
+
                 case ModuleBase.ActionVersion:
                     return AssemblyHelper.FrameworkVersion;
 
+                case ActionStatus:
+                    // get the status : if there is an error, return the error text or title
+                    var statusFileProvider = HotwireFilesProvider.GetFilesProviderInstance();
+                    string trackingNumber = context.EndpointBoundVariables["TRACKING-NUMBER"];
+                    statusFileProvider.RefreshFiles();
+                    if (string.IsNullOrWhiteSpace(trackingNumber)) throw new HttpModuleException(HttpStatusCode.BadRequest, "TRACKING-NUMBER cannot be null or empty. Unable to extract the tracking number.");
+                    var status = statusFileProvider.GetStatusByTrackingNumber(trackingNumber);
+                    var dto = new QueueStatusDTO()
+                                  {
+                                      Status = status,
+                                      TrackingNumber = trackingNumber,
+                                      DebugInfo = ""
+                                  };
+                    if (status!=QueueStatus.DownloadError && status!=QueueStatus.ProcessError) return dto;
+
+                    string errorAsJson = status == QueueStatus.DownloadError
+                                             ? statusFileProvider.ReadDownloadErrorFile(trackingNumber)
+                                             : "Unable to display additional information which is available in Icodeon ProcessFile log. Please contact Icodeon for more information, quoting the tracking number " + trackingNumber + ":" + statusFileProvider.ReadProcessErrorFile(trackingNumber);
+                    dto.DebugInfo = errorAsJson;
+                    return dto;
+                    break;
+                
                 case ActionEnqueueRequest:
                     BeforeProcessFile(context.RequestParameters);
                     _logger.Trace("\tValidating hotwire enqueue request required parameters.");
