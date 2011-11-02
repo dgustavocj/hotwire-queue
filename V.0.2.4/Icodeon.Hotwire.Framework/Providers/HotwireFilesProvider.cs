@@ -72,6 +72,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public string SolutionFolderMarkerFile { get; set; }
 
+        public string SolutionRootPath { get; set; }
         public string TestDataFolderPath { get; set; }
         public string DownloadErrorFolderPath { get; set; }
         public string DownloadQueueFolderPath { get; set; }
@@ -83,11 +84,16 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders)
+        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders) : this(relativeFolders,true)
+        {
+            
+        }
+
+        public HotwireFilesProvider(IHotwireFileProcessorRelativeFolders relativeFolders, bool refreshFiles)
         {
             SolutionFolderMarkerFile = relativeFolders.SolutionFolderMarkerFile;
             string rootPath = DirectoryHelper.GetSolutionRootPath(relativeFolders.SolutionFolderMarkerFile);
-
+            SolutionRootPath = rootPath;
             TestDataFolderPath = Path.Combine(rootPath, relativeFolders.TestDataFolder);
             DownloadErrorFolderPath = Path.Combine(rootPath, relativeFolders.DownloadErrorFolder);
             DownloadQueueFolderPath = Path.Combine(rootPath, relativeFolders.DownloadQueueFolder);
@@ -96,7 +102,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             ProcessingFolderPath = Path.Combine(rootPath, relativeFolders.ProcessingFolder);
             ProcessErrorFolderPath = Path.Combine(rootPath, relativeFolders.ProcessErrorFolder);
             DownloadingFolderPath = Path.Combine(rootPath, relativeFolders.DownloadingFolder);
-            RefreshFiles();
+            if(refreshFiles) RefreshFiles();
         }
 
 
@@ -384,13 +390,68 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
         private static HotwireFilesProvider _hotwireFilesProvider;
+        
+        public static void CreateFoldersIfNotExist()
+        {
+            CreateFoldersIfNotExist(null);
+        }
+
+        public static void CreateFoldersIfNotExist(string rootPathOverride)
+        {
+            _logger.Debug("CreateFoldersIfNotExist(rootPath)");
+
+            var relativeFolders = FoldersSection.ReadConfig();
+
+            string rootPath = string.IsNullOrEmpty(rootPathOverride)
+                                  ? DirectoryHelper.GetSolutionRootPath(relativeFolders.SolutionFolderMarkerFile)
+                                  : rootPathOverride;
+
+            _logger.Trace("rootPath:{0}", rootPath);
+            var testDataFolderPath = Path.Combine(rootPath, relativeFolders.TestDataFolder);
+            var downloadErrorFolderPath = Path.Combine(rootPath, relativeFolders.DownloadErrorFolder);
+            var downloadQueueFolderPath = Path.Combine(rootPath, relativeFolders.DownloadQueueFolder);
+            var processQueueFolderPath = Path.Combine(rootPath, relativeFolders.ProcessQueueFolder);
+            var processedFolderPath = Path.Combine(rootPath, relativeFolders.ProcessedFolder);
+            var processingFolderPath = Path.Combine(rootPath, relativeFolders.ProcessingFolder);
+            var processErrorFolderPath = Path.Combine(rootPath, relativeFolders.ProcessErrorFolder);
+            var downloadingFolderPath = Path.Combine(rootPath, relativeFolders.DownloadingFolder);
+
+            CreateFolderIfNotExist(downloadingFolderPath, MarkerFiles.DownloadingFolder);
+            CreateFolderIfNotExist(processErrorFolderPath, MarkerFiles.ProcessErrorFolder);
+            CreateFolderIfNotExist(processingFolderPath, MarkerFiles.ProcessingFolder);
+            CreateFolderIfNotExist(processedFolderPath, MarkerFiles.ProcessedFolder);
+            CreateFolderIfNotExist(processQueueFolderPath, MarkerFiles.ProcessQueueFolder);
+            CreateFolderIfNotExist(downloadQueueFolderPath, MarkerFiles.DownloadQueueFolder);
+            CreateFolderIfNotExist(testDataFolderPath, null);
+            CreateFolderIfNotExist(downloadErrorFolderPath, MarkerFiles.DownloadErrorFolder);
+        }
+        
+        private static void CreateFolderIfNotExist(string path,string markerFile)
+        {
+            if (!Directory.Exists(path))
+            {
+                _logger.Debug("creating hotwire folder:" + path);
+                Directory.CreateDirectory(path);
+                if (markerFile!=null)
+                {
+                    string markerFilePath = Path.Combine(path, markerFile);
+                    File.WriteAllText(markerFilePath, "hotwire folder markerfile");
+                }
+            }
+        }
+
         public static HotwireFilesProvider GetFilesProviderInstance()
+        {
+            return GetFilesProviderInstance(true);
+        }
+
+        public static HotwireFilesProvider GetFilesProviderInstance(bool refreshFiles)
         {
             _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
             _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
             if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
             var foldersSection = FoldersSection.ReadConfig();
-            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection);
+            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
             return _hotwireFilesProvider;
         }
 

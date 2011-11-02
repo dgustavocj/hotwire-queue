@@ -28,26 +28,34 @@ namespace Icodeon.Hotwire.Framework.Modules
 
         public override IEnumerable<string> ActionNames
         {
-            get { return new[] {ActionEnqueueRequest, ModuleBase.ActionVersion, ActionStatus  }; }
+            get { return new[] { ActionEnqueueRequest, ModuleBase.ActionVersion, ActionStatus, FileProcessorModule.ActionProcessFile }; }
         }
 
         public override object ProcessRequest(ParsedContext context)
         {
             _logger.Trace("QueueModule-> Action=" + context.ModuleConfig.Action);
             _logger.Trace("--------------------------------------");
+
+            var fileProvider = HotwireFilesProvider.GetFilesProviderInstance();
+
             switch (context.ModuleConfig.Action)
             {
+                
+                case FileProcessorModule.ActionProcessFile:
+                    string fileProcessorTrackingNumber = context.EndpointBoundVariables["TRACKING-NUMBER"];
+                    var fileProcessorQueueDal = new QueueDal(fileProvider);
+                    var enqueueRequestDto = FileProcessorModule.ProcessFile(fileProcessorTrackingNumber, fileProcessorQueueDal);
+                    return enqueueRequestDto;
 
                 case ModuleBase.ActionVersion:
                     return AssemblyHelper.FrameworkVersion;
 
                 case ActionStatus:
                     // get the status : if there is an error, return the error text or title
-                    var statusFileProvider = HotwireFilesProvider.GetFilesProviderInstance();
                     string trackingNumber = context.EndpointBoundVariables["TRACKING-NUMBER"];
-                    statusFileProvider.RefreshFiles();
+                    fileProvider.RefreshFiles();
                     if (string.IsNullOrWhiteSpace(trackingNumber)) throw new HttpModuleException(HttpStatusCode.BadRequest, "TRACKING-NUMBER cannot be null or empty. Unable to extract the tracking number.");
-                    var status = statusFileProvider.GetStatusByTrackingNumber(trackingNumber);
+                    var status = fileProvider.GetStatusByTrackingNumber(trackingNumber);
                     var dto = new QueueStatusDTO()
                                   {
                                       Status = status,
@@ -57,8 +65,8 @@ namespace Icodeon.Hotwire.Framework.Modules
                     if (status!=QueueStatus.DownloadError && status!=QueueStatus.ProcessError) return dto;
 
                     string errorAsJson = status == QueueStatus.DownloadError
-                                             ? statusFileProvider.ReadDownloadErrorFile(trackingNumber)
-                                             : "Unable to display additional information which is available in Icodeon ProcessFile log. Please contact Icodeon for more information, quoting the tracking number " + trackingNumber + ":" + statusFileProvider.ReadProcessErrorFile(trackingNumber);
+                                             ? fileProvider.ReadDownloadErrorFile(trackingNumber)
+                                             : "Unable to display additional information which is available in Icodeon ProcessFile log. Please contact Icodeon for more information, quoting the tracking number " + trackingNumber + ":" + fileProvider.ReadProcessErrorFile(trackingNumber);
                     dto.DebugInfo = errorAsJson;
                     return dto;
                     break;
@@ -75,7 +83,6 @@ namespace Icodeon.Hotwire.Framework.Modules
                                              };
 
                     _logger.Trace("\transactionId = {0}", enqueueRequest.TransactionId);
-                    var fileProvider = HotwireFilesProvider.GetFilesProviderInstance();
 
                     // if resource security type is "consumer" then sign the file url before writing to disk
                     if (enqueueRequest.ExtResourceLinkAuthoriseType==SecurityType.consumer.ToString())
