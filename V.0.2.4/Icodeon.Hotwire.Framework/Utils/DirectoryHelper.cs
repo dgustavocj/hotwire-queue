@@ -16,6 +16,11 @@ namespace Icodeon.Hotwire.Framework.Utils
             return orderedFiles.ToList();
         }
 
+        public static void CopyFiles(string srcFolder, string wildCard, string destFolder)
+        {
+            Directory.GetFiles(srcFolder,wildCard).ToList().ForEach(f=> File.Copy(f, Path.Combine(destFolder,new FileInfo(f).Name)));
+        }
+
         public static string ProjectRootFolder
         {
             get
@@ -34,10 +39,11 @@ namespace Icodeon.Hotwire.Framework.Utils
             }
         }
 
-        public static bool ContainsErrorFile(this IEnumerable<string> filePaths, string fileNoPath)
+        public static bool ContainsErrorFile(this IEnumerable<string> filePaths, string importFile)
         {
-            string errorExtentionedFile = EnqueueRequestDTO.AddErrorExtension(fileNoPath);
-            string skippedExtensionedFile = EnqueueRequestDTO.AddSkippedExtension(fileNoPath);
+            string trackingNumber = EnqueueRequestDTO.GetTrackingNumberFromImportFile(importFile);
+            string errorExtentionedFile = EnqueueRequestDTO.AddErrorExtension(trackingNumber);
+            string skippedExtensionedFile = EnqueueRequestDTO.AddSkippedExtension(trackingNumber);
             return filePaths.Any(fp => fp.EndsWith(errorExtentionedFile) || fp.EndsWith(skippedExtensionedFile));
         }
 

@@ -302,13 +302,12 @@ namespace Icodeon.Hotwire.Framework.Providers
 
           // log exception to json error file
             _logger.Trace("\t\t\tWriting .errorFile", trackingNumber);
-            // article on serializing exception to file
-            // http://seattlesoftware.wordpress.com/2008/08/22/serializing-exceptions-to-xml/
             
             File.WriteAllText(errorFilePath,jsonException);
         }
 
         //TODO: DRY below is repeat of above!
+        // dont log the actual error to the log file, that will be done by the caller's outermost try catch, i.e. most likely the Script Runner.
         public void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex)
         {
             _logger.Trace("MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile('{0}',exception)",trackingNumber);
@@ -318,7 +317,6 @@ namespace Icodeon.Hotwire.Framework.Providers
             string jsonException = JSONHelper.Serialize(new HotwireExceptionDTO(ex));
             string errorFilePath = Path.Combine(DownloadErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(trackingNumber));
             File.WriteAllText(errorFilePath, jsonException);
-            // dont log the actual error to the log file, that will be done by the caller's outermost try catch, i.e. most likely the Script Runner.
         }
 
         //TODO: Rename the XYZFilePaths to ImportFiles!
@@ -338,28 +336,11 @@ namespace Icodeon.Hotwire.Framework.Providers
             DownloadQueueFilePaths = Directory.GetFiles(DownloadQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             DownloadingFilePaths = Directory.GetFiles(DownloadingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
             DownloadErrorFilePaths = Directory.GetFiles(DownloadErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
-            ProcessErrorFilePaths= Directory.GetFiles( ProcessErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
         }
 
         public IProcessFiles GetFiles()
         {
             throw new NotImplementedException();
-        }
-
-
-
-        public List<QueueStatus> GetStatuses(string importFilename)
-        {
-            var statuses = new List<QueueStatus>();
-            if (DownloadQueueFilePaths != null && DownloadQueueFilePaths.ContainsFile(importFilename))  statuses.Add(QueueStatus.QueuedForDownloading);
-            if (DownloadingFilePaths != null && DownloadingFilePaths.ContainsFile(importFilename))      statuses.Add(QueueStatus.Downloading);
-            if (ProcessQueueFilePaths != null && ProcessQueueFilePaths.ContainsFile(importFilename))    statuses.Add(QueueStatus.QueuedForProcessing);
-            if (ProcessingFilePaths != null && ProcessingFilePaths.ContainsFile(importFilename))        statuses.Add(QueueStatus.Processing);
-            if (ProcessedFilePaths != null && ProcessedFilePaths.ContainsFile(importFilename))          statuses.Add(QueueStatus.Processed);
-            if (DownloadErrorFilePaths != null && DownloadErrorFilePaths.ContainsFile(importFilename)) statuses.Add(QueueStatus.DownloadError);
-            if (ProcessErrorFilePaths != null && ProcessErrorFilePaths.ContainsFile(importFilename))    statuses.Add(QueueStatus.ProcessError);
-            if (statuses.Count()==0) statuses.Add(QueueStatus.None);
-            return statuses;
         }
 
         public QueueStatus GetStatusByTrackingNumber(string trackingNumber)
@@ -377,6 +358,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             if (ProcessQueueFilePaths != null && ProcessQueueFilePaths.ContainsFile(importFileName)) return QueueStatus.QueuedForProcessing;
             if (DownloadingFilePaths != null && DownloadingFilePaths.ContainsFile(importFileName)) return QueueStatus.Downloading;
             if (DownloadQueueFilePaths != null && DownloadQueueFilePaths.ContainsFile(importFileName)) return QueueStatus.QueuedForDownloading;
+            //TODO: change to use the import file here...not the error file paths! will need to check the routine that writes the errors... mucky, need to 
             if (ProcessErrorFilePaths != null && ProcessErrorFilePaths.ContainsErrorFile(importFileName)) return QueueStatus.ProcessError;
             if (DownloadErrorFilePaths != null && DownloadErrorFilePaths.ContainsErrorFile(importFileName)) return QueueStatus.DownloadError;
             return QueueStatus.None;

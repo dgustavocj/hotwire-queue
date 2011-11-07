@@ -119,11 +119,11 @@ namespace Icodeon.Hotwire.TestFramework
             File.Copy(importFilesrc, importFileDestPath);
         }
 
-        public void CopyImportFileToDownloadErrorFolder()
+        public void CreateFakeDownloadErrorFileFromImportNumber()
         {
-            var importFilesrc = Path.Combine(_filesProvider.TestDataFolderPath, ImportFile);
-            var importFileDestPath = Path.Combine(_filesProvider.DownloadErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(ImportFile));
-            File.Copy(importFilesrc, importFileDestPath);
+            string trackingNumber = EnqueueRequestDTO.GetTrackingNumberFromImportFile(ImportFile);
+            var downloadErrorFileDest = Path.Combine(_filesProvider.DownloadErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(trackingNumber));
+            File.WriteAllText(downloadErrorFileDest,"this is a fake error file (404) blah");
         }
 
     }

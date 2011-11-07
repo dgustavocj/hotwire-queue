@@ -210,6 +210,12 @@ namespace Icodeon.Hotwire.Framework.Contracts
             return String.Format("{0}{1}", trackingNumber, ErrorExtension);
         }
 
+        public static string GetTrackingNumberFromImportFile(string importFile)
+        {
+            string trackingNumber = importFile.Replace(".import", "");
+            return trackingNumber;
+        }
+
         public static string AddImportExtension(string trackingNumber)
         {
             return String.Format("{0}{1}", trackingNumber,ImportExtension);
