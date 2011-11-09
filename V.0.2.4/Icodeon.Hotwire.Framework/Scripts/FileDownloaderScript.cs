@@ -26,6 +26,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         private readonly IDownloaderFilesProvider _downloaderFiles;
 
         private readonly IClientDownloader _clientDownloader;
+        private readonly IDateTime _dateTime;
         private bool _isRunning = false;
         public bool isRunning { get { return _isRunning; } }
 
@@ -40,10 +41,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public FileDownloaderScript(IDownloaderFilesProvider downloaderFilesProvider, IClientDownloader clientDownloader)
+        public FileDownloaderScript(IDownloaderFilesProvider downloaderFilesProvider, IClientDownloader clientDownloader, IDateTime dateTime)
         {
+
             _downloaderFiles = downloaderFilesProvider;
             _clientDownloader = clientDownloader;
+            _dateTime = dateTime;
         }
 
         public void Run(IConsoleWriter console, string folderPath)
@@ -59,7 +62,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 _isRunning = true;
                 while ((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(console)) != null)
                 {
-                    DownloadFile(console, dto);
+                    DownloadFile(console, dto,_dateTime);
                 }
                 console.WriteLine("Nothing left to download, exiting.");
             }
@@ -84,7 +87,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto)
+        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, IDateTime time)
         {
             string trackingFilePath = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");
@@ -92,7 +95,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             // raise downloading event
             var downloading = Downloading;
             if (downloading != null) downloading(this, new EnqueueRequestEventArgs(dto));
-            console.Write("Downloading {0}", dto.ResourceFile);
+            console.WriteLine("{0} : Downloading {1}", time.Now.ToShortDateString(), dto.ResourceFile);
 
             // Then the ext_resource_link file is downloaded and saved to the process Queue folder
             // And the .import file is moved from downloading to the processQueue folder
@@ -102,7 +105,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
                 Uri uri = new Uri(dto.ExtResourceLinkContent);
                 var downloadResult = _clientDownloader.DownloadFileWithTiming(uri, destination);
-                console.WriteLine("\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
+                console.WriteLine("{0} : Finished downloading {1}", time.Now.ToShortDateString(), dto.ResourceFile);
+                console.WriteLine("\t\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
                 // move the import file from downloading to process queue folder 
                 string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
                 string importDest = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetImportFileName());
@@ -116,7 +120,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 var msg = "Error during download of " + trackingFilePath;
                 //todo: update IConsole to support writing errors etc.
-                ConsoleHelper.WriteError(msg);
+                console.WriteError(msg);
                 _logger.ErrorException(msg, ex);
                 _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
                 RaiseDownloadError(ex,dto);

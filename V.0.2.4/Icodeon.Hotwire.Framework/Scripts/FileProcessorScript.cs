@@ -94,13 +94,11 @@ namespace Icodeon.Hotwire.Framework.Scripts
             catch (Exception ex)
             {
                 //TODO: update IConsoleWriter to support writing erorrs! line below ignores fact that we have console writer injected above!
-                ConsoleHelper.WriteError("Error processing "+ dto.ResourceFile);
+                console.WriteError("Error processing "+ dto.ResourceFile);
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
                 RaiseProcessException(ex,dto);
             }
         }
-
-
 
         public EnqueueRequestDTO GetNextImportFileToProcessMoveToProcessingOrDefault(IConsoleWriter console)
         {

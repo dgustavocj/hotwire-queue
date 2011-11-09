@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Scripts;
+using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Icodeon.Hotwire.TestFramework.Mocks;
 using Icodeon.Hotwire.Tests.Internal;
@@ -38,7 +39,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 
             Trace("And a file download script that will throw an exception on the first file");
             var downloader = new MockDownloder(1);
-            var script = new FileDownloaderScript(FilesProvider, downloader);
+            var script = new FileDownloaderScript(FilesProvider, downloader, new DateTimeWrapper());
             script.DownloadException += _errorHandler1.HandleException;
             script.DownloadException += _errorHandler2.HandleException;
             _errorHandler1.Handled.Should().BeFalse();
@@ -139,7 +140,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             Trace("And a file download script that will throw an exception on the first file");
             var exceptionToThrow = new ArgumentException("argument message", new FileNotFoundException());
             var downloader = new MockDownloder(1,exceptionToThrow);
-            var script = new FileDownloaderScript(FilesProvider, downloader);
+            var script = new FileDownloaderScript(FilesProvider, downloader, new DateTimeWrapper());
             script.DownloadException += _errorHandler1.HandleException;
             script.DownloadException += _errorHandler2.HandleException;
             _errorHandler1.Handled.Should().BeFalse();

@@ -5,48 +5,48 @@ namespace Icodeon.Hotwire.Framework.Utils
     public static class ConsoleHelper
     {
 
-        public static void WriteLineColor(string message,  ConsoleColor? foreground = null, ConsoleColor? background = null)
+        public static void WriteLineColor(this IConsoleWriter console, string message,  ConsoleColor? foreground = null, ConsoleColor? background = null)
         {
-            var current = GetCurrentColours();
-            if (background!=null) Console.BackgroundColor = background.Value;
-            if (foreground != null) Console.ForegroundColor = foreground.Value;
-            Console.WriteLine(message);
-            ResetColor(current);
+            var current = console.GetCurrentColours();
+            if (background!=null) console.BackgroundColor = background.Value;
+            if (foreground != null) console.ForegroundColor = foreground.Value;
+            console.WriteLine(message);
+            console.ResetColor(current);
         }
 
-        public static void WriteColor(string message, ConsoleColor? foreground = null, ConsoleColor? background = null)
+        public static void WriteColor(this IConsoleWriter console, string message, ConsoleColor? foreground = null, ConsoleColor? background = null)
         {
-            var current = GetCurrentColours();
-            if (background != null) Console.BackgroundColor = background.Value;
-            if (foreground != null) Console.ForegroundColor = foreground.Value;
-            Console.Write(message);
-            ResetColor(current);
+            var current = console.GetCurrentColours();
+            if (background != null) console.BackgroundColor = background.Value;
+            if (foreground != null) console.ForegroundColor = foreground.Value;
+            console.Write(message);
+            console.ResetColor(current);
         }
 
 
-        public static ColorDTO GetCurrentColours()
+        public static ColorDTO GetCurrentColours(this IConsoleWriter console)
         {
             return new ColorDTO
                        {
-                           BackgroundColor = Console.BackgroundColor,
-                           ForegroundColor = Console.ForegroundColor
+                           BackgroundColor = console.BackgroundColor,
+                           ForegroundColor = console.ForegroundColor
                        };
         }
 
-        public static void ResetColor(ColorDTO color)
+        public static void ResetColor(this IConsoleWriter console, ColorDTO color)
         {
-            Console.ForegroundColor = color.ForegroundColor;
-            Console.BackgroundColor = color.BackgroundColor;
+            console.ForegroundColor = color.ForegroundColor;
+            console.BackgroundColor = color.BackgroundColor;
         }
 
-        public static void WriteBold(string message)
+        public static void WriteBold(this IConsoleWriter console, string message)
         {
-            WriteColor(message, ConsoleColor.Yellow, ConsoleColor.Black);
+            console.WriteColor(message, ConsoleColor.Yellow, ConsoleColor.Black);
         }
 
-        public static void WriteError(string message)
+        public static void WriteError(this IConsoleWriter console,string message)
         {
-            WriteLineColor(message, ConsoleColor.Red, ConsoleColor.White);
+            console.WriteLineColor(message, ConsoleColor.Red, ConsoleColor.White);
         }
     }
 }

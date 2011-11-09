@@ -46,8 +46,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 var msg = "More than 1 file matches filter '" + filenameContains + ". Must match a single file only in order to process. the following files match:";
                 _logger.Trace(msg);
-                Console.WriteLine(msg);
-                matches.ToList().ForEach(Console.WriteLine);
+                console.WriteLine(msg);
+                matches.ToList().ForEach(console.WriteLine);
                 return null;
             }
             var importFileNameAndPath = _fileprovider.ProcessQueueFilePaths.FirstOrDefault(f => f.Contains(filenameContains));
@@ -55,7 +55,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 var msg = "Could not find a file in the process queue containing '" + filenameContains + "'. No file processed.";
                 _logger.Trace(msg);
-                Console.WriteLine(msg);
+                console.WriteLine(msg);
                 return null;
             }
             var importFileName = Path.GetFileName(importFileNameAndPath);
@@ -64,7 +64,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 var msg = "Status of '" + importFileName + "' is " + status + ". Cannot process this file.";
                 _logger.Trace(msg);
-                Console.WriteLine(msg);
+                console.WriteLine(msg);
                 return null;
             }
             return ReadImportFileAndMoveFromProcessQueueToProcessingFolder(importFileNameAndPath);

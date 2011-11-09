@@ -320,15 +320,18 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
         //TODO: Rename the XYZFilePaths to ImportFiles!
+
         public void RefreshFiles()
         {
-            TestDataFilePaths = Directory.GetFiles(TestDataFolderPath).ToList();
-            RefreshDownloadFiles();
-            ProcessQueueFilePaths = Directory.GetFiles(ProcessQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
-            ProcessedFilePaths = Directory.GetFiles(ProcessedFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
-            ProcessingFilePaths = Directory.GetFiles(ProcessingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
-            ProcessErrorFilePaths = Directory.GetFiles(ProcessErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
-            
+            lock(locker)
+            {
+                TestDataFilePaths = Directory.GetFiles(TestDataFolderPath).ToList();
+                RefreshDownloadFiles();
+                ProcessQueueFilePaths = Directory.GetFiles(ProcessQueueFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+                ProcessedFilePaths = Directory.GetFiles(ProcessedFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+                ProcessingFilePaths = Directory.GetFiles(ProcessingFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ImportExtension)).ToList();
+                ProcessErrorFilePaths = Directory.GetFiles(ProcessErrorFolderPath).Where(f => f.EndsWith(EnqueueRequestDTO.ErrorExtension) || f.EndsWith(EnqueueRequestDTO.SkippedExtension)).ToList();
+            }
         }
 
         public void RefreshDownloadFiles()
@@ -427,14 +430,19 @@ namespace Icodeon.Hotwire.Framework.Providers
             return GetFilesProviderInstance(true);
         }
 
+        private static Object locker = new Object();
+
         public static HotwireFilesProvider GetFilesProviderInstance(bool refreshFiles)
         {
-            _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
-            _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
-            if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
-            var foldersSection = FoldersSection.ReadConfig();
-            _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
-            return _hotwireFilesProvider;
+            lock(locker)
+            {
+                _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
+                _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
+                if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
+                var foldersSection = FoldersSection.ReadConfig();
+                _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
+                return _hotwireFilesProvider;
+            }
         }
 
 
