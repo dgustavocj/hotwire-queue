@@ -62,14 +62,12 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 _isRunning = true;
-
-               
-
                 while ((dto = GetNextImportFileToProcessMoveToProcessingOrDefault(console)) != null)
                 {
                     ProcessFile(console, dto, _processFileCaller);
                 }
-                console.WriteLine("Nothing left to process, exiting.");
+                console.WriteBold("Nothing left to process, exiting.\n");
+                console.Write(FileDownloaderScript.prompt);
             }
             catch(Exception ex)
             {
@@ -94,7 +92,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             catch (Exception ex)
             {
                 //TODO: update IConsoleWriter to support writing erorrs! line below ignores fact that we have console writer injected above!
-                console.WriteError("Error processing "+ dto.ResourceFile);
+                console.WriteLineError("Error processing "+ dto.ResourceFile);
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
                 RaiseProcessException(ex,dto);
             }

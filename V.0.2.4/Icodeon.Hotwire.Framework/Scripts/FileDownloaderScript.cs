@@ -21,7 +21,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 {
     public class FileDownloaderScript : IScript, IFolderWatcherScript
     {
-
+        public const string prompt = ">";
 
         private readonly IDownloaderFilesProvider _downloaderFiles;
 
@@ -64,7 +64,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 {
                     DownloadFile(console, dto,_dateTime);
                 }
-                console.WriteLine("Nothing left to download, exiting.");
+                console.Log("Nothing left to download, exiting.");
+                console.Write(prompt);
             }
             catch (Exception ex)
             {
@@ -87,7 +88,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, IDateTime time)
+        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, IDateTime dateTime)
         {
             string trackingFilePath = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");
@@ -95,7 +96,10 @@ namespace Icodeon.Hotwire.Framework.Scripts
             // raise downloading event
             var downloading = Downloading;
             if (downloading != null) downloading(this, new EnqueueRequestEventArgs(dto));
-            console.WriteLine("{0} : Downloading {1}", time.Now.ToShortDateString(), dto.ResourceFile);
+            console.WriteTime();
+            console.Write("downloading '");
+            console.WriteBold(dto.ResourceFile);
+            console.Write("'\n");
 
             // Then the ext_resource_link file is downloaded and saved to the process Queue folder
             // And the .import file is moved from downloading to the processQueue folder
@@ -105,8 +109,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
                 Uri uri = new Uri(dto.ExtResourceLinkContent);
                 var downloadResult = _clientDownloader.DownloadFileWithTiming(uri, destination);
-                console.WriteLine("{0} : Finished downloading {1}", time.Now.ToShortDateString(), dto.ResourceFile);
-                console.WriteLine("\t\t{0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
+                console.Log("Finished downloading.");
+                console.LogBold("-> {0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
                 // move the import file from downloading to process queue folder 
                 string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
                 string importDest = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetImportFileName());
@@ -120,9 +124,10 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 var msg = "Error during download of " + trackingFilePath;
                 //todo: update IConsole to support writing errors etc.
-                console.WriteError(msg);
+                console.LogError(ex.Message);
                 _logger.ErrorException(msg, ex);
                 _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
+                console.LogError("...moved to download error folder.");
                 RaiseDownloadError(ex,dto);
             }
         }
@@ -167,6 +172,15 @@ namespace Icodeon.Hotwire.Framework.Scripts
                     }
                     continue;
                 }
+                catch(Exception ex)
+                {
+                    string trackingNumber = EnqueueRequestDTO.GetTrackingNumberFromImportFileName(importFileName);
+                    console.LogError("Error downloding '" + trackingNumber + "'.");
+                    console.Log(ex.Message);
+                    _downloaderFiles.MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(trackingNumber,ex);
+                    _downloaderFiles.MoveFileAndSettingsFileFromDownloadQueueFolderToDownloadErrorFolderWriteExceptionFile(trackingNumber, ex);
+                    console.Log("Moved to download error folder.");
+                }
 
             } while (maxcount++<30000);
             throw new ApplicationException("safetynet loop value maxcount exceeded! Possible causes would be if were getting 'false negative' IOExceptions, which are supposed to only happen if another thread has moved a file, and the file still exists and the code tries to move the same file again.");
@@ -174,8 +188,8 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         private void SkipFile(string importFileNamePath, QueueStatus status, string importFileName, IConsoleWriter console)
         {
-            var msg = string.Format("Skipping {0}, \tstatus is {1}.", importFileName, status);
-            console.WriteLine(msg);
+            var msg = string.Format("Skipping {0}, \tstatus is already {1}.", importFileName, status);
+            console.LogBold(msg);
             _logger.Trace(msg);
             // rename as skipped for now.
             string destination = Path.Combine(_downloaderFiles.DownloadErrorFolderPath, importFileName + "." + status + EnqueueRequestDTO.SkippedExtension);

@@ -13,14 +13,35 @@ namespace Icodeon.Hotwire.Framework.Utils
         void Write(string value);
         string ReadLine();
         void Clear();
+
+        void Log(string value);
+        void Log(string format, params object[] args);
+        void LogError(string value);
+        void LogError(string format, params object[] args);
+        void LogBold(string value);
+        void LogBold(string format, params object[] args);
+        void WriteTime();
+        
         ConsoleColor ForegroundColor { get; set; }
         ConsoleColor BackgroundColor { get; set; }
     }
 
     public class ConsoleWriter : IConsoleWriter
     {
+        private readonly IDateTime _dateTime;
         // need a lock because race conditions cause colours not to reset properly, since we call getColors, change color, write, then reset back again!
         private Object locker = new Object();
+
+        public ConsoleWriter(IDateTime dateTime)
+        {
+            _dateTime = dateTime;
+        }
+
+        public ConsoleWriter()
+        {
+            _dateTime = new DateTimeWrapper();
+        }
+
 
         public void WriteLine(string format, params object[] arg)
         {
@@ -90,7 +111,7 @@ namespace Icodeon.Hotwire.Framework.Utils
 
 
 
-        public string ReadLine()
+        public virtual string ReadLine()
         {
             return Console.ReadLine();
         }
@@ -106,6 +127,42 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             get { return Console.BackgroundColor; }
             set { Console.BackgroundColor = value; }
+        }
+
+        public void Log(string text)
+        {
+            this.Log(_dateTime, text);
+        }
+
+        public void Log(string format, params object[] args)
+        {
+            this.Log(_dateTime, format, args);
+        }
+
+        public void LogError(string value)
+        {
+            this.LogError(_dateTime, value);
+        }
+
+        public void LogError(string format, params object[] args)
+        {
+            this.LogError(_dateTime, format, args);
+        }
+
+        public void LogBold(string value)
+        {
+            this.LogBold(_dateTime, value);
+        }
+
+        public void LogBold(string format, params object[] args)
+        {
+            this.LogBold(_dateTime, format, args);
+        }
+
+
+        public void WriteTime()
+        {
+            this.WriteTime(_dateTime);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         string ProcessQueueFolderPath { get; }
         string DownloadErrorFolderPath { get; }
 
+        void MoveFileAndSettingsFileFromDownloadQueueFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex);
         void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex);
         string MoveImportFileFromDownloadQueueuToDownloading(string importFileName);
 
@@ -263,14 +264,14 @@ namespace Icodeon.Hotwire.Framework.Providers
             var filesrc = Path.Combine(srcFolderPath, trackingNumber);
             var filedest = Path.Combine(destFolderPath, trackingNumber);
             _logger.Trace("\t\t\tFile.Move('{0}',{1}')",filesrc, filedest);
-            File.Move(filesrc, filedest);
+            if (File.Exists(filesrc)) File.Move(filesrc, filedest);
             
             // move settings file
             var settingFilename = EnqueueRequestDTO.AddImportExtension(trackingNumber);
             var settingSrcPath = Path.Combine(srcFolderPath, settingFilename);
             var settingDestPath = Path.Combine(destFolderPath, settingFilename);
             _logger.Trace("\t\t\tFile.Move('{0}',{1}')", settingSrcPath, settingDestPath);
-            File.Move(settingSrcPath, settingDestPath);
+            if (File.Exists(settingSrcPath)) File.Move(settingSrcPath, settingDestPath);
         }
 
         public void MoveFileAndSettingsFileFromProcessingFolderToProcessedFolderLogSuccess(string resourceFile)
@@ -310,14 +311,27 @@ namespace Icodeon.Hotwire.Framework.Providers
         // dont log the actual error to the log file, that will be done by the caller's outermost try catch, i.e. most likely the Script Runner.
         public void MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex)
         {
-            _logger.Trace("MoveFileAndSettingsFileFromDownloadingFolderToDownloadErrorFolderWriteExceptionFile('{0}',exception)",trackingNumber);
-            MoveFileAndSettingsFileToFolder(trackingNumber, DownloadingFolderPath, DownloadErrorFolderPath);
-            _logger.Trace("\t\t\tWriting .errorFile", trackingNumber);
+            MoveFileAndSettingsFileFromSourceToDownloadErrorFolderWriteExceptionFile(trackingNumber, DownloadingFolderPath, ex);
+        }
+
+        public void MoveFileAndSettingsFileFromDownloadQueueFolderToDownloadErrorFolderWriteExceptionFile(string trackingNumber, Exception ex)
+        {
+            MoveFileAndSettingsFileFromSourceToDownloadErrorFolderWriteExceptionFile(trackingNumber,DownloadQueueFolderPath, ex);
+        }
+
+
+        private void MoveFileAndSettingsFileFromSourceToDownloadErrorFolderWriteExceptionFile(string trackingNumber, string srcFolder, Exception ex)
+        {
+            _logger.Debug("MoveFileAndSettingsFileFromDownloadQueueFolderToDownloadErrorFolderWriteExceptionFile('{0}',exception)", trackingNumber);
+            MoveFileAndSettingsFileToFolder(trackingNumber, srcFolder, DownloadErrorFolderPath);
+            _logger.Trace("\t\t\tSerialising the exception.");
             // log exception to json error file
             string jsonException = JSONHelper.Serialize(new HotwireExceptionDTO(ex));
             string errorFilePath = Path.Combine(DownloadErrorFolderPath, EnqueueRequestDTO.AddErrorExtension(trackingNumber));
+            _logger.Trace("\t\t\tWriting exception file '{0}'.", errorFilePath);
             File.WriteAllText(errorFilePath, jsonException);
         }
+
 
         //TODO: Rename the XYZFilePaths to ImportFiles!
 
@@ -375,13 +389,18 @@ namespace Icodeon.Hotwire.Framework.Providers
         }
 
         private static HotwireFilesProvider _hotwireFilesProvider;
-        
+
         public static void CreateFoldersIfNotExist()
         {
-            CreateFoldersIfNotExist(null);
+            CreateFoldersIfNotExist(null, null);
         }
 
-        public static void CreateFoldersIfNotExist(string rootPathOverride)
+        public static void CreateFoldersIfNotExist(Action<string> beforeCreateNewFolder)
+        {
+            CreateFoldersIfNotExist(null, beforeCreateNewFolder);
+        }
+
+        public static void CreateFoldersIfNotExist(string rootPathOverride, Action<string> beforeCreateNewFolder)
         {
             _logger.Debug("CreateFoldersIfNotExist(rootPath)");
 
@@ -401,20 +420,21 @@ namespace Icodeon.Hotwire.Framework.Providers
             var processErrorFolderPath = Path.Combine(rootPath, relativeFolders.ProcessErrorFolder);
             var downloadingFolderPath = Path.Combine(rootPath, relativeFolders.DownloadingFolder);
 
-            CreateFolderIfNotExist(downloadingFolderPath, MarkerFiles.DownloadingFolder);
-            CreateFolderIfNotExist(processErrorFolderPath, MarkerFiles.ProcessErrorFolder);
-            CreateFolderIfNotExist(processingFolderPath, MarkerFiles.ProcessingFolder);
-            CreateFolderIfNotExist(processedFolderPath, MarkerFiles.ProcessedFolder);
-            CreateFolderIfNotExist(processQueueFolderPath, MarkerFiles.ProcessQueueFolder);
-            CreateFolderIfNotExist(downloadQueueFolderPath, MarkerFiles.DownloadQueueFolder);
-            CreateFolderIfNotExist(testDataFolderPath, null);
-            CreateFolderIfNotExist(downloadErrorFolderPath, MarkerFiles.DownloadErrorFolder);
+            CreateFolderIfNotExist(downloadingFolderPath, MarkerFiles.DownloadingFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(processErrorFolderPath, MarkerFiles.ProcessErrorFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(processingFolderPath, MarkerFiles.ProcessingFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(processedFolderPath, MarkerFiles.ProcessedFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(processQueueFolderPath, MarkerFiles.ProcessQueueFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(downloadQueueFolderPath, MarkerFiles.DownloadQueueFolder, beforeCreateNewFolder);
+            CreateFolderIfNotExist(testDataFolderPath, null, beforeCreateNewFolder);
+            CreateFolderIfNotExist(downloadErrorFolderPath, MarkerFiles.DownloadErrorFolder, beforeCreateNewFolder);
         }
         
-        private static void CreateFolderIfNotExist(string path,string markerFile)
+        private static void CreateFolderIfNotExist(string path,string markerFile, Action<string> beforeCreateNewFolder)
         {
             if (!Directory.Exists(path))
             {
+                var temp = beforeCreateNewFolder; if (temp != null) beforeCreateNewFolder(path);
                 _logger.Debug("creating hotwire folder:" + path);
                 Directory.CreateDirectory(path);
                 if (markerFile!=null)

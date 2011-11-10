@@ -137,7 +137,7 @@ namespace Icodeon.Hotwire.Framework.Contracts
 
         public string GetImportFileName()
         {
-            return String.Format("{0}_{1}.import", TransactionId, ResourceFile);
+            return String.Format("{0}.import", GetTrackingNumber());
         }
 
         public NameValueCollection ToUnderScoreIcodeonCCPNamedNameValueCollectionPlusExtraHotwireParamsAndAnyExtraParamsPostedByClient()

@@ -72,6 +72,7 @@
     <Compile Include="MockHttpWriterAssertions.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\MockAppCache.cs" />
+    <Compile Include="Mocks\MockConsole.cs" />
     <Compile Include="Mocks\MockDownloder.cs" />
     <Compile Include="Mocks\MockErrorHandler.cs" />
     <Compile Include="Mocks\MockHttpWriter.cs" />

@@ -279,6 +279,7 @@
     <Compile Include="Utils\ConsoleHelper.cs" />
     <Compile Include="Utils\ConsoleWriter.cs" />
     <Compile Include="Utils\ContextHelper.cs" />
+    <Compile Include="Utils\DateTimeExtensions.cs" />
     <Compile Include="Utils\DateTimeWrapper.cs" />
     <Compile Include="Utils\DeploymentEnvironment.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
