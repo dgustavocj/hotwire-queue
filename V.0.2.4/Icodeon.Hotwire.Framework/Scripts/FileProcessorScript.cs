@@ -66,7 +66,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 {
                     ProcessFile(console, dto, _processFileCaller);
                 }
-                console.WriteBold("Nothing left to process, exiting.\n");
+                console.Log("Nothing left to process, exiting.");
                 console.Write(FileDownloaderScript.prompt);
             }
             catch(Exception ex)
@@ -83,7 +83,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
 
         protected void ProcessFile(IConsoleWriter console, EnqueueRequestDTO dto, ProcessFileCallerBase processFileCaller)
         {
-            console.WriteLine("Processing {0}",dto.ResourceFile);
+            console.LogBold("Processing '",dto.ResourceFile,"'");
             try
             {
                 processFileCaller.CallProcessFileWaitForComplete(dto.GetTrackingNumber());
@@ -92,7 +92,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             catch (Exception ex)
             {
                 //TODO: update IConsoleWriter to support writing erorrs! line below ignores fact that we have console writer injected above!
-                console.WriteLineError("Error processing "+ dto.ResourceFile);
+                console.LogError("Error processing '{0}'",dto.ResourceFile);
                 _fileprovider.MoveFileAndSettingsFileFromProcessingFolderToErrorFolderWriteExceptionFile(dto.GetTrackingNumber(), ex);
                 RaiseProcessException(ex,dto);
             }
@@ -117,7 +117,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 if (status != QueueStatus.QueuedForProcessing)
                 {
                     var msg = string.Format("Skipping {0}, \tstatus is {1}.", importFileName, status);
-                    console.WriteLine(msg);
+                    console.Log(msg);
                     _logger.Trace(msg);
                     // rename as skipped for now.
                     string destination = Path.Combine(_fileprovider.ProcessErrorFolderPath, importFileName + "." + status + EnqueueRequestDTO.SkippedExtension);

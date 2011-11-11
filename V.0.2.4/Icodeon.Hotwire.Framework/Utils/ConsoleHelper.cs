@@ -18,6 +18,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             }
         }
 
+
         public static void WriteColor(this IConsoleWriter console, string message, ConsoleColor? foreground = null, ConsoleColor? background = null)
         {
             lock(locker)
@@ -59,6 +60,7 @@ namespace Icodeon.Hotwire.Framework.Utils
         }
 
 
+
         public static void WriteLineError(this IConsoleWriter console,string message)
         {
             console.WriteLineColor(message, ConsoleColor.Red, ConsoleColor.Black);
@@ -68,8 +70,16 @@ namespace Icodeon.Hotwire.Framework.Utils
         {
             WriteTime(console, dateTime);
             console.WriteBold(value + "\n");
-            
         }
+
+        public static void LogBold(this IConsoleWriter console, IDateTime dateTime, string first, string bold, string last)
+        {
+            WriteTime(console, dateTime);
+            console.Write(first);
+            console.WriteBold(bold);
+            console.WriteLine(last);
+        }
+
 
         public static void LogBold(this IConsoleWriter console, IDateTime dateTime, string format, params object[] args)
         {

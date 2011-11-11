@@ -19,6 +19,7 @@ namespace Icodeon.Hotwire.Framework.Utils
         void LogError(string value);
         void LogError(string format, params object[] args);
         void LogBold(string value);
+        void LogBold(string first, string bold, string last);
         void LogBold(string format, params object[] args);
         void WriteTime();
         
@@ -159,6 +160,10 @@ namespace Icodeon.Hotwire.Framework.Utils
             this.LogBold(_dateTime, format, args);
         }
 
+        public void LogBold(string first, string bold, string last)
+        {
+            this.Log(_dateTime, first, bold, last);
+        }
 
         public void WriteTime()
         {

@@ -62,7 +62,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                 _isRunning = true;
                 while ((dto = GetNextImportFileToDownloadMoveToDownloadingOrDefault(console)) != null)
                 {
-                    DownloadFile(console, dto,_dateTime);
+                    DownloadFile(console, dto);
                 }
                 console.Log("Nothing left to download, exiting.");
                 console.Write(prompt);
@@ -88,7 +88,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
         }
 
 
-        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto, IDateTime dateTime)
+        private void DownloadFile(IConsoleWriter console, EnqueueRequestDTO dto)
         {
             string trackingFilePath = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetTrackingNumber());
             File.WriteAllText(trackingFilePath, "");
@@ -96,10 +96,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             // raise downloading event
             var downloading = Downloading;
             if (downloading != null) downloading(this, new EnqueueRequestEventArgs(dto));
-            console.WriteTime();
-            console.Write("downloading '");
-            console.WriteBold(dto.ResourceFile);
-            console.Write("'\n");
+            console.LogBold("downloading '",dto.ResourceFile,"'");
 
             // Then the ext_resource_link file is downloaded and saved to the process Queue folder
             // And the .import file is moved from downloading to the processQueue folder
