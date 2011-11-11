@@ -68,41 +68,59 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         public static void LogBold(this IConsoleWriter console, IDateTime dateTime, string value)
         {
-            WriteTime(console, dateTime);
-            console.WriteBold(value + "\n");
+            lock (locker)
+            {
+                WriteTime(console, dateTime);
+                console.WriteBold(value + "\n");
+            }
         }
 
-        public static void LogBold(this IConsoleWriter console, IDateTime dateTime, string first, string bold, string last)
+        public static void LogFirstBoldLast(this IConsoleWriter console, IDateTime dateTime, string first, string bold, string last)
         {
-            WriteTime(console, dateTime);
-            console.Write(first);
-            console.WriteBold(bold);
-            console.WriteLine(last);
+            lock (locker)
+            {
+                WriteTime(console, dateTime);
+                console.Write(first);
+                console.WriteBold(bold);
+                console.WriteLine(last);
+            }
         }
 
 
         public static void LogBold(this IConsoleWriter console, IDateTime dateTime, string format, params object[] args)
         {
-            WriteTime(console, dateTime);
-            console.WriteBold(string.Format(format, args) + "\n");
+            lock(locker)
+            {
+                WriteTime(console, dateTime);
+                console.WriteBold(string.Format(format, args) + "\n");
+            }
         }
 
         public static void Log(this IConsoleWriter console, IDateTime dateTime, string format, params object[] args)
         {
-            WriteTime(console, dateTime);
-            console.WriteLine(string.Format(format,args));
+            lock(locker)
+            {
+                WriteTime(console, dateTime);
+                console.WriteLine(string.Format(format, args));
+            }
         }
 
         public static void LogError(this IConsoleWriter console, IDateTime dateTime, string value)
         {
-            WriteTime(console, dateTime);
-            console.WriteLineError(value);
+            lock(locker)
+            {
+                WriteTime(console, dateTime);
+                console.WriteLineError(value);
+            }
         }
 
         public static void LogError(this IConsoleWriter console, IDateTime dateTime, string format, params object[] args)
         {
-            WriteTime(console, dateTime);
-            console.WriteLineError(string.Format(format, args));
+            lock(locker)
+            {
+                WriteTime(console, dateTime);
+                console.WriteLineError(string.Format(format, args));
+            }
         }
 
         public static void WriteTime(this IConsoleWriter console, IDateTime dateTime)

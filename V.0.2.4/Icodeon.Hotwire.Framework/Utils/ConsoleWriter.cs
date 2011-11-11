@@ -132,42 +132,42 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         public void Log(string text)
         {
-            this.Log(_dateTime, text);
+            ConsoleHelper.Log(this,_dateTime, text);
         }
 
         public void Log(string format, params object[] args)
         {
-            this.Log(_dateTime, format, args);
+            ConsoleHelper.Log(this,_dateTime, format, args);
         }
 
         public void LogError(string value)
         {
-            this.LogError(_dateTime, value);
+            ConsoleHelper.LogError(this,_dateTime, value);
         }
 
         public void LogError(string format, params object[] args)
         {
-            this.LogError(_dateTime, format, args);
+            ConsoleHelper.LogError(this,_dateTime, format, args);
         }
 
         public void LogBold(string value)
         {
-            this.LogBold(_dateTime, value);
+            ConsoleHelper.LogBold(this,_dateTime, value);
         }
 
         public void LogBold(string format, params object[] args)
         {
-            this.LogBold(_dateTime, format, args);
+            ConsoleHelper.LogBold(this,_dateTime, format, args);
         }
 
         public void LogBold(string first, string bold, string last)
         {
-            this.Log(_dateTime, first, bold, last);
+            ConsoleHelper.LogFirstBoldLast(this,_dateTime, first, bold, last);
         }
 
         public void WriteTime()
         {
-            this.WriteTime(_dateTime);
+            ConsoleHelper.WriteTime(this,_dateTime);
         }
     }
 }

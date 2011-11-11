@@ -9,6 +9,7 @@ using Icodeon.Hotwire.Contracts;
 using Icodeon.Hotwire.Framework.Contracts;
 using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Providers;
+using NLog;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
@@ -17,22 +18,17 @@ namespace Icodeon.Hotwire.Framework.Utils
     /// </summary>
     public class LoggingFileProcessorProvider : IFileProcessorProvider
     {
-        private LoggerBase _logger;
-
-        public LoggingFileProcessorProvider(LoggerBase logger)
-        {
-            _logger = logger;
-        }
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LoggingFileProcessorProvider()
         {
-            _logger = new HotLogger(NLog.LogManager.GetLogger("fileProcessor"));
-            _logger.Trace("new LoggingFileProcessorProvider()");
+            _logger.Trace("LoggingFileProcessorProvider()");
         }
 
         public void ProcessFile(string trackingNumber, string transaction_id, NameValueCollection requestParams)
         {
-            _logger.Trace("ProcessFile(resource_file='{0}', transaction_id='{1}', requestParams=[see below])",trackingNumber, transaction_id, requestParams);
+            _logger.Debug("ProcessFile(string trackingNumber, string transaction_id, NameValueCollection requestParams)");
+            _logger.Info("trackingNumber:'{0}',transaction_id:'{1}'",trackingNumber, transaction_id);
             _logger.TraceParameters(requestParams);
             _logger.Trace("Checking that '{0}' exists in the processing folder.", trackingNumber);
             string filepath = Path.Combine(HotwireFilesProvider.GetFilesProviderInstance().ProcessingFolderPath,trackingNumber);
