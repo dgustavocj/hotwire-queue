@@ -185,6 +185,7 @@
     <Compile Include="FolderWatcher\CommandParser.cs" />
     <Compile Include="FolderWatcher\FolderWatcher.cs" />
     <Compile Include="FolderWatcher\FolderConfig.cs" />
+    <Compile Include="FolderWatcher\FolderWatcherCommandProcessor.cs" />
     <Compile Include="FolderWatcher\IFolderWatcherScript.cs" />
     <Compile Include="FolderWatcher\FolderScript.cs" />
     <Compile Include="Http\HotwireHttpUtility.cs" />
