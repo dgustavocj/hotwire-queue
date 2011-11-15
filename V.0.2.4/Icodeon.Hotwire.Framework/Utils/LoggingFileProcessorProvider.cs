@@ -13,9 +13,7 @@ using NLog;
 
 namespace Icodeon.Hotwire.Framework.Utils
 {
-    /// <summary>
-    /// Logs the file process request and then simulates process file taking while by waiting diffent times on each request, between 100 and 1000ms.
-    /// </summary>
+
     public class LoggingFileProcessorProvider : IFileProcessorProvider
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
@@ -25,6 +23,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             _logger.Trace("LoggingFileProcessorProvider()");
         }
 
+        // ADH: 15.11.2011 removed the semi random (sleeps) as it wasn't making the test any more reliable, just slower.
         public void ProcessFile(string trackingNumber, string transaction_id, NameValueCollection requestParams)
         {
             _logger.Debug("ProcessFile(string trackingNumber, string transaction_id, NameValueCollection requestParams)");
@@ -34,18 +33,7 @@ namespace Icodeon.Hotwire.Framework.Utils
             string filepath = Path.Combine(HotwireFilesProvider.GetFilesProviderInstance().ProcessingFolderPath,trackingNumber);
             if (!File.Exists(filepath)) throw new FileNotFoundException("Could not find resource file '" + filepath + "' to process!");
             if (trackingNumber.Contains("_THROW_")) throw new ApplicationException("This is a test exception which was triggered because the tracking number contains '_THROW_'.");
-            int processingTime = GetProcessingTime()*100; 
-            _logger.Trace("simulating processing, pausing for {0}ms.", processingTime);
-            Thread.Sleep(processingTime);
         }
-
-        // just a bit of hackery so that we can simulate processing of different files
-        // taking different times. 
-        static int procTimePos = 0;
-        private static int GetProcessingTime()
-        {
-            var times = new int[] { 10, 5, 1, 3 };
-            return times[procTimePos++ % 3];
-        }
+        
     }
 }
