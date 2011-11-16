@@ -98,6 +98,9 @@
     <Compile Include="AcceptanceTests\Diagnostics\LoggingErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Diagnostics\PluggableErrorHandlerTests.cs" />
     <Compile Include="AcceptanceTests\Endpoints\SeperateFileProcessorPerEndpoint.cs" />
+    <Compile Include="AcceptanceTests\FolderWatcher\AutostartMonitoringTests.cs" />
+    <Compile Include="AcceptanceTests\FolderWatcher\DownloadQueueMonitoringTests.cs" />
+    <Compile Include="AcceptanceTests\FolderWatcher\ProcessQueueMonitoringTests.cs" />
     <Compile Include="AcceptanceTests\Repositories\SimpleMacDALTests.cs" />
     <Compile Include="AcceptanceTests\Security\SimpleMacSecurityTests.cs" />
     <Compile Include="GlobalFixtureSetup.cs" />

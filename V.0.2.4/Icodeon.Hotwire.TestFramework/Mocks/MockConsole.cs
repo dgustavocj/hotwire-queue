@@ -9,9 +9,11 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
 {
     public class MockConsole : ConsoleWriter
     {
+        private readonly bool _echoReadLines;
+
         public class Line
         {
-            public Line(string text, Action beforeReadLine)
+            public Line(Action beforeReadLine, string text)
             {
                 Text = text;
                 BeforeReadLine = beforeReadLine;
@@ -21,20 +23,22 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
             public Action BeforeReadLine { get; set; }
         }
 
-        private Stack<Line> _lines;
+        private Queue<Line> _lines;
 
         private MockConsole() { }
 
-        public MockConsole(List<Line> lines, IDateTime dateTime) : base(dateTime)
+        public MockConsole(List<Line> lines, IDateTime dateTime, bool echoReadLines) : base(dateTime)
         {
-            _lines = new Stack<Line>(lines.Count);
-          lines.ForEach(_lines.Push);  
+            _echoReadLines = echoReadLines;
+            _lines = new Queue<Line>(lines.Count);
+          lines.ForEach(_lines.Enqueue);  
         }
 
         public override string ReadLine()
         {
-            var line = _lines.Pop();
+            var line = _lines.Dequeue();
             var temp = line.BeforeReadLine; if (temp != null) temp(); 
+            if (_echoReadLines) Console.WriteLine(line.Text);
             return line.Text;
         }
     }

@@ -70,6 +70,7 @@
     <Compile Include="FilesProviderUnitTest.cs" />
     <Compile Include="LMHostsTestHelper.cs" />
     <Compile Include="MockHttpWriterAssertions.cs" />
+    <Compile Include="Mocks\MockProcessFileCaller.cs" />
     <Compile Include="Mocks\DoesNotReleaseLockFileMockProcessFileCaller.cs" />
     <Compile Include="Mocks\MockAppCache.cs" />
     <Compile Include="Mocks\MockConsole.cs" />

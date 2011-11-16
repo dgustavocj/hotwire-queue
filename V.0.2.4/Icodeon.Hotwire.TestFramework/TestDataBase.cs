@@ -16,7 +16,7 @@ namespace Icodeon.Hotwire.TestFramework
 {
     abstract public class TestDataBase
     {
-        private readonly HotwireFilesProvider _filesProvider;
+        protected readonly HotwireFilesProvider _filesProvider;
 
         public abstract string ImportFile { get;  }
 
@@ -25,19 +25,20 @@ namespace Icodeon.Hotwire.TestFramework
             _filesProvider = filesProvider;
         }
 
-        public void WriteTestEnqueueRequestToFolderAndPause(QueueStatus folder, string transactionId, string resourceId, int millisecondsToPause)
-        {
-            string templateFile = Path.Combine(_filesProvider.TestDataFolderPath, "template.import");
-            string json = File.ReadAllText(templateFile);
-            var dal = new QueueDal(_filesProvider);
-            var template = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
-            template.TransactionId = transactionId;
-            template.ResourceFile = resourceId;
-            template.ResourceId = resourceId;
-            template.ResourceTitle = "Test file " + resourceId;
-            dal.Save(template, folder);
-            Thread.Sleep(millisecondsToPause);
-        }
+
+        public const string ImportJsonTemplate = @" {   
+            'ExtResourceLinkContent':'@RESOURCE-DOWNLOAD-URL@',
+            'ExtraParameters':[{'Name':'fruit1','Value':'apple'}, {'Name':'fruit2','Value':'banana'}],
+            'HotwireVersion':'0.1',
+            'QueueCategory':'TestCategory',
+            'QueueName':null,
+            'QueuePriority':2,
+            'QueueStatus':0,
+            'ResourceFile':'@RESOURCE-FILE@',
+            'ResourceId':'@RESOURCE-ID@',
+            'ResourceTitle':'@RESOURCE-TITLE@',
+            'TransactionId':'@TRANSACTION-ID@',
+            'UserId':'hotwire-testing' }";
 
 
         public void CopyFilesToProcessQueueFolder(IEnumerable<string> processFileNames, IConsoleWriter console)

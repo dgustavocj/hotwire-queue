@@ -73,6 +73,8 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             if (File.Exists(_downloadRunningFile)) File.Delete(_downloadRunningFile);
         }
 
+        private static ProcessFileCallerBase _processFileCaller = null;
+
         public static void RunProcessor(string fileName, IConsoleWriter console, HotwireFilesProvider filesProvider)
         {
             if (isProcessing) return;
@@ -83,8 +85,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                 _logger.Trace(msg);
                 console.Log("Starting processor.");
                 var httpClient = new HttpClientProvider();
-                var processFileCaller = new RestfulProcessFileCaller(httpClient, ProcessFileScriptSection.ReadConfig());
-                var processorScript = new FileProcessorScript(filesProvider, processFileCaller);
+                var processorScript = new FileProcessorScript(filesProvider, _processFileCaller);
                 processorScript.Run(console);
             }
             finally
@@ -134,8 +135,9 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             RunDownloader(fileName, console, filesProvider, new DateTimeWrapper());
         }
 
-        public static void RunCommandProcessorUntilExit(bool autostart, HotwireFilesProvider filesProvider, IConsoleWriter console, IDateTime dateTime)
+        public static void RunCommandProcessorUntilExit(bool autostart, HotwireFilesProvider filesProvider, IConsoleWriter console, IDateTime dateTime, ProcessFileCallerBase processFileCaller)
         {
+            _processFileCaller = processFileCaller;
             var processorWatcher = new FileSystemWatcher(filesProvider.ProcessQueueFolderPath);
             processorWatcher.Created += ProcessQueueFileCreated;
             processorWatcher.EnableRaisingEvents = false;
@@ -193,12 +195,24 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             CreateDownloadRunningFile(filesProvider);
                             DeleteProcessingRunningFile();
                             downloadWatcher.EnableRaisingEvents = true;
-                            processorWatcher.EnableRaisingEvents = false;
+                            console.LogBold("Stopping process queue monitoring.");
+                            processorWatcher.EnableRaisingEvents = false;    
                             Thread downloadThread = new Thread(() => RunDownloader(download, console, filesProvider, dateTime));
-                            console.Log("Monitoring download queue '{0}'.", Path.GetFileName(filesProvider.DownloadQueueFolderPath));
+                            console.Log("Now monitoring download queue '{0}'.", Path.GetFileName(filesProvider.DownloadQueueFolderPath));
                             downloadThread.Start();
-
                             break;
+
+                        case processor:
+                            CreateProcessingRunningFile(filesProvider);
+                            DeleteDownloadRunningFile();
+                            console.LogBold("Stopping download queue monitoring.");
+                            downloadWatcher.EnableRaisingEvents = false;    
+                            processorWatcher.EnableRaisingEvents = true;
+                            Thread processorThread = new Thread(() => RunProcessor(processor, console, filesProvider));
+                            processorThread.Start();
+                            console.Log("Now monitoring process queue '{0}'.",Path.GetFileName(filesProvider.ProcessQueueFolderPath));
+                            break;
+
 
                         case "cls":
                             console.Clear();
@@ -221,17 +235,6 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             console.Log("All folder monitoring resumed.");
                             break;
 
-
-                        case processor:
-                            CreateProcessingRunningFile(filesProvider);
-                            DeleteDownloadRunningFile();
-                            downloadWatcher.EnableRaisingEvents = false;
-                            processorWatcher.EnableRaisingEvents = true;
-                            Thread processorThread = new Thread(() => RunProcessor(processor, console, filesProvider));
-                            processorThread.Start();
-                            console.Log("Monitoring process queue");
-                            console.Log(" '" + Path.GetFileName(filesProvider.ProcessQueueFolderPath) + "'\n");
-                            break;
 
                         case "help":
                             console.WriteLine("FolderWatcher commands:");
