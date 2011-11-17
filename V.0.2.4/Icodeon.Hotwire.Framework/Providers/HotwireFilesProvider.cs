@@ -171,6 +171,13 @@ namespace Icodeon.Hotwire.Framework.Providers
             EmptyProcessQueueFolder();
             EmptyProcessingFolder();
             EmptyProcessErrorFolder();
+        }
+
+
+        public void EmptyAllFoldersCreateIfNotExist()
+        {
+            CreateFoldersIfNotExist();
+            EmptyDownloadErrorFolder();
             RefreshFiles();
         }
 
@@ -437,12 +444,13 @@ namespace Icodeon.Hotwire.Framework.Providers
                 var temp = beforeCreateNewFolder; if (temp != null) beforeCreateNewFolder(path);
                 _logger.Debug("creating hotwire folder:" + path);
                 Directory.CreateDirectory(path);
-                if (markerFile!=null)
-                {
-                    string markerFilePath = Path.Combine(path, markerFile);
-                    File.WriteAllText(markerFilePath, "hotwire folder markerfile");
-                }
             }
+            if (markerFile != null)
+            {
+                string markerFilePath = Path.Combine(path, markerFile);
+                File.WriteAllText(markerFilePath, "hotwire folder markerfile");
+            }
+
         }
 
         public static HotwireFilesProvider GetFilesProviderInstance()

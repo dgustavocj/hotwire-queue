@@ -23,10 +23,16 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [SetUp]
         public void Setup()
         {
+            FilesProvider.EmptyAllFoldersCreateIfNotExist();
              _testData = new TestData(FilesProvider);
-            FilesProvider.EmptyAllFolders();
             _errorHandler1 = new MockErrorHandler();
             _errorHandler2 = new MockErrorHandler();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            FilesProvider.EmptyAllFolders();
         }
 
         [Test]
@@ -118,14 +124,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             streamingContext.HttpWriter.StatusCode.Should().Be((int)HttpStatusCode.MovedPermanently);
 
         }
-
-        // not for now
-
-        //[Test]
-        //public void ShouldHandleAuthenticationErrors()
-        //{
-        //    throw new Exception("not implemented");
-        //}
 
 
         [Test]

@@ -25,7 +25,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         public void Setup()
         {
             _filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            _filesProvider.EmptyAllFolders();
+            _filesProvider.EmptyAllFoldersCreateIfNotExist();
             _filesProvider.RefreshFiles();
         }
 
@@ -33,7 +33,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [TearDown]
         public void TearDown()
         {
-            _filesProvider.EmptyAllFolders();
+            _filesProvider.EmptyAllFoldersCreateIfNotExist();
         }
 
 
@@ -57,7 +57,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 while (_filesProvider.ProcessedFilePaths.Count() != 3)
                 {
                     Thread.Sleep(500);
-                    if (cnt++ > 8) throw new Exception("timeout waiting 4 seconds for all the files to be downloaded and processed.");
+                    if (cnt++ > 12) throw new Exception("timeout waiting 6 seconds for all the files to be downloaded and processed.");
                     _filesProvider.RefreshFiles();
                 }
             };

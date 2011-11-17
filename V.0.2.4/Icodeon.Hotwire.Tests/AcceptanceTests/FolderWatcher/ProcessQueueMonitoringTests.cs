@@ -23,7 +23,7 @@ namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
         public void Setup()
         {
             _filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            _filesProvider.EmptyAllFolders();
+            _filesProvider.EmptyAllFoldersCreateIfNotExist();
             _filesProvider.RefreshFiles();
         }
 
@@ -31,7 +31,7 @@ namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
         [TearDown]
         public void TearDown()
         {
-           _filesProvider.EmptyAllFolders();    
+           _filesProvider.EmptyAllFoldersCreateIfNotExist();    
         }
 
 
