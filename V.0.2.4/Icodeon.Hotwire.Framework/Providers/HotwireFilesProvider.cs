@@ -177,7 +177,7 @@ namespace Icodeon.Hotwire.Framework.Providers
         public void EmptyAllFoldersCreateIfNotExist()
         {
             CreateFoldersIfNotExist();
-            EmptyDownloadErrorFolder();
+            EmptyAllFolders();
             RefreshFiles();
         }
 

@@ -31,6 +31,10 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
             _exceptionToThrow = exceptionToThrow;
         }
 
+        public MockDownloder() : this(null)
+        {
+
+        }
 
         public MockDownloder(int? throwOnFileNo) : this(throwOnFileNo, new FileNotFoundException("file not found."))
         {

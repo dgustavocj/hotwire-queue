@@ -10,6 +10,7 @@ namespace Icodeon.Hotwire.TestFramework
         public FilesProviderUnitTest() 
         {
             FilesProvider = HotwireFilesProvider.GetFilesProviderInstance();
+            FilesProvider.EmptyAllFoldersCreateIfNotExist();
         }
 
 

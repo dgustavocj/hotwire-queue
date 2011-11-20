@@ -15,23 +15,19 @@ using NUnit.Framework;
 namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
 {
     [TestFixture]
-    public class ProcessQueueMonitoringTests : UnitTest
+    public class ProcessQueueMonitoringTests : FilesProviderUnitTest
     {
-        private HotwireFilesProvider _filesProvider;
 
         [SetUp]
         public void Setup()
         {
-            _filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            _filesProvider.EmptyAllFoldersCreateIfNotExist();
-            _filesProvider.RefreshFiles();
         }
 
 
         [TearDown]
         public void TearDown()
         {
-           _filesProvider.EmptyAllFoldersCreateIfNotExist();    
+           FilesProvider.EmptyAllFolders();
         }
 
 
@@ -44,7 +40,7 @@ namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
             Trace("When I create a 'flood' of enqueue requests (50 import files)");
             Trace("And I start download monitoring");
 
-            var testData = new TestData(_filesProvider);
+            var testData = new TestData(FilesProvider);
 
             Action createImportWaitForItToBeProcessed = () =>
             {
@@ -54,11 +50,11 @@ namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
                     testData.CreateTestProcessImportFileAndMockTestFile(Guid.NewGuid(), "hello.txt");
                 }
                 int cnt = 0;
-                while (_filesProvider.ProcessedFilePaths.Count() != 50)
+                while (FilesProvider.ProcessedFilePaths.Count() != 50)
                 {
                     Thread.Sleep(500);
                     if (cnt++ > 8) throw new Exception("timeout waiting 4 seconds for all the files to be downloaded.");
-                    _filesProvider.RefreshFiles();
+                    FilesProvider.RefreshFiles();
                 }
             };
 
@@ -69,15 +65,15 @@ namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
 
             Trace("");
             Trace("----------------captured console output-----------------------------");
-            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, _filesProvider, mockconsole, new DateTimeWrapper(), new MockProcessFileCaller());
+            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, FilesProvider, mockconsole, new DateTimeWrapper(), new MockProcessFileCaller(), new MockDownloder(null));
             Trace("----------------/captured console output----------------------------");
-            _filesProvider.RefreshFiles();
+            FilesProvider.RefreshFiles();
 
             Trace("Then the FolderWatcher should start the processor and process all the files");
             Trace("Then there should be 0 files in the process queue");
-            _filesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
+            FilesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
             Trace("and there should be 50 files in the processed queue");
-            _filesProvider.ProcessedFilePaths.Count().Should().Be(50);
+            FilesProvider.ProcessedFilePaths.Count().Should().Be(50);
         }
 
 

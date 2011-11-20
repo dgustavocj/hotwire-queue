@@ -16,24 +16,20 @@ using Line = Icodeon.Hotwire.TestFramework.Mocks.MockConsole.Line;
 namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 {
     [TestFixture]
-    public class AutostartMonitoringTests : UnitTest
+    public class AutostartMonitoringTests : FilesProviderUnitTest
     {
-
-        private HotwireFilesProvider _filesProvider;
 
         [SetUp]
         public void Setup()
         {
-            _filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            _filesProvider.EmptyAllFoldersCreateIfNotExist();
-            _filesProvider.RefreshFiles();
+
         }
 
 
         [TearDown]
         public void TearDown()
         {
-            _filesProvider.EmptyAllFoldersCreateIfNotExist();
+            FilesProvider.EmptyAllFolders();
         }
 
 
@@ -42,11 +38,10 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         {
             TraceTitle("Should download and then process an enqueued request");
             Trace("Given a folderwatcher program");
-            Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console");
-            Trace("When an enqueue request is detected");
+            Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console after the files have been processed");
             Trace("And I start both download and process monitoring");
 
-            var testData = new TestData(_filesProvider);
+            var testData = new TestData(FilesProvider);
 
             Action createImportWaitForItToBeProcessed = () =>
             {
@@ -54,11 +49,11 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "hello.txt");
                 testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile.txt");
                 int cnt = 0;
-                while (_filesProvider.ProcessedFilePaths.Count() != 3)
+                while (FilesProvider.ProcessedFilePaths.Count() != 3)
                 {
                     Thread.Sleep(500);
-                    if (cnt++ > 12) throw new Exception("timeout waiting 6 seconds for all the files to be downloaded and processed.");
-                    _filesProvider.RefreshFiles();
+                    if (cnt++ > 20) throw new Exception("timeout waiting 6 seconds for all the files to be downloaded and processed.");
+                    FilesProvider.RefreshFiles();
                 }
             };
 
@@ -68,22 +63,24 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 true);
 
             var mockProcessor = new MockProcessFileCaller(null);
+            //var mockDownloder = new MockDownloder(null);
+            var mockDownloder = new HotClient();
 
             Trace("");
             Trace("----------------captured console output-----------------------------");
-            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, _filesProvider, mockconsole, new DateTimeWrapper(), mockProcessor);
+            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, FilesProvider, mockconsole, new DateTimeWrapper(), mockProcessor,mockDownloder);
             Trace("----------------/captured console output----------------------------");
-            _filesProvider.RefreshFiles();
+            FilesProvider.RefreshFiles();
 
             Trace("Then the the files should be downloaded");
-            _filesProvider.DownloadQueueFilePaths.Count().Should().Be(0);
-            _filesProvider.DownloadErrorFilePaths.Count().Should().Be(0);
+            FilesProvider.DownloadQueueFilePaths.Count().Should().Be(0);
+            FilesProvider.DownloadErrorFilePaths.Count().Should().Be(0);
 
             Trace("And the files should be processed");
-            _filesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
-            _filesProvider.ProcessErrorFilePaths.Count().Should().Be(0);
-            _filesProvider.ProcessingFilePaths.Count().Should().Be(0);
-            _filesProvider.ProcessedFilePaths.Count().Should().Be(3);
+            FilesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
+            FilesProvider.ProcessErrorFilePaths.Count().Should().Be(0);
+            FilesProvider.ProcessingFilePaths.Count().Should().Be(0);
+            FilesProvider.ProcessedFilePaths.Count().Should().Be(3);
         }
 
     }

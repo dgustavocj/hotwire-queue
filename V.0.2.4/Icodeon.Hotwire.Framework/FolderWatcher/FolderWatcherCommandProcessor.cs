@@ -74,28 +74,10 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
         }
 
         private static ProcessFileCallerBase _processFileCaller = null;
-
-        public static void RunProcessor(string fileName, IConsoleWriter console, HotwireFilesProvider filesProvider)
-        {
-            if (isProcessing) return;
-            try
-            {
-                isProcessing = true;
-                string msg = "new file " + fileName + " in process queue. Starting processor.";
-                _logger.Trace(msg);
-                console.Log("Starting processor.");
-                var httpClient = new HttpClientProvider();
-                var processorScript = new FileProcessorScript(filesProvider, _processFileCaller);
-                processorScript.Run(console);
-            }
-            finally
-            {
-                isProcessing = false;
-            }
-        }
+        private static IClientDownloader _clientDownloader = null;
 
 
-        public static void RunDownloader(string fileName, IConsoleWriter console, HotwireFilesProvider filesProvider, IDateTime dateTime)
+        public static void RunDownloader(string fileName, IConsoleWriter console, HotwireFilesProvider filesProvider, IDateTime dateTime, IClientDownloader clientDownloader)
         {
             if (isDownloading) return;
             try
@@ -105,7 +87,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                 console.Log("Starting downloader.");
                 string msg = "new file '" + fileName + "' in download queue.";
                 _logger.Debug(msg);
-                var clientDownloader = new HotClient();
+                //var clientDownloader = new HotClient();
                 var downloadScript = new FileDownloaderScript(filesProvider, clientDownloader, dateTime);
                 downloadScript.Run(console);
             }
@@ -132,11 +114,51 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
         {
             var console = new ConsoleWriter();
             var filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            RunDownloader(fileName, console, filesProvider, new DateTimeWrapper());
+            RunDownloader(fileName, console, filesProvider, new DateTimeWrapper(),_clientDownloader);
         }
 
-        public static void RunCommandProcessorUntilExit(bool autostart, HotwireFilesProvider filesProvider, IConsoleWriter console, IDateTime dateTime, ProcessFileCallerBase processFileCaller)
+        private static void ProcessQueueFileCreated(object source, FileSystemEventArgs e)
         {
+            if (!isProcessing)
+            {
+                // don't start a new thread/file processor until the file has finished downloading
+
+                if (!e.FullPath.Equals(processor) && new FileInfo(e.FullPath).Length == 0) return;
+                Thread thread = new Thread(() => RunProcessor(e.Name));
+                thread.Start();
+            }
+        }
+
+        public static void RunProcessor(string fileName, IConsoleWriter console, HotwireFilesProvider filesProvider, ProcessFileCallerBase processFileCaller)
+        {
+            if (isProcessing) return;
+            try
+            {
+                isProcessing = true;
+                string msg = "new file " + fileName + " in process queue. Starting processor.";
+                _logger.Trace(msg);
+                console.Log("Starting processor.");
+                var processorScript = new FileProcessorScript(filesProvider, processFileCaller);
+                processorScript.Run(console);
+            }
+            finally
+            {
+                isProcessing = false;
+            }
+        }
+
+
+        public static void RunProcessor(string fileName)
+        {
+            var console = new ConsoleWriter();
+            var filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
+            RunProcessor(fileName, console, filesProvider, _processFileCaller);
+        }
+
+
+        public static void RunCommandProcessorUntilExit(bool autostart, HotwireFilesProvider filesProvider, IConsoleWriter console, IDateTime dateTime, ProcessFileCallerBase processFileCaller, IClientDownloader clientDownloader)
+        {
+            _clientDownloader = clientDownloader;
             _processFileCaller = processFileCaller;
             var processorWatcher = new FileSystemWatcher(filesProvider.ProcessQueueFolderPath);
             processorWatcher.Created += ProcessQueueFileCreated;
@@ -197,7 +219,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             downloadWatcher.EnableRaisingEvents = true;
                             console.LogBold("Stopping process queue monitoring.");
                             processorWatcher.EnableRaisingEvents = false;    
-                            Thread downloadThread = new Thread(() => RunDownloader(download, console, filesProvider, dateTime));
+                            Thread downloadThread = new Thread(() => RunDownloader(download));
                             console.Log("Now monitoring download queue '{0}'.", Path.GetFileName(filesProvider.DownloadQueueFolderPath));
                             downloadThread.Start();
                             break;
@@ -208,7 +230,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             console.LogBold("Stopping download queue monitoring.");
                             downloadWatcher.EnableRaisingEvents = false;    
                             processorWatcher.EnableRaisingEvents = true;
-                            Thread processorThread = new Thread(() => RunProcessor(processor, console, filesProvider));
+                            Thread processorThread = new Thread(() => RunProcessor(processor));
                             processorThread.Start();
                             console.Log("Now monitoring process queue '{0}'.",Path.GetFileName(filesProvider.ProcessQueueFolderPath));
                             break;
@@ -275,24 +297,6 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             }
         }
 
-        private static void ProcessQueueFileCreated(object source, FileSystemEventArgs e)
-        {
-            if (!isProcessing)
-            {
-                // don't start a new thread/file processor until the file has finished downloading
-
-                if (!e.FullPath.Equals(processor) && new FileInfo(e.FullPath).Length == 0) return;
-                Thread thread = new Thread(() => RunProcessor(e.Name));
-                thread.Start();
-            }
-        }
-
-        public static void RunProcessor(string fileName)
-        {
-            var console = new ConsoleWriter();
-            var filesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-            RunProcessor(fileName, console, filesProvider);
-        }
 
 
     }

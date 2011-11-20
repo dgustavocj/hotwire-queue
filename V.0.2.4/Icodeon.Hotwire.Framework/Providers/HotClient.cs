@@ -51,7 +51,8 @@ namespace Icodeon.Hotwire.Framework.Providers
                 // not using stopwatch to measure the time to download the file 
                 // see here why not: http://kristofverbiest.blogspot.com/2008/10/beware-of-stopwatch.html
                 // also, downloads take a fair time, (few seconds) so DateTime is best
-                _logger.Info("Downloading: {0,-20}", downloadingFilePath);
+                _logger.Trace("Downloading: {0,-20}", downloadingFilePath);
+                _logger.Debug("External resource link (uri):'{0}'",uri);
                 client.DownloadFile(uri, downloadingFilePath);
                 // finished downloading move files to processQueue folder
                 double seconds = DateTime.Now.Subtract(startTime).TotalSeconds;
