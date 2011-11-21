@@ -1,30 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Transactions;
 using Icodeon.Hotwire.Framework.DAL;
-using Icodeon.Hotwire.Framework.Deployment;
-using Icodeon.Hotwire.Framework.Diagnostics;
-using Icodeon.Hotwire.Framework.Providers;
-using Icodeon.Hotwire.Framework.Utils;
 using NLog;
 using NUnit.Framework;
 
-namespace Icodeon.Hotwire.Tests
-{
-    [TestFixture]
-    public class GlobalFixtureSetup
+    [SetUpFixture]
+    public class AssemblySetupTeardown
     {
+        // the attributes are quite similar, and easy to use the wrong one and it looks correct, but is sometimes hellish to debug.
+        // here's the actual docs:
+        // http://www.nunit.org/index.php?p=setupFixture&r=2.4
+
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [TestFixtureSetUp]
-        public void SetUp()
+        // not once per namespace, doh! it's once ...per this group of tests...grrr!
+        [SetUp]
+        public void Init()
         {
-            new SchemaChecker(ConnectionStringManager.HotwireConnectionString)
-                .CheckSchemaThrowExceptionIfInvalid()
-                .ClearoutAnyTestData();
+            _logger.Debug("GlobalFixtureSetup.Init()");
+            try
+            {
+
+                var checker = new SchemaChecker(ConnectionStringManager.HotwireConnectionString);
+                checker.CheckSchemaThrowExceptionIfInvalid();
+                checker.ClearoutAnyTestData();
+            }
+            catch (Exception ex)
+            {
+                _logger.Debug("Exception during GlobalFixtureSetup()");
+                _logger.Debug(ex.Message);
+                throw;
+            }
+        }
+
+        [TearDown]
+        public void Dispose()
+        {
+            _logger.Debug("GlobalFixtureSetup.Dispose()");
         }
 
         [Test]
@@ -33,4 +44,3 @@ namespace Icodeon.Hotwire.Tests
             // do nothing... can only pass if setup is valid.
         }
     }
-}
