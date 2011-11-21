@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.FolderWatcher;
-using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Icodeon.Hotwire.TestFramework.Mocks;
 using Icodeon.Hotwire.Tests.Internal;
 using NUnit.Framework;
 
-namespace Icodeon.Hotwire.Framework.OUTests.AcceptanceTests.FolderWatcher
+namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 {
     [TestFixture]
     public class ProcessQueueMonitoringTests : FilesProviderUnitTest
