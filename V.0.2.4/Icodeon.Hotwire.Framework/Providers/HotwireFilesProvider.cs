@@ -473,6 +473,17 @@ namespace Icodeon.Hotwire.Framework.Providers
             }
         }
 
+            //        lock(locker)
+            //{
+            //    if (_hotwireFilesProvider==null)
+            //    {
+            //        _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
+            //        _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
+            //        var foldersSection = FoldersSection.ReadConfig();
+            //        _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
+            //    }
+            //}
+            //return _hotwireFilesProvider;
 
 
     }

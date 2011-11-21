@@ -123,7 +123,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 
             Action createImportWaitForItToBeProcessed = () => {
                 testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile.txt");
-                WaitTillFilesAreDownloaded(new WaitTillComplete { FilesProvider = FilesProvider, NumFiles = 1,SecondsToWait = 40 });
+                WaitTillFilesAreDownloaded(new WaitTillComplete { FilesProvider = FilesProvider, NumFiles = 1,SecondsToWait = 4 });
             };
 
             var mockconsole = new MockConsole(
