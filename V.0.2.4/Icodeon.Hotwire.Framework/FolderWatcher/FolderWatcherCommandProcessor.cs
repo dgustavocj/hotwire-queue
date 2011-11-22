@@ -189,7 +189,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                     command = console.ReadLine().ParseCommand(console);
                 }
 
-                _logger.Info("recieved command:{0}", command);
+                _logger.Info("recieved command:{0} {1}", command.Cmd, command.Argument);
                 try
                 {
                     switch (command.Cmd)

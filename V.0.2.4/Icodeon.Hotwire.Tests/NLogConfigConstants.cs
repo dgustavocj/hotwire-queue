@@ -7,6 +7,6 @@ namespace Icodeon.Hotwire.Tests
 {
     public class NLogConfigConstants
     {
-        public const string ErrorHandler = "ErrorHandler.log";
+        public const string ErrorHandler = "Logs/ErrorHandler.log";
     }
 }

@@ -70,7 +70,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
             Trace("Then the FolderWatcher should start the processor and process all the files");
             Trace("Then there should be 0 files in the process queue");
             FilesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
-            Trace("and there should be 50 files in the processed queue");
+            Trace("and there should be 50 files in the processed folder");
             FilesProvider.ProcessedFilePaths.Count().Should().Be(50);
         }
 

@@ -44,16 +44,16 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         {
             TraceTitle("Should be able to handle a flood of import files (50) without missing any");
             Trace("Given a folderwatcher program");
-            Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console");
-            Trace("When I create a 'flood' of enqueue requests (50 import files)");
-            Trace("And I start download monitoring");
+            Trace("And an empty process queue");
+            FilesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
             
-            var testData = new TestData(FilesProvider);
+            Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console");
 
+            var testData = new TestData(FilesProvider);
             Action createImportWaitForItToBeProcessed = () => {
-                for (int i = 0; i < 25; i++) {
-                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile.txt");
-                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "hello.txt");
+                for (int i = 1; i < 26; i++) {
+                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile" + i + ".txt");
+                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "hello" + i  + ".txt");
                 }
                 int cnt = 0;
                 while (FilesProvider.ProcessQueueFilePaths.Count() != 50) {
@@ -69,7 +69,11 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 true);
 
             var mockProcessor = new MockProcessFileCaller(null);
+            // NB! we are using fake files that do not exist in the CDN, so a real downloader will not work below, only a mock will work.
             var mockDownloader = new MockDownloder(null);
+
+            Trace("When I create a 'flood' of enqueue requests (50 import files)");
+            Trace("And I start download monitoring");
 
             Trace("");
             Trace("----------------captured console output-----------------------------");

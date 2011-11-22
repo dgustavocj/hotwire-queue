@@ -19,9 +19,9 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
             return new FileDownloadResultDTO
                        {
                            DownloadedFile = new FileInfo(path),
-                           KbPerSec = 40,
+                           KbPerSec = 120,
                            Kilobytes = 12,
-                           Seconds = 2
+                           Seconds = 0.1
                        };
         }
 

@@ -103,12 +103,11 @@
     <Compile Include="AcceptanceTests\FolderWatcher\ProcessQueueMonitoringTests.cs" />
     <Compile Include="AcceptanceTests\Repositories\SimpleMacDALTests.cs" />
     <Compile Include="AcceptanceTests\Security\SimpleMacSecurityTests.cs" />
-    <Compile Include="GlobalFixtureSetup.cs" />
+    <Compile Include="AssemblySetupTeardown.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
     <Compile Include="NLogConfigConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CanYouSeeMe.cs" />
     <Compile Include="UnitTests\HotwireFilesProviderUnitTests.cs" />
     <Compile Include="UnitTests\ModuleBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationBaseTests.cs" />
@@ -116,6 +115,7 @@
     <Compile Include="UnitTests\DebugContractTests.cs" />
     <Compile Include="UnitTests\EndpointRequestMatcherTests.cs" />
     <Compile Include="UnitTests\HowWeAreUsingStructureMapTests.cs" />
+    <Compile Include="NUnitTests.cs" />
     <Compile Include="UnitTests\ProcessFileScriptSectionTests.cs" />
     <Compile Include="UnitTests\ProviderFactoryTests.cs" />
     <Compile Include="UnitTests\SSLEmailErrorHandlerConfigurationTests.cs" />

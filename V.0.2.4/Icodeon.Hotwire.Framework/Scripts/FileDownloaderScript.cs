@@ -104,9 +104,10 @@ namespace Icodeon.Hotwire.Framework.Scripts
             try
             {
                 string destination = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetTrackingNumber());
+                string filename = new FileInfo(destination).Name;
                 Uri uri = new Uri(dto.ExtResourceLinkContent);
                 var downloadResult = _clientDownloader.DownloadFileWithTiming(uri, destination);
-                console.Log("Finished downloading -> {0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec);
+                console.Log("Finished downloading '{3}' -> {0:.00} KB in {1:.0} seconds, {2:.0,15} Kb/s", downloadResult.Kilobytes, downloadResult.Seconds, downloadResult.KbPerSec,filename);
                 // move the import file from downloading to process queue folder 
                 string importSource = Path.Combine(_downloaderFiles.DownloadingFolderPath, dto.GetImportFileName());
                 string importDest = Path.Combine(_downloaderFiles.ProcessQueueFolderPath, dto.GetImportFileName());

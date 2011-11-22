@@ -63,8 +63,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 true);
 
             var mockProcessor = new MockProcessFileCaller(null);
-            //var mockDownloder = new MockDownloder(null);
-            var mockDownloder = new HotClient();
+            var mockDownloder = new MockDownloder(null);
+            //var downloader = new HotClient();
 
             Trace("");
             Trace("----------------captured console output-----------------------------");
