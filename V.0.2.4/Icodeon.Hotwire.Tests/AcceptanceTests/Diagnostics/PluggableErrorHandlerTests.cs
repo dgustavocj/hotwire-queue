@@ -23,10 +23,12 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [SetUp]
         public void Setup()
         {
+            Logger.Debug("PluggableErrorHandlerTests.Setup() //");
             FilesProvider.EmptyAllFoldersCreateIfNotExist();
              _testData = new TestData(FilesProvider);
             _errorHandler1 = new MockErrorHandler();
             _errorHandler2 = new MockErrorHandler();
+            Logger.Debug("// PluggableErrorHandlerTests.Setup()");
         }
 
         [TearDown]

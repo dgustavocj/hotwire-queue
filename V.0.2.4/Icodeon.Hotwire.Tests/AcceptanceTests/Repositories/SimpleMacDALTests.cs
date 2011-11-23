@@ -18,26 +18,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
     public class SimpleMacDALTests : UnitTest
     {
         
-        [TestFixtureSetUp]
-        public void FixtureSetup()
-        {
-            
-        }
-
-        [TestFixtureTearDown]
-        public void FixtureTearDown()
-        {
-        }
-
-        private HotwireContext _context;
-
-        //[SetUp]
-        //public void Setup()
-        //{
-         
-        //}
-
-
         [Test]
         public void ShouldBeAbleToRecordRequest()
         {
@@ -112,11 +92,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
             return new CacheRequestParams(salt,url,ms);
         }
 
-        //[Test]
-        //public void ShouldBeAbleToRemoveExpiredItems()
-        //{
-        //    //throw new NotImplementedException();
-        //}
 
     }
 }
