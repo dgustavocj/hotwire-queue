@@ -1,5 +1,7 @@
-﻿using Icodeon.Hotwire.Framework;
+﻿using System;
+using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Providers;
+using NLog;
 
 namespace Icodeon.Hotwire.TestFramework
 {
@@ -8,11 +10,22 @@ namespace Icodeon.Hotwire.TestFramework
     /// </summary>
     public class FilesProviderAcceptanceTest : AcceptanceTest 
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public HotwireFilesProvider FilesProvider { get; private set; }
         public FilesProviderAcceptanceTest() 
         {
-            FilesProvider = HotwireFilesProvider.GetFilesProviderInstance();
-
+            _logger.Trace("cxtor FilesProviderAcceptanceTest()");
+            // ADH: 23.11.2011 wrapping fixture class constructor code in try catch because test runners (Team City, NUnit) can't report on errors in the fixture setups
+            try
+            {
+                FilesProvider = HotwireFilesProvider.GetFilesProviderInstance();
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal(ex);
+                throw;
+            }
         }
     }
 }

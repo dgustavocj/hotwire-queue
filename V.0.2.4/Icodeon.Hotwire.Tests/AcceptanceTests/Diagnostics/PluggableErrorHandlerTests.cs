@@ -8,6 +8,7 @@ using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Icodeon.Hotwire.TestFramework.Mocks;
 using Icodeon.Hotwire.Tests.Internal;
+using NLog;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
@@ -15,7 +16,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
     [TestFixture(Category = "acceptanceTest", Description = "As a service provider, so that I can have timely and detailed information to fix errors and keep system running, I want to be able to plug in my own error handler to handle any errors")]
     public class PluggableErrorHandlerTests : FilesProviderAcceptanceTest
     {
-
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private TestData _testData;
         private MockErrorHandler _errorHandler1;
         private MockErrorHandler _errorHandler2;
@@ -23,18 +24,20 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [SetUp]
         public void Setup()
         {
-            Logger.Debug("PluggableErrorHandlerTests.Setup() //");
+            _logger.Trace("PluggableErrorHandlerTests.Setup() //");
             FilesProvider.EmptyAllFoldersCreateIfNotExist();
              _testData = new TestData(FilesProvider);
             _errorHandler1 = new MockErrorHandler();
             _errorHandler2 = new MockErrorHandler();
-            Logger.Debug("// PluggableErrorHandlerTests.Setup()");
+            _logger.Trace("// PluggableErrorHandlerTests.Setup()");
         }
 
         [TearDown]
         public void TearDown()
         {
+            _logger.Trace("PluggableErrorHandlerTests.TearDown() //");
             FilesProvider.EmptyAllFolders();
+            _logger.Trace("// PluggableErrorHandlerTests.TearDown()");
         }
 
         [Test]
