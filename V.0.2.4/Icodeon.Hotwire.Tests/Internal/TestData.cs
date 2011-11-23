@@ -42,7 +42,7 @@ namespace Icodeon.Hotwire.Tests.Internal
         }
 
 
-        public void CreateTestEnqueueRequestImportFile(Guid transactionId, string fileName)
+        public void CreateTestEnqueueRequestImportFile(Guid transactionId, string fileName, int? pause)
         {
             string externalResourceLinkContent = string.Format("http://localhost:{0}/TestCDN/{1}", TestAspNetPort, fileName);
             string templateFile = Path.Combine(_filesProvider.TestDataFolderPath, "template.import");
@@ -55,6 +55,8 @@ namespace Icodeon.Hotwire.Tests.Internal
             template.ResourceId = "97DB4DF1-F7AB-4913-A811-DD60F3FE2F1C";
             template.ResourceTitle = "Import test file";
             dal.Save(template,QueueStatus.QueuedForDownloading);
+            // brief pause to give any filesystem watcher script chance to detect change. 
+            if (pause.HasValue) Thread.Sleep(pause.Value);
         }
 
         public void CreateTestProcessImportFileAndMockTestFile(Guid transactionId, string fileName)

@@ -19,6 +19,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [SetUp]
         public void Setup()
         {
+            FilesProvider.EmptyAllFolders();
         }
 
 
@@ -42,10 +43,10 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 
             Action createImportWaitForItToBeProcessed = () =>
             {
-                for (int i = 0; i < 25; i++)
+                for (int i = 1; i < 26; i++)
                 {
-                    testData.CreateTestProcessImportFileAndMockTestFile(Guid.NewGuid(), "Testfile.txt");
-                    testData.CreateTestProcessImportFileAndMockTestFile(Guid.NewGuid(), "hello.txt");
+                    testData.CreateTestProcessImportFileAndMockTestFile(Guid.NewGuid(), "Testfile" + i + ".txt");
+                    testData.CreateTestProcessImportFileAndMockTestFile(Guid.NewGuid(), "hello" + i + ".txt");
                 }
                 int cnt = 0;
                 while (FilesProvider.ProcessedFilePaths.Count() != 50)
@@ -61,9 +62,10 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 new DateTimeWrapper(),
                 true);
 
+            FilesProvider.ProcessedFilePaths.Count().Should().Be(0);
             Trace("");
             Trace("----------------captured console output-----------------------------");
-            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, FilesProvider, mockconsole, new DateTimeWrapper(), new MockProcessFileCaller(), new MockDownloder(null));
+            FolderWatcherCommandProcessor.RunCommandProcessorUntilExit(false, FilesProvider, mockconsole, new DateTimeWrapper(), new MockProcessFileCaller(), new MockDownloader(null));
             Trace("----------------/captured console output----------------------------");
             FilesProvider.RefreshFiles();
 

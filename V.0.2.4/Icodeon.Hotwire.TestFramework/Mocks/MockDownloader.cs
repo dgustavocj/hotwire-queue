@@ -3,11 +3,14 @@ using System.IO;
 using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Providers;
 using Icodeon.Hotwire.Framework.Scripts;
+using NLog;
 
 namespace Icodeon.Hotwire.TestFramework.Mocks
 {
-    public class MockDownloder : IClientDownloader
+    public class MockDownloader : IClientDownloader
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public bool HasThrown { get; set; }
         private int _cntFiles;
         private int? _throwOnFileNo;
@@ -15,6 +18,7 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
 
         private FileDownloadResultDTO createFakeDownload(string path)
         {
+            _logger.Trace("MockDownloder: Creating fake download:'{0}'", path);
             File.WriteAllText(path, "hello world.");
             return new FileDownloadResultDTO
                        {
@@ -25,18 +29,18 @@ namespace Icodeon.Hotwire.TestFramework.Mocks
                        };
         }
 
-        public MockDownloder(int? throwOnFileNo, Exception exceptionToThrow)
+        public MockDownloader(int? throwOnFileNo, Exception exceptionToThrow)
         {
             _throwOnFileNo = throwOnFileNo;
             _exceptionToThrow = exceptionToThrow;
         }
 
-        public MockDownloder() : this(null)
+        public MockDownloader() : this(null)
         {
 
         }
 
-        public MockDownloder(int? throwOnFileNo) : this(throwOnFileNo, new FileNotFoundException("file not found."))
+        public MockDownloader(int? throwOnFileNo) : this(throwOnFileNo, new FileNotFoundException("file not found."))
         {
             _throwOnFileNo = throwOnFileNo;
         }

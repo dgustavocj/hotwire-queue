@@ -161,6 +161,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
             _clientDownloader = clientDownloader;
             _processFileCaller = processFileCaller;
             var processorWatcher = new FileSystemWatcher(filesProvider.ProcessQueueFolderPath);
+
             processorWatcher.Created += ProcessQueueFileCreated;
             processorWatcher.EnableRaisingEvents = false;
             processorWatcher.IncludeSubdirectories = false;
@@ -175,13 +176,33 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
 
             console.WriteLine("Enter 'help' for list of commands.\n");
             var command = new CommandArgument();
+            try
+            {
+                ProcessCommands(autostart, filesProvider, console, processorWatcher, downloadWatcher, command);
+            }
+            finally
+            {
+                // write a test to prove that the thread dies when scope exits!
+                processorWatcher.EnableRaisingEvents = false;
+                processorWatcher.Created -= ProcessQueueFileCreated;
+                downloadWatcher.EnableRaisingEvents = false;
+                downloadWatcher.Created -= DownloadQueueFileCreated;
+            }
+            
+        }
+
+
+        private static void ProcessCommands(bool autostart, HotwireFilesProvider filesProvider, IConsoleWriter console,
+                                            FileSystemWatcher processorWatcher, FileSystemWatcher downloadWatcher,
+                                            CommandArgument command)
+        {
             while (!(command.Cmd.Equals("exit", StringComparison.OrdinalIgnoreCase)))
             {
                 console.Write(">");
                 if (autostart)
                 {
                     console.WriteBold("autostarting...\n");
-                    command = new CommandArgument { Cmd = "start", Argument = null };
+                    command = new CommandArgument {Cmd = "start", Argument = null};
                     autostart = false;
                 }
                 else
@@ -199,7 +220,8 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             filesProvider.RefreshFiles();
                             var files = filesProvider.TestDataFilePaths.Where(f => f.Contains(command.Argument)).ToList();
                             if (files.Count() == 0)
-                                console.Log("No *.import files found in " + filesProvider.TestDataFolderPath + "\n matching your filter.");
+                                console.Log("No *.import files found in " + filesProvider.TestDataFolderPath +
+                                            "\n matching your filter.");
                             else
                                 files.ForEach(f =>
                                                   {
@@ -210,7 +232,8 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             console.WriteLine("...queued for processing.");
                             break;
 
-                        case "test-error": throw new ApplicationException("test-error: test message to confirm logging is working.");
+                        case "test-error":
+                            throw new ApplicationException("test-error: test message to confirm logging is working.");
                             break;
 
                         case download:
@@ -218,9 +241,10 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             DeleteProcessingRunningFile();
                             downloadWatcher.EnableRaisingEvents = true;
                             console.LogBold("Stopping process queue monitoring.");
-                            processorWatcher.EnableRaisingEvents = false;    
+                            processorWatcher.EnableRaisingEvents = false;
                             Thread downloadThread = new Thread(() => RunDownloader(download));
-                            console.Log("Now monitoring download queue '{0}'.", Path.GetFileName(filesProvider.DownloadQueueFolderPath));
+                            console.Log("Now monitoring download queue '{0}'.",
+                                        Path.GetFileName(filesProvider.DownloadQueueFolderPath));
                             downloadThread.Start();
                             break;
 
@@ -228,11 +252,12 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             CreateProcessingRunningFile(filesProvider);
                             DeleteDownloadRunningFile();
                             console.LogBold("Stopping download queue monitoring.");
-                            downloadWatcher.EnableRaisingEvents = false;    
+                            downloadWatcher.EnableRaisingEvents = false;
                             processorWatcher.EnableRaisingEvents = true;
                             Thread processorThread = new Thread(() => RunProcessor(processor));
                             processorThread.Start();
-                            console.Log("Now monitoring process queue '{0}'.",Path.GetFileName(filesProvider.ProcessQueueFolderPath));
+                            console.Log("Now monitoring process queue '{0}'.",
+                                        Path.GetFileName(filesProvider.ProcessQueueFolderPath));
                             break;
 
 
@@ -264,7 +289,8 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             console.WriteLine("exit\t\tStop monitoring folders and exit.");
                             console.WriteLine("help\t\tDisplay list of commands.");
                             console.WriteLine("process\t\tForce processing any files in the process queue.");
-                            console.WriteLine("process [fileFilterString]\n\t\tForce processing a single file containing filterString.");
+                            console.WriteLine(
+                                "process [fileFilterString]\n\t\tForce processing a single file containing filterString.");
                             console.WriteLine("download\tForce a download of any files in the download queue.");
                             console.WriteLine("cls\t\tClear the screen.");
                             console.WriteLine("test-error\tWrite test message to error logfile.");
@@ -284,7 +310,6 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                             console.WriteLine("'{0}' is not a recognised command.", command.Cmd);
                             break;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -293,11 +318,7 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
                     console.WriteLine(ex.Message);
                     _logger.Error(ex.ToString());
                 }
-
             }
         }
-
-
-
     }
 }

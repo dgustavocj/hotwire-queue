@@ -4,11 +4,11 @@ namespace Icodeon.Hotwire.Framework.Diagnostics
 {
     public class LoggingErrorHandler : IExceptionHandler
     {
-        private static Logger _logger;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LoggingErrorHandler()
         {
-            _logger = LogManager.GetCurrentClassLogger();
+
         }
 
         public void HandleException(object sender, ExceptionEventArgs args)

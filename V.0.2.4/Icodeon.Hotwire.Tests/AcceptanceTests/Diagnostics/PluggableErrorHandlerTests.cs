@@ -44,7 +44,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             _testData.CopyFilesToDownloadQueueFolder(TestData.OneTestFile, ConsoleWriter);
 
             Trace("And a file download script that will throw an exception on the first file");
-            var downloader = new MockDownloder(1);
+            var downloader = new MockDownloader(1);
             var script = new FileDownloaderScript(FilesProvider, downloader, new DateTimeWrapper());
             script.DownloadException += _errorHandler1.HandleException;
             script.DownloadException += _errorHandler2.HandleException;
@@ -137,7 +137,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
 
             Trace("And a file download script that will throw an exception on the first file");
             var exceptionToThrow = new ArgumentException("argument message", new FileNotFoundException());
-            var downloader = new MockDownloder(1,exceptionToThrow);
+            var downloader = new MockDownloader(1,exceptionToThrow);
             var script = new FileDownloaderScript(FilesProvider, downloader, new DateTimeWrapper());
             script.DownloadException += _errorHandler1.HandleException;
             script.DownloadException += _errorHandler2.HandleException;

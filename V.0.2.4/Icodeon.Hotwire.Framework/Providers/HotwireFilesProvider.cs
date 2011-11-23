@@ -171,6 +171,7 @@ namespace Icodeon.Hotwire.Framework.Providers
             EmptyProcessQueueFolder();
             EmptyProcessingFolder();
             EmptyProcessErrorFolder();
+            RefreshFiles();
         }
 
 
@@ -178,7 +179,6 @@ namespace Icodeon.Hotwire.Framework.Providers
         {
             CreateFoldersIfNotExist();
             EmptyAllFolders();
-            RefreshFiles();
         }
 
         public void EmptyDownloadErrorFolder()
@@ -462,28 +462,19 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public static HotwireFilesProvider GetFilesProviderInstance(bool refreshFiles)
         {
-            lock(locker)
+            lock (locker)
             {
-                _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
-                _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
-                if (_hotwireFilesProvider != null) return _hotwireFilesProvider;
-                var foldersSection = FoldersSection.ReadConfig();
-                _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
-                return _hotwireFilesProvider;
+                if (_hotwireFilesProvider == null)
+                {
+                    _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
+                    _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
+                    var foldersSection = FoldersSection.ReadConfig();
+                    _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
+                }
             }
+            return _hotwireFilesProvider;
         }
 
-            //        lock(locker)
-            //{
-            //    if (_hotwireFilesProvider==null)
-            //    {
-            //        _logger.Trace("HotwireFilesProvider GetFilesProviderInstance(...)");
-            //        _logger.Trace(_hotwireFilesProvider == null ? "creating new instance of HotwireFilesProvider" : "reading  filesProvider config");
-            //        var foldersSection = FoldersSection.ReadConfig();
-            //        _hotwireFilesProvider = new HotwireFilesProvider(foldersSection, refreshFiles);
-            //    }
-            //}
-            //return _hotwireFilesProvider;
 
 
     }

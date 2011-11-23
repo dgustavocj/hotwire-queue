@@ -24,7 +24,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [SetUp]
         public void Setup()
         {
-
+            FilesProvider.EmptyAllFolders();
         }
 
 
@@ -33,11 +33,6 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         {
             FilesProvider.EmptyAllFolders();
         }
-
-
-        // TODO: this test ... as it stands will run on a local dev machine as long as aspNet is running, and will fail on the build server
-        // TODO: unless I have some means of ensuring that the website is running at the time of the test, i.e. outside of visual studio.
-        // TODO: need to port the test runner... take a look at various open source projects for inspiration! 
 
         [Test]
         public void ShouldBeAbleToHandleAfloodOfImportFilesWithoutMissingAny()
@@ -52,13 +47,19 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
             var testData = new TestData(FilesProvider);
             Action createImportWaitForItToBeProcessed = () => {
                 for (int i = 1; i < 26; i++) {
-                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile" + i + ".txt");
-                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "hello" + i  + ".txt");
+                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile" + i + ".txt",null);
+                    testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "hello" + i  + ".txt",null);
                 }
                 int cnt = 0;
-                while (FilesProvider.ProcessQueueFilePaths.Count() != 50) {
+                int numFiles;
+                while ((numFiles = FilesProvider.ProcessQueueFilePaths.Count()) != 50) {
                     Thread.Sleep(500);
-                    if (cnt++ > 8) throw new Exception("timeout waiting 4 seconds for all the files to be downloaded.");
+                    if (cnt++ > 8)
+                    {
+                        var msg = "timeout waiting 4 seconds for all the files to be downloaded. numFiles=" + numFiles;
+                        _logger.Fatal(msg);
+                        throw new Exception(msg);
+                    }
                     FilesProvider.RefreshFiles(); 
                 }
             };
@@ -70,7 +71,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 
             var mockProcessor = new MockProcessFileCaller(null);
             // NB! we are using fake files that do not exist in the CDN, so a real downloader will not work below, only a mock will work.
-            var mockDownloader = new MockDownloder(null);
+            var mockDownloader = new MockDownloader(null);
 
             Trace("When I create a 'flood' of enqueue requests (50 import files)");
             Trace("And I start download monitoring");
@@ -88,23 +89,19 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
             FilesProvider.ProcessQueueFilePaths.Count().Should().Be(50);
         }
 
-        // ADH: 20.11.2011 was getting a bit confused over unexpected behavior in the unit tests when using mocks,
-        // and am not 100% certain that I'm not perhaps screwing up something to do with the threads, statics, closures
-        // etc, so am converting the method, to a lambda to avoid any doubt that some or other state is being "captured"
-        // by the closure. (by closure I mean the new thread accesses a static method, which references a global, very
-        // nasty to debug. This is an attempt to reduce (or help identify?) any possible errors of that nature.
-        //+ ADH Update (a bit later on 20.11.2011): Seems that this did the trick and the tests are now working "as expected", without side effects.
-
         private static readonly Action<WaitTillComplete> WaitTillFilesAreDownloaded = (wtc) => {
             int cnt = 0;
+            int numFiles;
             int cntMax = (wtc.SecondsToWait*1000) / 500;
-            while (wtc.FilesProvider.ProcessQueueFilePaths.Count() !=  wtc.NumFiles)
+            while ((numFiles = wtc.FilesProvider.ProcessQueueFilePaths.Count()) !=  wtc.NumFiles)
             {
-                _logger.Trace("\tfp.ProcessQueueFilePaths:{0}", wtc.FilesProvider.ProcessQueueFilePaths.Count());
+                _logger.Trace("\tProcessQueueFilePaths:{0}", numFiles);
                 Thread.Sleep(500);
-                if (cnt++ > cntMax) throw new Exception("timeout waiting " + wtc.SecondsToWait +" seconds for all the files to be downloaded.");
+                if (cnt++ > cntMax) throw new Exception("timeout waiting " + wtc.SecondsToWait + " seconds for all the files to be downloaded. Current count is " + numFiles);
                 wtc.FilesProvider.RefreshFiles();
             }
+            _logger.Debug("all good! There are/is now {0} file/s in the ProcessQueue.", numFiles);
+            _logger.Debug("");
         };
 
         private class WaitTillComplete
@@ -123,10 +120,13 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
             Trace("When I create an enqueue requests in the download queue folder");
             Trace("And I start download monitoring");
 
+            _logger.Trace("");
+            _logger.Trace("NewEnqueueRequestInDownloadQueueShouldTriggerFileDownloadScript()");
+
             var testData = new TestData(FilesProvider);
 
             Action createImportWaitForItToBeProcessed = () => {
-                testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile.txt");
+                testData.CreateTestEnqueueRequestImportFile(Guid.NewGuid(), "Testfile.txt",null);
                 WaitTillFilesAreDownloaded(new WaitTillComplete { FilesProvider = FilesProvider, NumFiles = 1,SecondsToWait = 4 });
             };
 
@@ -137,7 +137,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
 
             var mockProcessor = new MockProcessFileCaller(null);
 
-            var mockDownloader = new MockDownloder(null);
+            var mockDownloader = new MockDownloader(null);
             
             // don't enable a real downloader (below) if you don't have Icodeon.Hotwire.TestAspNet running
             //x var mockDownloader = new HotClient();
@@ -151,10 +151,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
             FilesProvider.RefreshFiles();
 
             Trace("Then the Download script should be started");
-            Trace("And the file should be downloaded");
-            Trace("Then there should be 0 files in the download queue");
+            Trace("And the file should be downloaded and saved in the process queue folder");
             FilesProvider.DownloadQueueFilePaths.Count().Should().Be(0);
-            Trace("and there should be 1 files in the process queue");
             FilesProvider.ProcessQueueFilePaths.Count().Should().Be(1);
         }
 
