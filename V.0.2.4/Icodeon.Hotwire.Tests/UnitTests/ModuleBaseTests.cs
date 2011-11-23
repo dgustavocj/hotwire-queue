@@ -19,7 +19,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldBeTestableWithoutRequiringExternalDependancies()
         {
-            TraceTitle("Should be testable without requiring external website or other dependancies");
+            TraceTitle("ShouldBeTestableWithoutRequiringExternalDependancies() - Should be testable without requiring external website or other dependancies");
 
             Trace("Given a module that will respond with a quote of the day");
             var module = new MockModule();

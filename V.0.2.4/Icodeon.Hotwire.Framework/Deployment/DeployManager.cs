@@ -14,37 +14,39 @@ namespace Icodeon.Hotwire.Framework.Deployment
         
         public void CreateApplicationPoolIfNotExist(string poolName)
         {
-            _logger.Debug("CreateApplicationPoolIfNotExist('{0}')",poolName);
-            using (ServerManager manager = new ServerManager())
-            {
-                var pool = manager.ApplicationPools[poolName];
-                if (pool == null)
+            _logger.LoggedExecution("CreateApplicationPoolIfNotExist",()=> {
+                _logger.Trace("poolName:{0}",poolName);
+                using (ServerManager manager = new ServerManager())
                 {
-                    pool = manager.ApplicationPools.Add(poolName);
-                    pool.AutoStart = true;
+                    var pool = manager.ApplicationPools[poolName];
+                    if (pool == null)
+                    {
+                        pool = manager.ApplicationPools.Add(poolName);
+                        pool.AutoStart = true;
+                    }
+                    manager.CommitChanges();
                 }
-                manager.CommitChanges();
-            }
+            });
         }
 
 
         public void DeleteApplicationPoolIfExists(string poolName)
         {
-            _logger.Debug("DeleteApplicationPoolIfExists('{0}')",poolName);
-            _logger.LoggedExecution(()=> {
-                                            using (ServerManager manager = new ServerManager())
-                                            {
-                                                var pool = manager.ApplicationPools[poolName];
-                                                if (pool != null)
-                                                {
-                                                    _logger.Trace("removing pool:{0}",poolName);
-                                                    manager.ApplicationPools.Remove(pool);
-                                                    // have to call commitchanges otherwise it's not deleted.
-                                                    manager.CommitChanges();
-                                                    // apparently we don't have to wait until removed
-                                                }
-                                            }
-                                        });
+            _logger.LoggedExecution("DeleteApplicationPoolIfExists",()=> {
+                _logger.Trace("poolname:{0}",poolName);
+                using (ServerManager manager = new ServerManager())
+                {
+                    var pool = manager.ApplicationPools[poolName];
+                    if (pool != null)
+                    {
+                        _logger.Trace("removing pool:{0}",poolName);
+                        manager.ApplicationPools.Remove(pool);
+                        // have to call commitchanges otherwise it's not deleted.
+                        manager.CommitChanges();
+                        // apparently we don't have to wait until removed
+                    }
+                }
+            });
         }
 
 
@@ -81,22 +83,21 @@ namespace Icodeon.Hotwire.Framework.Deployment
 
         public void DeleteAllSitesStartingWith(string testDomainName)
         {
-            _logger.Debug("DeleteAllSitesStartingWith('{0}')",testDomainName);
-            _logger.LoggedExecution(() =>
-                                        {
-                                            using (ServerManager manager = new ServerManager())
-                                            {
-                                                _logger.Trace("current domain name list:{0}", manager.DomainNameList());
-                                                var sitesToDelete = manager.Sites.Where(s => s.Name.StartsWith(testDomainName)).Select( s => s.Name).ToArray();
-                                                _logger.Trace("deleting sites:({0})",string.Join(",",sitesToDelete));
-                                                foreach (string siteName in sitesToDelete)
-                                                {
-                                                    _logger.Trace("deleting '{0}'", manager.DomainNameList());
-                                                    manager.Sites[siteName].Delete();
-                                                }
-                                                manager.CommitChanges();
-                                            }
-                                        });
+            _logger.LoggedExecution("DeleteAllSitesStartingWith",() => {
+                _logger.Trace("testDomainName:{0}",testDomainName);
+                using (ServerManager manager = new ServerManager())
+                {
+                    _logger.Trace("current domain name list:{0}", manager.DomainNameList());
+                    var sitesToDelete = manager.Sites.Where(s => s.Name.StartsWith(testDomainName)).Select( s => s.Name).ToArray();
+                    _logger.Trace("deleting sites:({0})",string.Join(",",sitesToDelete));
+                    foreach (string siteName in sitesToDelete)
+                    {
+                        _logger.Trace("deleting '{0}'", manager.DomainNameList());
+                        manager.Sites[siteName].Delete();
+                    }
+                    manager.CommitChanges();
+                }
+            });
         }
 
     }

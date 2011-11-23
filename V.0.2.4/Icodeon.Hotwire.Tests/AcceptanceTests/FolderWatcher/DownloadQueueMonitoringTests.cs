@@ -37,7 +37,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [Test]
         public void ShouldBeAbleToHandleAfloodOfImportFilesWithoutMissingAny()
         {
-            TraceTitle("Should be able to handle a flood of import files (50) without missing any");
+            TraceTitle("ShouldBeAbleToHandleAfloodOfImportFilesWithoutMissingAny() - Should be able to handle a flood of import files (50) without missing any");
             Trace("Given a folderwatcher program");
             Trace("And an empty process queue");
             FilesProvider.ProcessQueueFilePaths.Count().Should().Be(0);
@@ -114,7 +114,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [Test]
         public void NewEnqueueRequestInDownloadQueueShouldTriggerFileDownloadScript()
         {
-            TraceTitle("New enqueue request in download queue should trigger file download script");
+            TraceTitle("NewEnqueueRequestInDownloadQueueShouldTriggerFileDownloadScript() - New enqueue request in download queue should trigger file download script");
             Trace("Given a folderwatcher program");
             Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console");
             Trace("When I create an enqueue requests in the download queue folder");

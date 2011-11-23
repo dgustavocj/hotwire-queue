@@ -7,6 +7,7 @@ using Icodeon.Hotwire.Framework.Diagnostics;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
 using Icodeon.Hotwire.TestFramework.Mocks;
+using NLog;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
@@ -14,25 +15,39 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
     [TestFixture(Category = "acceptanceTest")]
     public class LoggingErrorHandlerTests : UnitTest
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private FileInfo _logfile;
 
         [SetUp]
         public void Setup()
         {
-            _logfile = DirectoryHelper.GetCurrentDirectoryLogfile(NLogConfigConstants.ErrorHandler);
-            if (_logfile.Exists) _logfile.Delete();
+            _logger.LoggedExecution("LoggingErrorHandlerTests.Setup()" , ()=>{
+                _logfile = DirectoryHelper.GetCurrentDirectoryLogfile(NLogConfigConstants.ErrorHandler);
+                _logger.Trace("_logfile:{0}", _logfile);
+                if (_logfile.Exists) _logfile.Delete();
+            });
         }
 
         [TearDown]
         public void Teardown()
         {
-            _logfile.Delete();
+            _logger.Trace("LoggingErrorHandlerTests.Teardow()");
+            try
+            {
+                _logfile.Delete();
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal(ex);
+                throw;
+            }
+
         }
 
         [Test]
         public void ShouldCreateLogEntryWhenAnExceptionOccurs()
         {
-            TraceTitle("should create a log entry when an exception occurs");
+            TraceTitle("ShouldCreateLogEntryWhenAnExceptionOccurs() - should create a log entry when an exception occurs");
 
             Trace("Given a module that will respond with an httpException");
             var module = new MockModule();
@@ -46,7 +61,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             Trace("When I call BeginRequest");
             module.BeginRequest(streamingContext);
 
-            Trace("then an entry should be created in the log file.");
+            TraceFooter("then an entry should be created in the log file.");
             ThenAnEntryShouldBeCreatedInTheLog("HttpModuleException");
         }
 

@@ -20,6 +20,7 @@ namespace Icodeon.Hotwire.Framework
             }
         }
 
+
         public static void LogTraceNewLinePerItem(this NLog.Logger logger, NameValueCollection nv)
         {
             int width = nv.AllKeys.Max(k => k.Length) + 1;

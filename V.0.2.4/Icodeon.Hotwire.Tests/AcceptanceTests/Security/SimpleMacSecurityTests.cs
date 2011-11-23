@@ -41,6 +41,7 @@ namespace Icodeon.OUIntegration.Tests.AcceptanceTests.End2EndDeploys
         [Test]
         public void ValidMacRequiredIfEndpointIsSecured()
         {
+            TraceTitle("ValidMacRequiredIfEndpointIsSecured()");
             string story = @"
 
             |Title                                              |MacHeaderProvided |EndpointSecuredWithSimpleMac |Signed | CorrectKeyUsedToSign | Response    | ResponseTextToContain               |#

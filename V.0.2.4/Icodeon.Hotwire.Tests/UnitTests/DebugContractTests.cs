@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.TestFramework;
 using NUnit.Framework;
 
 // these tests should only run for debug configuration.
@@ -9,7 +10,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
 {
 
     [TestFixture]
-    public class DebugContractTests
+    public class DebugContractTests : UnitTest
     {
         internal class Person
         {
@@ -22,6 +23,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void NotNullableThrowsExceptionIfNullablePropertyIsNull()
         {
+            TraceTitle("NotNullableThrowsExceptionIfNullablePropertyIsNull()");
             Action action = () => {
                                     var Fred = new Person {Name = "Fred", Age = null};
                                     DebugContract.NotNullable(() => Fred.Age);
@@ -32,6 +34,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void NotNullableDoesNotThrowsExceptionIfNullablePropertyIsNotNull()
         {
+            TraceTitle("NotNullableDoesNotThrowsExceptionIfNullablePropertyIsNotNull()");
             var Fred = new Person { Name = "Fred", Age = 10 };
             DebugContract.NotNullable(()=> Fred.Age);
         }
@@ -39,6 +42,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void ExceptionContainsVariableName()
         {
+            TraceTitle("ExceptionContainsVariableName()");
             var Fred = new Person { Name = "Fred", Age = null };
             try
             {
@@ -54,6 +58,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void ThrowsExceptionIfScalarTypeIsNull()
         {
+            TraceTitle("ThrowsExceptionIfScalarTypeIsNull()");
             Action action = () =>
                                 {
                                     int? age = null;
@@ -65,6 +70,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void DoesNotThrowExceptionIfScalarTypeIsNotNull()
         {
+            TraceTitle("DoesNotThrowExceptionIfScalarTypeIsNotNull()");
             int? age = 5;
             DebugContract.NotNullable(() => age);
         }
@@ -73,6 +79,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests.DebugOnly
         [Test]
         public void CanValidateNonNullableScalarTypesWithoutException()
         {
+            TraceTitle("CanValidateNonNullableScalarTypesWithoutException()");
             int age = 5;
             DebugContract.NotNullable(() => age);
         }

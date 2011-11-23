@@ -5,16 +5,18 @@ using System.Text;
 using FluentAssertions;
 using Icodeon.Hotwire.Framework.Configuration;
 using Icodeon.Hotwire.Framework.Diagnostics;
+using Icodeon.Hotwire.TestFramework;
 using NUnit.Framework;
 
 namespace Icodeon.Hotwire.Tests.UnitTests
 {
     [TestFixture]
-    public class SSLEmailErrorHandlerConfigurationTests
+    public class SSLEmailErrorHandlerConfigurationTests : UnitTest
     {
         [Test]
         public void CanReadAllValues()
         {
+            TraceTitle("CanReadAllValues()");
             var configuration = new SSLEmailErrorHandlerConfiguration().ReadConfig();
             
             // can't mix and match simple Ensure's together with fluent's Should.Equal's Constraint return type
@@ -22,7 +24,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
 
             configuration.ToAddresses.Should().Equal(new[] {"toTest1@test.com", "toTest2@test.com"});
 
-            configuration.Ensure(c => c != null,
+            DebugContract.Ensure(configuration, c => c != null,
                                  c => c.ConfigurationSectionName == "sslEmailErrorHandler",
                                  c => c.FromAddress == "test@test.com",
                                  c => c.TimeoutSeconds == 5,

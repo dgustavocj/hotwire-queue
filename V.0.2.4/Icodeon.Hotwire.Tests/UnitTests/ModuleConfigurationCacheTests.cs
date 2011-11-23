@@ -12,7 +12,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void CanReadConfiguration()
         {
-            TraceTitle("Can read configuration:");
+            TraceTitle("CanReadConfiguration() - Can read configuration:");
 
             Trace("given test-module-config is loaded in unit test app.config");
             Trace("When the configuration is read");
@@ -26,7 +26,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void MustCacheTheConfigurationBetweenReads()
         {
-            TraceTitle("Must cache the configuration between reads");
+            TraceTitle("MustCacheTheConfigurationBetweenReads() - Must cache the configuration between reads");
 
             Trace("Given the item is not in the cache");
             var testCache = new MockAppCache();

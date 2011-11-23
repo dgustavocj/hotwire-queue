@@ -14,7 +14,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldReturnExceptionThrownInThread()
         {
-            TraceTitle("Should return exeption thrown in thread.");
+            TraceTitle("ShouldReturnExceptionThrownInThread() - Should return exeption thrown in thread.");
 
             Trace("given a thread test runner and an action that will throw an exception");
             int i = 5;
@@ -43,7 +43,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldRunActionsInParallel()
         {
-            TraceTitle("Should run actions in parallel.");
+            TraceTitle("ShouldRunActionsInParallel() - Should run actions in parallel.");
 
             Trace("given a thread test runner and an action that will throw an exception");
             int i = 5;

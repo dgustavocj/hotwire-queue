@@ -33,9 +33,9 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldReturn404IfExclusiveAndNoMatchingEndpointFound()
         {
-            
 
-            TraceTitle("Should return 404 if exclusive is true and no valid match [endpoint] found.");
+
+            TraceTitle("ShouldReturn404IfExclusiveAndNoMatchingEndpointFound() - Should return 404 if exclusive is true and no valid match [endpoint] found.");
 
 
             Logger.Trace("Given an active configuration with one '/animals/cat.xml' endpoint");
@@ -76,7 +76,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldThrowHttpModuleExceptionIfRequestUrlMatchesButHttpMethodNotSupported()
         {
-            TraceTitle("Should throw httpModule exception if request url matches but httpMethod not supported");
+            TraceTitle("ShouldThrowHttpModuleExceptionIfRequestUrlMatchesButHttpMethodNotSupported() - Should throw httpModule exception if request url matches but httpMethod not supported");
 
             // validating the httpMethod "before" other checks is the more performant mechanism, but will return null, instead of throwing an exception.
             // set to validate "after validating the uriTemplate" is the only way for us to accurately tell it was a template match, without a matching httpMethod.
@@ -110,7 +110,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void LeadingSlashInEndpointConfigurationIsOptional()
         {
-            TraceTitle("Leading slash in endpoint configuration is optional.");
+            TraceTitle("LeadingSlashInEndpointConfigurationIsOptional() - Leading slash in endpoint configuration is optional.");
 
             Logger.Trace("Given cat endpoint of '/animals/cat.xml' and dog endpoint of 'animals/dog.xml'");
             //---------------------------------------------------------------------------------------------
@@ -148,6 +148,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void MustNotBePossibleToCreateMatcherWithANullConfiguration()
         {
+            TraceTitle("MustNotBePossibleToCreateMatcherWithANullConfiguration()");
             EndpointRequestMatcher matcher;
             Action action = ()=> matcher = new EndpointRequestMatcher(null);
             action.ShouldThrow<ArgumentNullException>();
@@ -157,7 +158,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void InactiveConfigurationsAreIgnored()
         {
-            TraceTitle("Inactive configurations are ignored");
+            TraceTitle("InactiveConfigurationsAreIgnored() - Inactive configurations are ignored");
 
             Logger.Trace("Given an active module configuration with a single endpoint");
             var endpoint = new EndpointConfiguration
@@ -192,7 +193,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void EndpointsCanBeMarkedActiveOrInactive()
         {
-            TraceTitle("Endpoints can be marked Active or Inactive");
+            TraceTitle("EndpointsCanBeMarkedActiveOrInactive() - Endpoints can be marked Active or Inactive");
 
             Logger.Trace("Given two endpoint configurations, /animals/cat.xml (active) and /animals/dog.xml (inactive)");
             var catEndpoint = new EndpointConfiguration

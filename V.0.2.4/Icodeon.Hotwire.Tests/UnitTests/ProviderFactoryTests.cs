@@ -37,7 +37,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         {
             // there was a problem with state remaining between tests, this is a test to PROVE that we DO
             // NEED a clearConfiguration method that test setups can call!
-            TraceTitle("Attempting to request instance from factory without first wiring up should throw exception even with new factory instances.");
+            TraceTitle("AttemptingToRequestInstanceFromFactoryWithoutFirstWiringUpShouldThrowExceptionEvenWithNewFactoryInstances() Attempting to request instance from factory without first wiring up should throw exception even with new factory instances.");
 
             Trace("given provider factory A");
             var providerFactoryA = new ProviderFactory();
@@ -78,7 +78,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldThrowExceptionIfNotAutomaticallyOrFluentlyWiredUpBeforeUse()
         {
-            TraceTitle("Should throw exception if not automatically or fluently wired up before use");
+            TraceTitle("ShouldThrowExceptionIfNotAutomaticallyOrFluentlyWiredUpBeforeUse() - Should throw exception if not automatically or fluently wired up before use");
 
             Trace("given a provider factory");
             var providerFactory = new ProviderFactory();
@@ -100,6 +100,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ClearConfigurationShouldRemoveAnyPreviousWirings()
         {
+            TraceTitle("ClearConfigurationShouldRemoveAnyPreviousWirings()");
             Trace("Given a provider factory");
             var providerFactory = new ProviderFactory();
 
@@ -131,6 +132,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldNotThrowExceptionIfFluentlyWiredUpBeforeUse()
         {
+            TraceTitle("ShouldNotThrowExceptionIfFluentlyWiredUpBeforeUse()");
             Trace("Given a provider factory");
             var providerFactory = new ProviderFactory();
             
@@ -179,6 +181,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldBeAbleOverrideAutomaticWiringUpDefaultsWithFluentWirings()
         {
+            TraceTitle("ShouldBeAbleOverrideAutomaticWiringUpDefaultsWithFluentWirings()");
             // before overriding I should get the default implementation (loggingFileProcessor)
             // ********************************************************************************
             Trace("Given an automatically wired up provider");
@@ -217,6 +220,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ShouldBeAbleToFluentlyWireUpMultipleProviders()
         {
+            TraceTitle("ShouldBeAbleToFluentlyWireUpMultipleProviders()");
             Trace("Given two dummy classes that implement two dummy interfaces");
 
             Trace("and I fluently wire up a provider");

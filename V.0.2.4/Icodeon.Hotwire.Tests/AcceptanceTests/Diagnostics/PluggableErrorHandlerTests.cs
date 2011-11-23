@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using FluentAssertions;
+using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Scripts;
 using Icodeon.Hotwire.Framework.Utils;
 using Icodeon.Hotwire.TestFramework;
@@ -43,8 +44,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [Test]
         public void ShouldHandleFileDownLoadScriptErrors()
         {
-            TraceTitle("pluggable error handler should handle File download script errors");
-
+            TraceTitle("ShouldHandleFileDownLoadScriptErrors() - Pluggable error handler should handle File download script errors");
             Trace("given one file in download queue");
             _testData.CopyFilesToDownloadQueueFolder(TestData.OneTestFile, ConsoleWriter);
 
@@ -71,7 +71,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [Test]
         public void ShouldHandleFileProcessScriptErrors()
         {
-            TraceTitle("Should handle file process script errors.");
+            TraceTitle("ShouldHandleFileProcessScriptErrors() - Should handle file process script errors.");
 
             Trace("Given a file proccessor script that will encounter a file process exception");
             var mockFileProcessCaller = new ThrowExceptionIfFileContainsXMockProcessFileCaller("numbers", "Whoops!");
@@ -104,7 +104,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [Test]
         public void ShouldHandleModuleErrors()
         {
-            TraceTitle("Ensure modules report (to any registered handlers) any unhandled exceptions");
+            TraceTitle("ShouldHandleModuleErrors() - Ensure modules report (to any registered handlers) any unhandled exceptions");
             TraceTitle("Should be testable without requiring external website or other dependancies");
 
             Trace("Given a module that will respond with an IOException");
@@ -135,7 +135,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         public void HandlerShouldReceiveFullDetailsOfTheException()
         {
             // this is not a full coverage test, as this test should be applied for any object that exposes "on(X)exceptions", e.g. ModuleBase etc.
-            TraceTitle("Handler should recieve full details of the exception");
+            TraceTitle("HandlerShouldReceiveFullDetailsOfTheException() - Handler should recieve full details of the exception");
 
             Trace("given one file in download queue");
             _testData.CopyFilesToDownloadQueueFolder(TestData.OneTestFile, ConsoleWriter);

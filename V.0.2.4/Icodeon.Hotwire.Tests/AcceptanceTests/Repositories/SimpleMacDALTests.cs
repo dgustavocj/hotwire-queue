@@ -21,7 +21,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         [Test]
         public void ShouldBeAbleToRecordRequest()
         {
-            TraceTitle("Should be able to record requests");
+            TraceTitle("ShouldBeAbleToRecordRequest() - Should be able to record requests");
 
             using (var context = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
             {
@@ -55,7 +55,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Repositories
         [Test]
         public void ShouldDetermineIfRequestAlreadyExists()
         {
-            TraceTitle("Should determine if request already exists");
+            TraceTitle("ShouldDetermineIfRequestAlreadyExists() - Should determine if request already exists");
 
             using (var context = new HotwireContext(ConnectionStringManager.HotwireConnectionString))
             {

@@ -10,18 +10,19 @@ namespace Icodeon.Hotwire.Framework.Diagnostics
     public static class LoggerExtensions
     {
 
-        public static void LoggedExecution(this Logger logger, Action code)
+        public static void LoggedExecution(this Logger logger,string title, Action code)
         {
             try
             {
+                logger.Debug("{0} //", title);
                 code();
+                logger.Debug("// {0}", title);
             }
             catch (Exception ex)
             {
-                // don't need to re-log Logged exception, as it's already been logged!
+                // don't need to re-log Logged exception, as it's already been logged.
                 if (ex is LoggedException) throw;
-                logger.LogException(LogLevel.Error,ex.ToString(), ex);
-                throw;
+                throw new LoggedException(logger, ex);
             }
         }
 

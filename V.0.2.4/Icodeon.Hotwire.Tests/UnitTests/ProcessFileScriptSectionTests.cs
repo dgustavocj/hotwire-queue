@@ -10,11 +10,12 @@ using NUnit.Framework;
 namespace Icodeon.Hotwire.Tests.UnitTests
 {
     [TestFixture]
-    public class ProcessFileScriptSectionTests
+    public class ProcessFileScriptSectionTests : UnitTest
     {
         [Test]
         public void CanReadAllValues()
         {
+            TraceTitle("CanReadAllValues()");
             var section = ProcessFileScriptSection.ReadConfig();
             section.Endpoint.Should().Be(@"http://localhost:54144/process-file/{TRACKING-NUMBER}.import");
         }

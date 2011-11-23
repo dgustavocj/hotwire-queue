@@ -33,7 +33,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [Test]
         public void ShouldBeAbleToHandleAfloodOfProcessFilesWithoutMissingAny()
         {
-            TraceTitle("Should be able to handle a flood of import files (50) without missing any");
+            TraceTitle("ShouldBeAbleToHandleAfloodOfProcessFilesWithoutMissingAny() - Should be able to handle a flood of import files (50) without missing any");
             Trace("Given a folderwatcher program");
             Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console");
             Trace("When I create a 'flood' of enqueue requests (50 import files)");
@@ -52,7 +52,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
                 while (FilesProvider.ProcessedFilePaths.Count() != 50)
                 {
                     Thread.Sleep(500);
-                    if (cnt++ > 8) throw new Exception("timeout waiting 4 seconds for all the files to be downloaded.");
+                    if (cnt++ > 20) throw new Exception("timeout waiting 10 seconds for all the files to be downloaded.");
                     FilesProvider.RefreshFiles();
                 }
             };

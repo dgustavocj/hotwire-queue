@@ -40,7 +40,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [Test]
         public void ShouldDownloadAndThenProcessEnqueuedRequests()
         {
-            TraceTitle("Should download and then process an enqueued request");
+            TraceTitle("ShouldDownloadAndThenProcessEnqueuedRequests() - Should download and then process an enqueued request");
             Trace("Given a folderwatcher program");
             Trace("And a mock console that simulates a user who types 'download' then 'exit' at the console after the files have been processed");
             Trace("And I start both download and process monitoring");

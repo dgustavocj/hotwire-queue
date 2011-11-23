@@ -1,5 +1,6 @@
 ﻿using System;
 using Icodeon.Hotwire.Framework;
+using Icodeon.Hotwire.Framework.Diagnostics;
 using NLog;
 
 namespace Icodeon.Hotwire.TestFramework
@@ -11,17 +12,10 @@ namespace Icodeon.Hotwire.TestFramework
 
         public UnitTest()
         {
-            _logger.Trace("cxtor UnitTest()");
-            try
-            {
+            _logger.LoggedExecution("cxtor UnitTest()",() =>{
                 Logger = HotLogger.GetCurrentClassLogger();
                 Logger.EchoToConsole = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Fatal(ex);
-                throw;
-            }
+            });
         }
 
         public void Trace(string message, params object[] parameters)
@@ -32,6 +26,13 @@ namespace Icodeon.Hotwire.TestFramework
         public void TraceTitle(string testTitle, params object[] parameters)
         {
             Logger.TraceTitle(testTitle, parameters);
+        }
+
+        public void TraceFooter(string lastline,params object[] parameters)
+        {
+            Logger.Trace(lastline, parameters);
+            Logger.Trace("----------------------------------------------");
+            Logger.Trace("");
         }
 
     }

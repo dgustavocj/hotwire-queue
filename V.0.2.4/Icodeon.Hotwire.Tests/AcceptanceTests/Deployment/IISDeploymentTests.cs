@@ -28,8 +28,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            _logger.LoggedExecution(() =>{
-                _logger.Debug("IISDeploymentTests.FixtureSetup()");
+            _logger.LoggedExecution("IISDeploymentTests.FixtureSetup()",() =>{
                 _rootFolder = Path.Combine(Environment.CurrentDirectory, @"App_Data\golive");
                 var dm = new DeployManager();
                 dm.DeleteAllSitesStartingWith(_testDomainName);
@@ -42,8 +41,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         [TestFixtureTearDown]
         public void FixtureTearDown()
         {
-            _logger.LoggedExecution(() =>{
-                _logger.Debug("IISDeploymentTests.FixtureTearDown()");
+            _logger.LoggedExecution("IISDeploymentTests.FixtureTearDown()", () =>
+            {
                 var dm = new DeployManager();
                 dm.DeleteAllSitesStartingWith(_testDomainName);
                 dm.DeleteApplicationPoolIfExists(_testDomainName);
@@ -56,8 +55,8 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Deployment
         [Ignore("not needed yet. Will fix later")]
         public void ShouldCreateAndTakeDownIISWebsites()
         {
-            
-            TraceTitle("end to  end happy case");
+
+            TraceTitle("ShouldCreateAndTakeDownIISWebsites() - End to  end happy case");
 
             using (var hosts = new LMHosts(createBackup:true))
             {

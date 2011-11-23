@@ -17,7 +17,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void CanReadModuleAndEndpointConfiguration()
         {
-            TraceTitle("Can read Module and Endpoint configuration:");
+            TraceTitle("CanReadModuleAndEndpointConfiguration() - Can read Module and Endpoint configuration:");
             Trace("Given appropriate custom config section and custom config entry has been added to test projects's App.Config");
 
             Trace("When the test configuration is read");

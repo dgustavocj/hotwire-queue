@@ -18,6 +18,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ProveThatRequestingWiredUpObjectForInterfaceThatIsNotYetImplementedShouldThrowException()
         {
+            TraceTitle("ProveThatRequestingWiredUpObjectForInterfaceThatIsNotYetImplementedShouldThrowException()");
             INoOneHasImplementedThisUnlessTheyAreAnIdiotAndWantOurTestToFail expectedObject = null;
             Action action = ()=> expectedObject = ObjectFactory.GetInstance<INoOneHasImplementedThisUnlessTheyAreAnIdiotAndWantOurTestToFail>();
             action.ShouldThrow<StructureMapException>();
@@ -26,7 +27,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ProveWeCANNOTInitializeObjectfactoryMoreThanOnceWithoutWipingOutPreviousConfiguration()
         {
-            TraceTitle("Prove we CANNOT initialize objectfactory more than once without wiping out previous configurations!");
+            TraceTitle("ProveWeCANNOTInitializeObjectfactoryMoreThanOnceWithoutWipingOutPreviousConfiguration() - Prove we CANNOT initialize objectfactory more than once without wiping out previous configurations!");
             
             Trace("Wire up a talker");
             ObjectFactory.Initialize(x => x.For<ITalk>().Use<Talker>());
@@ -51,7 +52,7 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         [Test]
         public void ProveWeCanAddTotheConfigurationMoreThanOnceWithoutWipingOutPreviousConfiguration()
         {
-            TraceTitle("Prove we can add to the configuration more than once without wiping out previous configuration provided we use configure, not initialize.");
+            TraceTitle("ProveWeCanAddTotheConfigurationMoreThanOnceWithoutWipingOutPreviousConfiguration() - Prove we can add to the configuration more than once without wiping out previous configuration provided we use configure, not initialize.");
 
             Trace("Wire up a talker");
             ObjectFactory.Initialize(x => x.For<ITalk>().Use<Talker>());

@@ -31,7 +31,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         //[Test]
         public void ShouldSendAnEmailWhenAnExceptionOccurs()
         {
-            TraceTitle("should send an email when an exception occurs");
+            TraceTitle("ShouldSendAnEmailWhenAnExceptionOccurs() - should send an email when an exception occurs");
 
             Trace("Given a module that will respond with an httpException");
             var module = new MockModule();
