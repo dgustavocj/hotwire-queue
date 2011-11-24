@@ -28,12 +28,5 @@ namespace Icodeon.Hotwire.TestFramework
             Logger.TraceTitle(testTitle, parameters);
         }
 
-        public void TraceFooter(string lastline,params object[] parameters)
-        {
-            Logger.Trace(lastline, parameters);
-            Logger.Trace("----------------------------------------------");
-            Logger.Trace("");
-        }
-
     }
 }

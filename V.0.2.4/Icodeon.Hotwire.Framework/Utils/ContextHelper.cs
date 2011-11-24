@@ -33,21 +33,6 @@ namespace Icodeon.Hotwire.Framework.Utils
             httpWriter.Write(json);
         }
 
-        public static void WriteHtml(IHttpResponsableWriter httpWriter, string src, string title, NLog.Logger logger)
-        {
-            var html = new MediaTypeFactory().Html;
-            httpWriter.StatusCode = (int)HttpStatusCode.Accepted;
-            httpWriter.ContentType = html.ContentType;
-            logger.Trace("Setting response ContentType to {0} and writing response", html.ContentType);
-            httpWriter.Write(string.Format(HtmlTemplateWithTitle, title, src ?? ""));
-        }
-
-        public static void WriteHtml<T>(IHttpResponsableWriter httpWriter, T src, HttpStatusCode code, LoggerBase logger)
-        {
-           // WriteResponseAsSupportedMediaElse415(httpWriter,src,HttpStatusCode.Accepted, ".html",title,logger);
-            WriteMediaResponse(httpWriter, new MediaTypeFactory().Html, src, code);
-        }
-
         private const string HtmlTemplateWithTitle =
 @"<html>
     <title>{0}</title>
@@ -82,53 +67,58 @@ namespace Icodeon.Hotwire.Framework.Utils
 
         public static void WriteMediaResponse<T>(IHttpResponsableWriter httpWriter, string title, IMediaInfo media, T retval, int statusCode)
         {
-            _logger.Trace("WriteMediaResponse<T>(httpWriter,IMediaInfo[{0}],HttpStatusCode[{0}],logger", statusCode);
-            httpWriter.StatusCode = statusCode;
-            httpWriter.ContentType = media.ContentType;
-            _logger.Trace("Setting response ContentType to {0} and writing response", media.ContentType);
-
-            switch (media.Type)
+            _logger.Info("WriteMediaResponse() //");
+            try
             {
-                case (eMediaType.html):
-                    string jsonHtml = JSONHelper.Serialize(retval);
-                    string html;
-                    if (title==null)
-                        html = string.Format(HtmlTemplate, jsonHtml);
-                    else
-                        html = string.Format(HtmlTemplateWithTitle,title, (retval is string) ? retval.ToString() : jsonHtml);
-                    httpWriter.Write(html);
-                    break;
+                httpWriter.StatusCode = statusCode;
+                httpWriter.ContentType = media.ContentType;
+                _logger.Trace("Setting response ContentType to {0} and writing response", media.ContentType);
 
-                case (eMediaType.text):
-                    if (retval is string)
-                    {
-                        // JSON serialiser adds quotes around strings, which we don't want if the 
-                        // type is string which can be assigned to strings. 
-                        // We dont want to have to strip off quotes.
-                        httpWriter.Write(retval.ToString());
+                switch (media.Type)
+                {
+                    case (eMediaType.html):
+                        string jsonHtml = JSONHelper.Serialize(retval);
+                        string html;
+                        if (title == null)
+                            html = string.Format(HtmlTemplate, jsonHtml);
+                        else
+                            html = string.Format(HtmlTemplateWithTitle, title,
+                                                 (retval is string) ? retval.ToString() : jsonHtml);
+                        httpWriter.Write(html);
                         break;
-                    }
-                    string jsonText  = JSONHelper.Serialize(retval);
-                    httpWriter.Write(jsonText);
-                    break;
 
-                case (eMediaType.json):
-                    string json = JSONHelper.Serialize(retval);
-                    httpWriter.Write(json);
-                    break;
+                    case (eMediaType.text):
+                        if (retval is string)
+                        {
+                            // JSON serialiser adds quotes around strings, which we don't want if the 
+                            // type is string which can be assigned to strings. 
+                            // We dont want to have to strip off quotes.
+                            httpWriter.Write(retval.ToString());
+                            break;
+                        }
+                        string jsonText = JSONHelper.Serialize(retval);
+                        httpWriter.Write(jsonText);
+                        break;
 
-                case (eMediaType.xml):
-                    string xml = XmlHelper.Serialize(retval);
-                    httpWriter.Write(xml);
-                    break;
-                
+                    case (eMediaType.json):
+                        string json = JSONHelper.Serialize(retval);
+                        httpWriter.Write(json);
+                        break;
 
+                    case (eMediaType.xml):
+                        string xml = XmlHelper.Serialize(retval);
+                        httpWriter.Write(xml);
+                        break;
 
-                default:
-                    httpWriter.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
-                    break;
+                    default:
+                        httpWriter.StatusCode = (int) HttpStatusCode.UnsupportedMediaType;
+                        break;
+                }
             }
-
+            finally
+            {
+                _logger.Info("// WriteMediaResponse()");
+            }
         }
 
 

@@ -31,7 +31,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         [TearDown]
         public void Teardown()
         {
-            _logger.Trace("LoggingErrorHandlerTests.Teardow()");
+            _logger.Trace("LoggingErrorHandlerTests.Teardown()");
             try
             {
                 _logfile.Delete();
@@ -61,7 +61,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
             Trace("When I call BeginRequest");
             module.BeginRequest(streamingContext);
 
-            TraceFooter("then an entry should be created in the log file.");
+            Trace("then an entry should be created in the log file.");
             ThenAnEntryShouldBeCreatedInTheLog("HttpModuleException");
         }
 

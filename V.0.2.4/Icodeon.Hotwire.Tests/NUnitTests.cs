@@ -1,5 +1,6 @@
 ﻿using NLog;
 using NUnit.Framework;
+using Icodeon.Hotwire.Framework.Diagnostics;
 
 namespace Icodeon.Hotwire.Tests.TestNamespace.SubNamespace
 {
@@ -68,13 +69,13 @@ namespace Icodeon.Hotwire.Tests.TestNamespace
             [SetUp]
             public void Setup()
             {
-                _logger.Trace("Icodeon.Hotwire.Tests.TestNamespace * TestNamespaceSetup.Setup() // this line should appear only once for the namespace");
+                _logger.LoggedExecution("Icodeon.Hotwire.Tests.TestNamespace.SubNamespace * TestNamespaceSetup.Setup()", () => _logger.Trace("this line should appear only once for the namespace"));
             }
 
             [TearDown]
             public void Teardown()
             {
-                _logger.Trace("Icodeon.Hotwire.Tests.TestNamespace * TestNamespaceSetup.TearDown() // should only appear once for the namespace");
+                _logger.LoggedExecution("Icodeon.Hotwire.Tests.TestNamespace.SubNamespace * TestNamespaceSetup.Teardown()", () => _logger.Trace("this line should appear only once for the namespace"));
             }
         }
         

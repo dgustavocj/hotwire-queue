@@ -159,7 +159,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
                     importFile = JSONHelper.Deserialize<EnqueueRequestDTO>(json);
                     return importFile;
                 }
-                catch (FileNotFoundException fnf) { continue; }
+                catch (FileNotFoundException) { continue; }
                 catch (IOException ioex)
                 {
                     if (ioex.FileAlreadyExists())
@@ -199,7 +199,7 @@ namespace Icodeon.Hotwire.Framework.Scripts
             {
                 File.Move(importFileNamePath, destination);
             }
-            catch (IOException ioex) { } // it's possible another thread could have moved this file, which is a valid scenario.
+            catch (IOException) { } // it's possible another thread could have moved this file, which is a valid scenario.
             _downloaderFiles.RefreshFiles();
         }
     }

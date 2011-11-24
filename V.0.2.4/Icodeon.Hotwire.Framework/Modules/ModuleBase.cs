@@ -49,57 +49,54 @@ namespace Icodeon.Hotwire.Framework.Modules
         
         internal void PrepareAndProcessRequest(StreamingContext context, EndpointMatch endpointMatch)
         {
-
-           _logger.Trace("");
-           _logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
-           _logger.Trace("*****************************************************************");
-           _logger.Trace("{0} requested [{1}] -> \"{1}\"", context.UserHostAddress, context.HttpMethod,context.Url);
-
-           _logger.Trace("Reading endpoint configuration.");
-            
-            IModuleEndpoint endpoint = endpointMatch.Endpoint;
-            var mediaInfo = new MediaTypeFactory()[endpoint.MediaType];
-           _logger.Trace("Media type for configured endpoint is '{0}'.", mediaInfo.Type);
-
-           _logger.Trace("ProcessRequest(contextWriter, logger)", context.Url);
-           _logger.Trace("creating HttpApplicationWrapper");
-
-           _logger.Trace("check that the configured service matches the registered service names");
-            var actionNamesIncludingDefaults = GetActionNamesIncludingDefaults();
-            if (!actionNamesIncludingDefaults.Contains(endpoint.Action)) throw new ArgumentException(string.Format("Invalid action name ['{0}'] in the configuration. Must be one of:{1}", endpoint.Action, String.Join(",", GetActionNamesIncludingDefaults())));
-
-            // NB! there is currently no authorisation ('What' permisssions) component, ONLY AUTHENTICATION (who?) as a result it may be tempting to simply write if (endpoint.Security!=none) below
-            // but that assumes that if you do nothing then you have access to everything, which is brittle and not scalable, by default you should have access to nothing
-            // and a seperate step of authorisation provides permission to resources, which is why there is a placeholder NoSecurityRequestAuthenticator being 
-            // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
-            // -------------------------------------------------------------------------------------------------------------------
-            var boundVariables = ExtractBoundVariableParameters(endpointMatch.Match);
-            var parsedBody = context.InputStream.ParseBody();
-            var requestParameters = parsedBody.Parameters;
-
-            ValidateRequiredFieldsIfNeeded(endpointMatch, parsedBody);
-            
-            IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
-            authenticator.AuthenticateRequest(parsedBody, context.Headers, context.HttpMethod, endpointMatch);
-
-            if (ProcessDefaultActions(context, endpointMatch)) return;
-
-            var parsedContext = new ParsedContext
+            _logger.Debug("PrepareAndProcessRequest() //");
+            try
             {
-                EndpointBoundVariables = boundVariables,
-                AppCache = context.ApplicationCache,
-                Match = endpointMatch.Match,
-                MediaInfo = mediaInfo,
-                ModuleConfig = endpoint,
-                PathMapper = context.PathMapper,
-                RequestParameters = requestParameters,
-                Url = context.Url
-            };
-            object result = ProcessRequest(parsedContext);
+                _logger.Trace("Module: {0} v {1}", GetType(), AssemblyHelper.FrameworkVersion);
+                _logger.Debug("{0} requested [{1}] '{2}'", context.UserHostAddress, context.HttpMethod, context.Url);
 
-           _logger.Trace("Writing response.");
-            
-            ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK);
+                IModuleEndpoint endpoint = endpointMatch.Endpoint;
+                var mediaInfo = new MediaTypeFactory()[endpoint.MediaType];
+                var actionNamesIncludingDefaults = GetActionNamesIncludingDefaults();
+                _logger.Trace("endpoint.Action:{0}", endpoint.Action);
+                if (!actionNamesIncludingDefaults.Contains(endpoint.Action)) throw new ArgumentException(string.Format("Invalid action name ['{0}'] in the configuration. Must be one of:{1}", endpoint.Action, String.Join(",", GetActionNamesIncludingDefaults())));
+
+                // NB! there is currently no authorisation ('What' permisssions) component, ONLY AUTHENTICATION (who?) as a result it may be tempting to simply write if (endpoint.Security!=none) below
+                // but that assumes that if you do nothing then you have access to everything, which is brittle and not scalable, by default you should have access to nothing
+                // and a seperate step of authorisation provides permission to resources, which is why there is a placeholder NoSecurityRequestAuthenticator being 
+                // provided. (Worth reviewing and neatening up later, will make more sense if applied to a proper role based example.)
+                // -------------------------------------------------------------------------------------------------------------------
+                var boundVariables = ExtractBoundVariableParameters(endpointMatch.Match);
+                var parsedBody = context.InputStream.ParseBody();
+                var requestParameters = parsedBody.Parameters;
+
+                ValidateRequiredFieldsIfNeeded(endpointMatch, parsedBody);
+
+                IAuthenticateRequest authenticator = new RequestAuthenticatorFactory().GetRequestAuthenticator(endpoint.Security);
+                authenticator.AuthenticateRequest(parsedBody, context.Headers, context.HttpMethod, endpointMatch);
+
+                if (ProcessDefaultActions(context, endpointMatch)) return;
+
+                var parsedContext = new ParsedContext
+                {
+                    EndpointBoundVariables = boundVariables,
+                    AppCache = context.ApplicationCache,
+                    Match = endpointMatch.Match,
+                    MediaInfo = mediaInfo,
+                    ModuleConfig = endpoint,
+                    PathMapper = context.PathMapper,
+                    RequestParameters = requestParameters,
+                    Url = context.Url
+                };
+                object result = ProcessRequest(parsedContext);
+
+                _logger.Trace("Writing response.");
+                ContextHelper.WriteMediaResponse(context.HttpWriter, mediaInfo, result, HttpStatusCode.OK);
+            }
+            finally
+            {
+                _logger.Debug("// PrepareAndProcessRequest()");    
+            }
         }
 
         private void ValidateRequiredFieldsIfNeeded(EndpointMatch endpointMatch, ParsedBody parsedBody)
@@ -166,10 +163,7 @@ namespace Icodeon.Hotwire.Framework.Modules
                 var matcher = new EndpointRequestMatcher(context.Configuration);
                 endpointMatch = matcher.MatchRequestOrNull(context.HttpMethod, context.Url);
                 if (endpointMatch==null) return;
-                // NB! get the logger AFTER checking if this request matches the httpMethod and Uri, because getting a logger can be very slow,
-                // and we don't want this called on every single http request on this server!
-
-                    PrepareAndProcessRequest(context,endpointMatch);
+                PrepareAndProcessRequest(context,endpointMatch);
             }
             catch (HttpModuleException mex)
             {

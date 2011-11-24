@@ -105,8 +105,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.Diagnostics
         public void ShouldHandleModuleErrors()
         {
             TraceTitle("ShouldHandleModuleErrors() - Ensure modules report (to any registered handlers) any unhandled exceptions");
-            TraceTitle("Should be testable without requiring external website or other dependancies");
-
+            Trace("Should be testable without requiring external website or other dependancies");
             Trace("Given a module that will respond with an IOException");
             var module = new MockModule();
             var configuration = ModuleConfigurationDTOFactory.GivenModuleConfigurationForMockModule();

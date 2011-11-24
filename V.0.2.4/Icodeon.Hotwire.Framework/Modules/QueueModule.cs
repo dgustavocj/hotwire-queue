@@ -69,7 +69,6 @@ namespace Icodeon.Hotwire.Framework.Modules
                                              : "Unable to display additional information which is available in Icodeon ProcessFile log. Please contact Icodeon for more information, quoting the tracking number " + trackingNumber + ":" + fileProvider.ReadProcessErrorFile(trackingNumber);
                     dto.DebugInfo = errorAsJson;
                     return dto;
-                    break;
                 
                 case ActionEnqueueRequest:
                     BeforeProcessFile(context.RequestParameters);

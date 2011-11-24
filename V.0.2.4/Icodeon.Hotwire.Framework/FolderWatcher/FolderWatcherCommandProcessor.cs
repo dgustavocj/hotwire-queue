@@ -234,7 +234,6 @@ namespace Icodeon.Hotwire.Framework.FolderWatcher
 
                         case "test-error":
                             throw new ApplicationException("test-error: test message to confirm logging is working.");
-                            break;
 
                         case download:
                             CreateDownloadRunningFile(filesProvider);

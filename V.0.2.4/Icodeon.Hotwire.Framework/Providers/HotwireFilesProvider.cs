@@ -302,7 +302,7 @@ namespace Icodeon.Hotwire.Framework.Providers
                 MoveFileAndSettingsFileToFolder(trackingNumber, ProcessingFolderPath, ProcessErrorFolderPath);
                 jsonException = JSONHelper.Serialize(new HotwireExceptionDTO(ex));
             }
-            catch (IOException ioex)
+            catch (IOException)
             {
                 // could not move the file because it was locked, and since this is the processing folder most likely the processor is locking the file
                 jsonException = JSONHelper.Serialize(new FileProcessorLockedFileException(ex));

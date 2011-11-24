@@ -14,9 +14,13 @@ namespace Icodeon.Hotwire.Framework.Diagnostics
         {
             try
             {
-                logger.Debug("{0} //", title);
+                // newlines added here because LoggedExecution is most commonly used
+                // in fixture setups, where there is no "traceTitle", so we don't want
+                // this output to be seen as part of some other unit test
+
+                logger.Debug("--- {0} // ----",title);
                 code();
-                logger.Debug("// {0}", title);
+                logger.Debug("---- // {0} ---",title);
             }
             catch (Exception ex)
             {

@@ -45,6 +45,9 @@ namespace Icodeon.Hotwire.Framework
 
         public override void Trace(string message, params object[] parameters)
         {
+            // add a prompt to the front of the trace message, so that we can 
+            // easily identify "action summaries" from detailed code trace statements.
+            message = "> " + message;
             if (_logger == null) return;
             _logger.Trace(message, parameters);
             if (EchoToConsole) Console.WriteLine(message, parameters);
