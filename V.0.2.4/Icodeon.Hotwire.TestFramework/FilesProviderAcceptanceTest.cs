@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Icodeon.Hotwire.Framework;
 using Icodeon.Hotwire.Framework.Providers;
 using NLog;

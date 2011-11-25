@@ -455,7 +455,7 @@ namespace Icodeon.Hotwire.Framework.Providers
 
         public static HotwireFilesProvider GetFilesProviderInstance()
         {
-            return GetFilesProviderInstance(true);
+            return GetFilesProviderInstance(false);
         }
 
         private static Object locker = new Object();

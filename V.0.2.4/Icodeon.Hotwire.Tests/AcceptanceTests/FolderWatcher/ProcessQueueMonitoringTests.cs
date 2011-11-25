@@ -19,7 +19,7 @@ namespace Icodeon.Hotwire.Tests.AcceptanceTests.FolderWatcher
         [SetUp]
         public void Setup()
         {
-            FilesProvider.EmptyAllFolders();
+            FilesProvider.EmptyAllFoldersCreateIfNotExist();
         }
 
 
