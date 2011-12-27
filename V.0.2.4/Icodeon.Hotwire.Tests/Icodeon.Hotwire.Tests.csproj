@@ -106,8 +106,10 @@
     <Compile Include="AssemblySetupTeardown.cs" />
     <Compile Include="Internal\TestData.cs" />
     <Compile Include="Internal\TestModuleConfiguration.cs" />
+    <Compile Include="Internal\Website.cs" />
     <Compile Include="NLogConfigConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ManualTests\HttpClientProviderTests.cs" />
     <Compile Include="UnitTests\ModuleBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationBaseTests.cs" />
     <Compile Include="UnitTests\ModuleConfigurationCacheTests.cs" />

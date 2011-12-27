@@ -1,36 +1,28 @@
 using System;
 using System.Net.Http;
 using Icodeon.Hotwire.Contracts;
+using Icodeon.Hotwire.Framework.Threading;
 
 namespace Icodeon.Hotwire.Framework.Http
 {
     public class HttpClientProvider : IHttpClientProvider
     {
 
-        public HttpClientProvider()
-        {
-
-        }
-
+        // awefully hacky sychronous "Get" implementation!
         public void GetAndEnsureStatusIsSuccessful(Uri uri)
         {
-            var client = new HttpClient();
-            client.GetAsync(uri).ContinueWith(t =>
-                              t.Result.EnsureSuccessStatusCode()
-                              );
-
+            new HttpClient().GetAsync(uri).ToNonscalingSync(t=> t.EnsureSuccessStatusCode());
         }
-
 
 
         public string GetResponseAsStringEnsureStatusIsSuccessful(Uri uri)
         {
             var client = new HttpClient();
-            string responseText="returned before assigned, need 'await' or some type of thread.join?";
-            client.GetAsync(uri).ContinueWith(t =>{
-                        t.Result.EnsureSuccessStatusCode();
-                        responseText = t.Result.Content.ToString();
-                    });
+            string responseText = null;
+            client.GetAsync(uri).ToNonscalingSync(t =>{
+                                                          t.EnsureSuccessStatusCode();
+                                                          TaskExtensions.ToNonscalingSync(t.Content.ReadAsStringAsync(), r => { responseText = r; }, 10000);
+                                                      }, 10000);
             return responseText;
         }
     }

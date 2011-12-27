@@ -293,6 +293,7 @@
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Serialization\JSONHelper.cs" />
     <Content Include="Sql\HotwireCreate.sql" />
+    <Compile Include="Threading\TaskExtensions.cs" />
     <Compile Include="Utils\AppCacheWrapper.cs" />
     <Compile Include="Utils\AbstractAppCounter.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />

@@ -69,6 +69,7 @@
     <Content Include="App_Data\HotwireFolders\TestFiles\539EF088-5FE3-4D89-BFE3-DC5F0B8038E7_numbers.txt" />
     <Content Include="App_Data\HotwireFolders\TestFiles\999EF088-5FE3-4D89-BFE3-DC5F0B8038E7_hello.txt" />
     <Content Include="App_Data\HotwireFolders\TestFiles\B21FCB05-1F88-4956-8FB6-3E5AA579B3F9_alphabet-textfile.txt" />
+    <Content Include="MockCDN\Test.txt" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -78,6 +79,7 @@
     <Content Include="TestCDN\hello.txt" />
     <Content Include="TestCDN\Testfile.txt" />
     <Content Include="TestCDN\_THROW_Testfile.txt" />
+    <Content Include="Throws.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -116,6 +118,13 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="Throws.aspx.cs">
+      <DependentUpon>Throws.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Throws.aspx.designer.cs">
+      <DependentUpon>Throws.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\HotwireFolders\Downloading\" />
@@ -124,7 +133,6 @@
     <Folder Include="App_Data\HotwireFolders\ProcessError\" />
     <Folder Include="App_Data\HotwireFolders\Processing\" />
     <Folder Include="App_Data\HotwireFolders\ProcessQueue\" />
-    <Folder Include="MockCDN\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
