@@ -30,13 +30,14 @@ namespace Icodeon.Hotwire.Tests.UnitTests
         {
             var client = new HttpClientProvider();
             string response =null;
-            Action shouldPass = () => response = client.GetResponseAsStringEnsureStatusIsSuccessful(new Uri(TestAspNet.RootUri + TestAspNet.MockCDN + "Test.txt"));
+            string url = TestAspNet.RootUri + TestAspNet.MockCDN + "Test.txt";
+            Action shouldPass = () => response = client.GetResponseAsStringEnsureStatusIsSuccessful(new Uri(url));
             shouldPass.ShouldNotThrow();
             response.Should().NotBeNull();
             response.Should().Contain("Hello world 1234");
             
             response = null;
-            string url = TestAspNet.RootUri + "Throws.aspx";
+            url = TestAspNet.RootUri + "Throws.aspx";
             Action shouldNotPass = () => response = client.GetResponseAsStringEnsureStatusIsSuccessful(new Uri(url));
             shouldNotPass
                 .ShouldThrow<Exception>()
